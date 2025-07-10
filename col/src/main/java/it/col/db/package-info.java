@@ -1,0 +1,59 @@
+/*
+ *   Convenzioni On Line (COL-GeCo). 
+ *   Applicazione web: 
+ *   - per la visualizzazione delle convenzioni attivate dall'ateneo, 
+ *   - per la gestione delle convenzioni della pubblica amministrazione, 
+ *   - per ottenere notifiche riguardo le scadenze ed i rinnovi
+ *   - e per effettuare il monitoraggio delle attività legate alle convenzioni.
+ *
+ *   Agreements Mapping and Management Software (COL-GeCo).
+ *   Web application: 
+ *   - for viewing conventions activated by the university,
+ *   - for the management of public administration conventions,
+ *   - to obtain notifications regarding deadlines and renewals
+ *   - and to carry out monitoring of activities related to agreements..
+ *   
+ *   Copyright (C) 2025 Giovanroberto Torre
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, see <https://www.gnu.org/licenses/>.
+ *
+ *   Giovanroberto Torre <gianroberto.torre@gmail.com>
+ *   Universita' degli Studi di Verona
+ *   Via Dell'Artigliere, 8
+ *   37129 Verona (Italy)
+ */
+
+/**
+ * <p>Package contenente le classi che si occupano di:<ul> 
+ * <li>effettuare le connessioni al database;</li> 
+ * <li>le interfacce che dichiarano le query di vario tipo 
+ * (selezione, inserimento, aggiornamento, cancellazione);</li> 
+ * <li>le classi che le implementano e si occupano 
+ * di generare query dinamiche</li> 
+ * <li>e, in generale, tutti gli oggetti che hanno attinenza 
+ * con lo strato <code>model</code>.</li></ul></p> 
+ * 
+ * <code>Elementi del package:<ul>
+ * <li><em>Query</em></li>
+ * <li>QueryImpl</li>
+ * <li>DBManager</li>
+ * <li>DBWrapper</li>
+ * </ul></code>
+ * 
+ * <p>Created on Thu Jul 10 10:45:23 AM CEST 2025</p>
+ * 
+ * @author <a href="mailto:gianroberto.torre@gmail.com">Giovanroberto Torre</a>
+ */
+
+package it.col.db;
