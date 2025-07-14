@@ -132,6 +132,7 @@ CREATE TABLE IF NOT EXISTS access_log
 );
 
 -- Ogni tupla rappresenta l'assegnazione di una persona a un ruolo giuridico
+-- La relazione tra persona e ruolo giuridico è molti-a-molti
 CREATE TABLE IF NOT EXISTS persona_ruolo
 (
     id_persona             INT                  NOT NULL    REFERENCES persona (id),
@@ -199,7 +200,12 @@ CREATE TABLE IF NOT EXISTS contributo_economico
     id_contraente           INT                 NOT NULL    REFERENCES contraente (id)
 );
 
--- Relazione tra convenzione e contraenti
+-- Relazione tra convenzione e contraenti.
+-- Il contraente è parte integrante di una convenzione, per cui le date di validità di
+-- questa relazione vengono ricavate dalle date (sottoscrizione e scadenza) della
+-- convenzione stessa. 
+-- Inoltre, qualora una convenzione venisse rinnovata sia pure con lo stesso contraente, 
+-- cambierebbe l'id della convenzione stessa, da cui la consistenza della chiave primaria.
 CREATE TABLE IF NOT EXISTS contraente_convenzione
 (
     data_ultima_modifica    DATE DEFAULT CURRENT_DATE   NOT NULL,
@@ -210,18 +216,31 @@ CREATE TABLE IF NOT EXISTS contraente_convenzione
     PRIMARY KEY (id_convenzione, id_contraente)
 );
 
--- Relazione tra convenzione e persona
+-- Relazione tra convenzione e persona.
+-- Il referente NON è parte integrante di una convenzione.
+-- Ciò significa che ha date di inizio e fine associazione indipendenti da quelle della convenzione,
+-- che possono essere ereditate tramite meccanismi applicativi (hook tramite cui, quando
+-- viene inserita una persona su una convenzione, prende di default come data inizio la data
+-- di sottoscrizione della convenzione e come data fine la data di scadenza della convenzione)
+-- ma che sono concettualmente ortogonali tra loro.
+-- Ciò implica che un referente potrebbe scadere prima della data di scadenza della convenzione
+-- o potrebbe essere attivato dopo la data di sottoscrizione. Inoltre, un referente potrebbe
+-- potenzialmente anche essere riattivato a distanza di tempo. Pertanto, la chiave non 
+-- è univocamente identificata dalla coppia PRIMARY KEY (id_convenzione, id_persona) 
+-- ma è necessario rilassare questo vincolo introducendo una chiave numerica 
+-- oppure inserendo in chiave anche le date.
 CREATE TABLE IF NOT EXISTS referente
 (
+    id                      SERIAL PRIMARY KEY  ,
     data_inizio             DATE                NOT NULL,
     data_fine               DATE                NOT NULL,
     nota                    TEXT                ,
     data_ultima_modifica    DATE DEFAULT CURRENT_DATE   NOT NULL,
     ora_ultima_modifica     TIME DEFAULT CURRENT_TIME   NOT NULL,
     id_usr_ultima_modifica  INT                         NOT NULL    REFERENCES usr (id),
-    id_convenzione          INT                             REFERENCES convenzione (id),
-    id_persona              INT                             REFERENCES persona (id),
-    PRIMARY KEY (id_convenzione, id_persona)
+    id_convenzione          INT                                     REFERENCES convenzione (id),
+    id_persona              INT                                     REFERENCES persona (id),
+    UNIQUE (id_convenzione, id_persona, data_inizio, data_fine)
 );
 
 
@@ -258,7 +277,7 @@ CREATE INDEX IF NOT EXISTS id_usr_persona_index ON usr (id_persona);
 CREATE INDEX IF NOT EXISTS id_usr_ruolo_index ON usr (id_ruolo);
 
 -- INDEXES ON login
-CREATE INDEX IF NOT EXISTS id_login_usr_index ON login (login);
+CREATE INDEX IF NOT EXISTS id_login_usr_index ON usr (login);
 
 -- INDEXES ON relazione tra persona e ruolo giuridico
 CREATE INDEX IF NOT EXISTS id_personaruolo_persona_index ON persona_ruolo (id_persona);
