@@ -39,6 +39,16 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>jstl</artifactId>
+        <version>1.2</version>
+    </dependency>
+    <dependency>
+        <groupId>taglibs</groupId>
+        <artifactId>standard</artifactId>
+        <version>1.1.2</version>
+    </dependency>
+    <dependency>
         <groupId>commons-beanutils</groupId>
         <artifactId>commons-beanutils</artifactId>
         <version>1.11.0</version> <!-- latest stable version as of 2025 -->
@@ -47,6 +57,11 @@
         <groupId>com.jfinal</groupId>
         <artifactId>cos</artifactId>
         <version>2017.5</version>
+    </dependency>
+    <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>42.7.3</version>
     </dependency>
   </dependencies>
 
