@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="3.0"
-  xmlns="http://java.sun.com/xml/ns/javaee"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+<web-app
+    version="4.0"
+    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:javaee="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xml="http://www.w3.org/XML/1998/namespace"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd">
   
     <display-name>Convenzioni On Line</display-name>
+    
+   <!-- Note: Servlets Configuration -->
     
     <servlet>
       <description>Servlet COL entrypoint</description>        
@@ -51,13 +56,88 @@
       <servlet-class>it.col.db.DBManager</servlet-class>
       <load-on-startup>1</load-on-startup>
     </servlet>
+    
+   <!-- Note: Custom Error Pages -->
+
+    <error-page>
+      <error-code>400</error-code>
+      <location>/web/html/badRequest.html</location>
+    </error-page>
+    <error-page>
+      <error-code>401</error-code>
+      <location>/web/html/unauthorized.html</location>
+    </error-page>
+    <error-page>
+      <error-code>403</error-code>
+      <location>/web/html/forbidden.html</location>
+    </error-page>
+    <error-page>
+      <error-code>404</error-code>
+      <location>/web/html/noResourceFound.html</location>
+    </error-page>
+    <error-page>
+      <error-code>405</error-code>
+      <location>/web/html/methodNotAllowed.html</location>
+    </error-page>
+    <error-page>
+      <error-code>406</error-code>
+      <location>/web/html/notAcceptable.html</location>
+    </error-page>
+    <error-page>
+      <error-code>408</error-code>
+      <location>/web/html/requestTimeout.html</location>
+    </error-page>
+    <error-page>
+      <error-code>414</error-code>
+      <location>/web/html/requestURITooLong.html</location>
+    </error-page>
+    <error-page>
+      <error-code>415</error-code>
+      <location>/web/html/unsupportedMediaType.html</location>
+    </error-page>
+    <error-page>
+      <error-code>422</error-code>
+      <location>/web/html/unprocessableEntity.html</location>
+    </error-page>
+    <error-page>
+      <error-code>429</error-code>
+      <location>/web/html/tooManyRequests.html</location>
+    </error-page>
+    <error-page>
+      <error-code>500</error-code>
+      <location>/web/html/internalServerError.html</location>
+    </error-page>
+    <error-page>
+      <error-code>501</error-code>
+      <location>/web/html/notImplemented.html</location>
+    </error-page>
+    <error-page>
+      <error-code>502</error-code>
+      <location>/web/html/badGateway.html</location>
+    </error-page>
+    <error-page>
+      <error-code>503</error-code>
+      <location>/web/html/serviceUnavailable.html</location>
+    </error-page>
+    <error-page>
+      <error-code>504</error-code>
+      <location>/web/html/gatewayTimeout.html</location>
+    </error-page>
+    <error-page>
+      <error-code>505</error-code>
+      <location>/web/html/HTTPVersionNotSupported.html</location>
+    </error-page>
+    <error-page>
+      <error-code>509</error-code>
+      <location>/web/html/bandwidthLimitExceeded.html</location>
+    </error-page>
 
    <!-- Note: Contex Params -->
-
+   
     <context-param>
-        <description>Pagina di errore a cui redirigere in caso venga sollevata un'eccezione</description>
+        <description>Error page</description>
         <param-name>errorJsp</param-name>
-        <param-value>/error.jsp</param-value>
+        <param-value>/jsp/error.jsp</param-value>
     </context-param>
 
     <context-param>
@@ -67,53 +147,55 @@
     </context-param>
 
     <context-param>
-        <description>Assembla tutte le pagine</description>
+        <description>Every page is mounted here</description>
         <param-name>templateJsp</param-name>
         <param-value>/template.jsp</param-value>
     </context-param>
 
     <context-param>
-        <description>Parametro che identifica la Command per gestire la richiesta</description>
+        <description>Parameter to identify the Command</description>
         <param-name>entToken</param-name>
         <param-value>q</param-value>
     </context-param>
+    
+    <context-param>
+        <description>Parameter to identify the entity</description>
+        <param-name>objToken</param-name>
+        <param-value>o</param-value>
+    </context-param>    
 
     <context-param>
-        <description>Parametro che identifica il formato di output richiesto</description>
+        <description>Parameter to identify the output format</description>
         <param-name>outToken</param-name>
         <param-value>out</param-value>
     </context-param>
     
     <context-param>
-        <description>Parametro che identifica l'entità su cui agire</description>
-        <param-name>objToken</param-name>
-        <param-value>o</param-value>
-    </context-param>
-    
-    <context-param>
-        <description>Directory fogli stile</description>
+        <description>Stylesheets directory</description>
         <param-name>urlDirectoryStili</param-name>
         <param-value>assets/css/</param-value>
     </context-param>
     
     <context-param>
-        <description>Directory script client</description>
+        <description>Client side scripts directory</description>
         <param-name>urlDirectoryScript</param-name>
         <param-value>assets/js/</param-value>
     </context-param>
     
     <context-param>
-        <description>Directory immagini</description>
+        <description>Images directory</description>
         <param-name>urlDirectoryImmagini</param-name>
         <param-value>assets/images/</param-value>
     </context-param>
-    
+
     <context-param>
-        <description>Root dell'applicazione</description>
+        <description>Application Root</description>
         <param-name>appName</param-name>
         <param-value>/col</param-value>
     </context-param>
-
+    
+   <!-- Note: Resource Refs -->
+    
     <resource-ref>
         <description>
             Resource reference to a factory for java.sql.Connection
