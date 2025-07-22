@@ -85,85 +85,44 @@ public class Main extends HttpServlet {
      * non &egrave; privata ma Default (friendly) per essere visibile
      * negli elementi ovverride implementati da questa classe.</p>
      */
-    /* default */ static Logger log = Logger.getLogger(Main.class.getName());
+    static Logger log = Logger.getLogger(Main.class.getName());
     /**
      *  Nome di questa classe
      *  (utilizzato per contestualizzare i messaggi di errore)
      */
     static final String FOR_NAME = "\n" + Logger.getLogger(new Throwable().getStackTrace()[0].getClassName()) + ": ";
-    /**
-     * <p>Fatto un nanosecondo pari a 1, la stessa quantit&agrave; di tempo
-     * espressa in altre unit&agrave; pu&ograve; essere ricavata
-     * adottando opportuni divisori, come nello schema seguente:
-     * <dl>
-     * <dt>microsecondi</dt>
-     * <dd>10<sup>-3</sup></dd>
-     * <dt>millisecondi</dt>
-     * <dd>10<sup>-6</sup></dd>
-     * <dt>secondi</dt>
-     * <dd>10<sup>-9</sup></dd>
-     * <dt>minuti</dt>
-     * <dd>1,67 × 10<sup>-11</sup></dd>
-     * <dt>ore</dt>
-     * <dd>2,78 × 10<sup>-13</sup></dd>
-     * <dt>giorni</dt>
-     * <dd>1,16 × 10<sup>-14</sup></dd>
-     * </dl>
-     * Pertanto, per convertire un tempo espresso in millisecondi,
-     * quale quello fornito ad esempio dalla classe System,
-     * basta definire numeri aventi la grandezza dei divisori,
-     * e porli al denominatore.</p>
-     */
-    public static final double SECOND_DIVISOR = 1E9D;
-    /**
-     * <p>Tempo, in millisecondi, in cui si vuole effettuare il refresh</p>
-     * <p>Dalla documentazione della costante per il divisore del tempo trascorso
-     * per l'esecuzione del thread, si evince che tra secondi e millisecondi
-     * ci sono 3 zeri da aggiungere all'esponente, per cui i millisecondi
-     * sono separati dai secondi da "soli" 3 ordini di grandezza;
-     * d'altro canto, un secondo &egrave; composto per definizione
-     * da 1 x 10<sup>3</sup> ms.</p>
-     * <p>Perci&ograve;, per ottenere il tempo schedulato per il refresh
-     * in millisecondi, moltiplichiamo tale tempo in minuti (p.es. 60)
-     * per 60 (ottenendo i secondi), ancora per 1000
-     * (ottenendo quindi i millisecondi). Aggiungendo ulteriori fattori
-     * possono essere incrementati i tempi di schedulazione.</p>
-     */
-    static final long SCHEDULED_TIME = 1000 * 60 * 60 * 6;
 
 
     /**
      * (non-Javadoc)
      * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      *
-     * @param config la configurazione usata dal servlet container per passare informazioni alla servlet <strong>durante l'inizializzazione</strong>
+     * @param config la configurazione usata dal servlet container per passare informazioni alla servlet durante l'inizializzazione
      * @throws ServletException una eccezione che puo' essere sollevata quando la servlet incontra difficolta'
      */
     @Override
     public void init(ServletConfig config) throws ServletException {
-        /*
-         *  Inizializzazione da superclasse
-         */
+        // Inizializzazione da superclasse
         super.init(config);
     }
 
 
     /**
      * <p>Gestisce le richieste del client effettuate con il metodo GET.</p>
-     * <p><cite id="malacarne" data-exact-page="99">
-     *  Il metodo service viene invocato dal servlet-engine come azione
-     *  di risposta alla ricezione di una HttpRequest.
+     * <p><cite id="malacarne" data-page="99">
+     *  Il metodo <code>service</code> viene invocato dal servlet-engine 
+     *  come azione di risposta alla ricezione di una HttpRequest.
      *  Questo metodo, nella sua implementazione originale, funziona
      *  come dispatcher, ossia, in base al codice operazione HTTP ricevuto,
      *  attiva il metodo disponibile pi&uacute; opportuno (...)
      * </cite></p>
-     * <cite id="malacarne" data-exact-page="100">
+     * <cite id="malacarne" data-page="100">
      * <p>Una sottoclasse di HttpServlet dovrebbe preferenzialmente
      *  sovrascrivere uno dei metodi precedenti<br />
      *  (n.d.r.: <code>doGet | doPost | doOption | doPut | doTrace</code>)</p>
-     * <p>In taluni casi per&ograve; (...) risulta essere pi&uacute;
+     * <p>In taluni casi (...) risulta essere pi&uacute;
      *  conveniente, <strong>ma deve essere una scelta ben ponderata</strong>,
-     *  sovrascrivere direttamente il metodo service.</p>
+     *  sovrascrivere direttamente il metodo <code>service</code>.</p>
      * </cite>
      *
      * @param req la HttpServletRequest contenente la richiesta del client
@@ -175,22 +134,15 @@ public class Main extends HttpServlet {
     public void doGet(HttpServletRequest req,
                       HttpServletResponse res)
                throws ServletException, IOException {
-        /*
-         * Dichiara la variabile per la pagina in cui riversare l'output prodotto
-         */
-        String fileJsp = null;
-        /*
-         * Dichiara la variabile per l'ent token, in base a cui ricercare la Command
-         */
+        // Variabile per individuare la Command
         String q = null;
-        /*
-         * Recupera il nome della pagina di errore
-         */
+        // Variabile per identificare l'oggetto su cui si vuole agire
+        String o = null;
+        // Variabile per la pagina in cui riversare l'output prodotto
+        String fileJsp = null;
+        // Recupera il nome della pagina di errore
         String errorJsp = ConfigManager.getErrorJsp();
-        /*
-         * Cerca la command associata al parametro 'ent'
-         * e, se la trova, ne invoca il metodo execute()
-         */
+        // Cerca la Command; se la trova, ne invoca il metodo execute()
         try {
             q = req.getParameter(ConfigManager.getEntToken());
         } catch (NullPointerException npe) { // Potrebbe già uscire qui
