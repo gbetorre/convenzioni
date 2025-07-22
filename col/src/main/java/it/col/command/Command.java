@@ -36,9 +36,10 @@
 
 package it.col.command;
 
-import it.col.exception.CommandException;
-import it.col.bean.ItemBean;
 import javax.servlet.http.HttpServletRequest;
+
+import it.col.bean.CommandBean;
+import it.col.exception.CommandException;
 
 
 /**
@@ -52,6 +53,7 @@ import javax.servlet.http.HttpServletRequest;
  * interfaccia. Questo approccio è anche detto 'command pattern'.
  *
  * @author Roberto Posenato
+ * @author <a href="mailto:gianroberto.torre@gmail.com">Giovanroberto Torre</a>
  */
 public interface Command {
 
@@ -75,6 +77,6 @@ public interface Command {
      * @param voce a ItemBean containing al the useful information for instantiation
      * @throws CommandException incapsulate each exception occurred in init by implementing classes
      */
-    public void init(ItemBean voce)
+    public void init(CommandBean voce)
     throws CommandException;
 }

@@ -49,6 +49,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 
 import it.col.bean.CodeBean;
+import it.col.bean.CommandBean;
 import it.col.bean.ItemBean;
 import it.col.command.Command;
 import it.col.db.DBWrapper;
@@ -134,7 +135,7 @@ public class ConfigManager extends HttpServlet {
     /**
      * Struttura vettoriale contenente le command predefinite sotto forma di voci di menu
      */
-    private static Vector<ItemBean> classiCommand;
+    private static Vector<CommandBean> classiCommand;
     /**
      * Tabella hash (dictionary) contenente le command predefinite.
      */
@@ -324,7 +325,7 @@ public class ConfigManager extends HttpServlet {
         catch (Exception e) {
             throw new ServletException(FOR_NAME + "Problemi nel caricare le classi Command.\n" + e.getMessage(), e);
         }
-        ItemBean voceMenu = null;
+        CommandBean voceMenu = null;
         Command classCommand = null;
         commands = new ConcurrentHashMap<>();
         for (int i = 0; i < classiCommand.size(); i++) {
@@ -553,7 +554,7 @@ public class ConfigManager extends HttpServlet {
      *
      * @return <code>Vector&lt;ItemBean&gt;</code> - le command indicizzate per proprio token
      */
-    public static Vector<ItemBean> getClassiCommand() {
+    public static Vector<CommandBean> getClassiCommand() {
         return classiCommand;
     }
 
