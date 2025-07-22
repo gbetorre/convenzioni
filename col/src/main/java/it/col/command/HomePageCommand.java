@@ -59,6 +59,7 @@ import it.col.Main;
 import it.col.db.Query;
 import it.col.util.Utils;
 import it.col.bean.CodeBean;
+import it.col.bean.CommandBean;
 import it.col.bean.ItemBean;
 import it.col.bean.PersonBean;
 import it.col.exception.AttributoNonValorizzatoException;
@@ -131,15 +132,15 @@ public class HomePageCommand extends ItemBean implements Command, Constants {
      * e li passa a questa classe command.</p>
 	 *
 	 * @param voceMenu la VoceMenuBean pari alla Command presente.
-	 * @throws it.rol.exception.CommandException se l'attributo paginaJsp di questa command non e' stato valorizzato.
+	 * @throws it.col.exception.CommandException se l'attributo paginaJsp di questa command non e' stato valorizzato.
      */
     @Override
-    public void init(ItemBean voceMenu) throws CommandException {
+    public void init(CommandBean voceMenu) throws CommandException {
         this.setId(voceMenu.getId());
         this.setNome(voceMenu.getNome());
-        this.setLabelWeb(voceMenu.getLabelWeb());
+        this.setLabelWeb(voceMenu.getLabel());
         this.setNomeClasse(voceMenu.getNomeClasse());
-        this.setPaginaJsp(voceMenu.getPaginaJsp());
+        this.setPaginaJsp(voceMenu.getPagina());
         this.setInformativa(voceMenu.getInformativa());
         if (this.getPaginaJsp() == null) {
           String msg = FOR_NAME + "La voce menu' " + this.getNome() + " non ha il campo paginaJsp. Impossibile visualizzare i risultati.\n";
@@ -543,7 +544,7 @@ public class HomePageCommand extends ItemBean implements Command, Constants {
                                                 throws CommandException {
         int prime = 13;                 // per ottimizzare
         // Ottiene l'elenco delle Command
-        Vector<ItemBean> classiCommand = ConfigManager.getClassiCommand();
+        Vector<CommandBean> classiCommand = ConfigManager.getClassiCommand();
         // Genera l'etichetta per nodo radice
         final String homeLbl = Utils.capitalize(COMMAND_HOME);
         // Dichiara la struttura per la lista di voci da usare per generare le breadcrumbs
@@ -613,7 +614,7 @@ public class HomePageCommand extends ItemBean implements Command, Constants {
             }
             // Il link alla home è fisso
             //final String homeLnk = appName + ROOT_QM + ConfigManager.getEntToken() + EQ + COMMAND_HOME + AMPERSAND + tokenSurvey;
-            final String homeLnk = "/rol";
+            final String homeLnk = "/col";
             // Crea un oggetto per incapsulare il link della root
             ItemBean root = new ItemBean(appName, homeLbl, homeLnk, MAIN_MENU);
             // Aggiunge la root alle breadcrumbs
@@ -624,9 +625,9 @@ public class HomePageCommand extends ItemBean implements Command, Constants {
                 String value = entry.getValue();
                 String labelWeb = null;
                 if (key.equals(ConfigManager.getEntToken())) {
-                    for (ItemBean command : classiCommand) {
+                    for (CommandBean command : classiCommand) {
                         if (command.getNome().equals((value.substring(SUB_MENU)))) {
-                            labelWeb = command.getLabelWeb();
+                            labelWeb = command.getLabel();
                             break;
                         }
                     }
