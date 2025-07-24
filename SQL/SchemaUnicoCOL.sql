@@ -109,17 +109,41 @@ CREATE TABLE IF NOT EXISTS persona
 -- Il mancato vincolo (NOT NULL) sulla chiave esterna (id_persona) permette l'esistenza delle utenze funzionali
 CREATE TABLE IF NOT EXISTS usr
 (
-    id                     SERIAL PRIMARY KEY   ,
-    login                  VARCHAR(255)         NOT NULL,
-    passwd                 VARCHAR(255)         ,
-    passwdForm             VARCHAR(255)         ,
-    salt                   VARCHAR(255)         ,
-    data_ultima_modifica   DATE                 NOT NULL,
-    ora_ultima_modifica    TIME                 NOT NULL,
-    id_usr_ultima_modifica INT                  NOT NULL    REFERENCES usr (id), -- self-relationship
-    id_persona             INT                              REFERENCES persona (id),
-    id_ruolo               INT                              REFERENCES ruolo_applicativo (id),
+    id                      SERIAL PRIMARY KEY  ,
+    login                   VARCHAR(256)        NOT NULL,
+    passwd                  VARCHAR(256)        ,
+    passwdForm              VARCHAR(256)        ,
+    salt                    VARCHAR(256)        ,
+    data_ultima_modifica    DATE                NOT NULL,
+    ora_ultima_modifica     TIME                NOT NULL,
+    id_usr_ultima_modifica  INT                 NOT NULL    REFERENCES usr (id), -- self-relationship
+    id_persona              INT                             REFERENCES persona (id),
+    id_ruolo                INT                             REFERENCES ruolo_applicativo (id),
     UNIQUE (login)
+);
+
+-- Ogni tupla rappresenta un gruppo di utenti
+-- Siccome potrebbero essere previste delle funzioni di amministrazione 
+-- (p.es. inserimento di nuovi gruppi), vengono aggiunti i campi di tracciamento della modifica
+-- (data, ora e autore) 
+CREATE TABLE IF NOT EXISTS grp
+(
+    id                      SERIAL PRIMARY KEY  ,
+    nome                    VARCHAR(128)        NOT NULL,
+    informativa             TEXT                ,
+    ordinale                INT     DEFAULT 10  NOT NULL
+    data_ultima_modifica    DATE                NOT NULL,
+    ora_ultima_modifica     TIME                NOT NULL,
+    id_usr_ultima_modifica  INT                 NOT NULL    REFERENCES usr (id),
+    UNIQUE (nome)
+);
+
+-- Definisce la composizione dei gruppi
+CREATE TABLE IF NOT EXISTS belongs 
+(
+   id_usr                   INT                 NOT NULL    REFERENCES usr (id),
+   id_grp                   INT                 NOT NULL    REFERENCES grp (id),
+   PRIMARY KEY(id_usr, id_grp)
 );
 
 -- Ogni tupla rappresenta un accesso al sistema
@@ -128,7 +152,7 @@ CREATE TABLE IF NOT EXISTS access_log
     id                      SERIAL PRIMARY KEY  ,
     data_ultimo_accesso     DATE                NOT NULL,
     ora_ultimo_accesso      TIME                NOT NULL,
-    login                   VARCHAR(255)        NOT NULL    REFERENCES usr (login)
+    login                   VARCHAR(256)        NOT NULL    REFERENCES usr (login)
 );
 
 -- Ogni tupla rappresenta l'assegnazione di una persona a un ruolo giuridico
@@ -243,6 +267,23 @@ CREATE TABLE IF NOT EXISTS referente
     UNIQUE (id_convenzione, id_persona, data_inizio, data_fine)
 );
 
+-- Relazione tra convenzione e gruppo di utenti.
+-- Permette di stabilire ogni gruppo che diritti ha su una convenzione di dato id.
+CREATE TABLE IF NOT EXISTS convenzione_grp
+(
+    id_convenzione          INT                         NOT NULL    REFERENCES convenzione (id),
+    id_grp                  INT                         NOT NULL    REFERENCES grp (id),    
+    notify                  BOOLEAN DEFAULT FALSE       NOT NULL,
+    select                  BOOLEAN DEFAULT FALSE       NOT NULL,
+    update                  BOOLEAN DEFAULT FALSE       NOT NULL,
+    insert                  BOOLEAN DEFAULT FALSE       NOT NULL,
+    delete                  BOOLEAN DEFAULT FALSE       NOT NULL,
+    data_ultima_modifica    DATE DEFAULT CURRENT_DATE   NOT NULL,
+    ora_ultima_modifica     TIME DEFAULT CURRENT_TIME   NOT NULL,
+    id_usr_ultima_modifica  INT                         NOT NULL    REFERENCES usr (id),
+    PRIMARY KEY (id_convenzione, id_grp)
+);
+
 
 ------------------------
 --        GRANT       --
@@ -259,6 +300,8 @@ GRANT ALL ON ALL TABLES IN SCHEMA public TO lfrigo;
 -- REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM www;
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO www;
 GRANT INSERT, UPDATE ON access_log, convenzione, contraente, contraente_convenzione, referente, contributo_economico TO www;
+-- Deve valorizzare il gruppo all'inserimento della convenzione; in futuro potrebbe essere utile anche l'aggiornamento
+GRANT INSERT, UPDATE ON convenzione_grp TO www;
 -- www: Permission to change the password!
 GRANT UPDATE ON usr TO www;    
 
@@ -309,3 +352,14 @@ CREATE INDEX IF NOT EXISTS id_contributoeconomico_usr_index ON contributo_econom
 CREATE INDEX IF NOT EXISTS id_contributoeconomico_convenzione_index ON contributo_economico (id_convenzione);
 CREATE INDEX IF NOT EXISTS id_contributoeconomico_contraente_index ON contributo_economico (id_contraente);
 
+-- INDEXES ON grp
+CREATE INDEX IF NOT EXISTS id_grp_usr_index ON grp (id_usr_ultima_modifica);
+
+-- INDEXES ON belongs
+CREATE INDEX IF NOT EXISTS id_belongs_usr_index ON belongs (id_usr);
+CREATE INDEX IF NOT EXISTS id_belongs_grp_index ON belongs (id_grp);
+
+-- INDEXES ON convenzione_grp
+CREATE INDEX IF NOT EXISTS id_convenzionegrp_convenzione_index ON convenzione_grp (id_convenzione);
+CREATE INDEX IF NOT EXISTS id_convenzionegrp_grp_index ON convenzione_grp (id_grp);
+CREATE INDEX IF NOT EXISTS id_convenzionegrp_usr_index ON convenzione_grp (id_usr_ultima_modifica);
