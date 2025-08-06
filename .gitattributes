@@ -1,3 +1,15 @@
+# Recognize Structured Query Language
 *.sql linguist-detectable=true
 *.sql linguist-language=SQL
 
+# Recognize JSON files
+*.json linguist-language=JSON
+
+# Recognize RTF files (Rich Text Format)
+*.rtf linguist-language=Rich Text Format
+
+# Recognize XML files
+*.xml linguist-language=XML
+
+# Recognize CSV files
+*.csv linguist-language=CSV
