@@ -1,2 +1,7 @@
 # convenzioni
-Applicazione web per la gestione delle convenzioni della pubblica amministrazione
+
+Web application to trace, and manage, the government conventions.
+
+# E-R
+
+![Entity-Relationships diagram](SQL/SchemaER.png)
