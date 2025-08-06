@@ -131,7 +131,7 @@ CREATE TABLE IF NOT EXISTS grp
     id                      SERIAL PRIMARY KEY  ,
     nome                    VARCHAR(128)        NOT NULL,
     informativa             TEXT                ,
-    ordinale                INT     DEFAULT 10  NOT NULL
+    ordinale                INT     DEFAULT 10  NOT NULL,
     data_ultima_modifica    DATE                NOT NULL,
     ora_ultima_modifica     TIME                NOT NULL,
     id_usr_ultima_modifica  INT                 NOT NULL    REFERENCES usr (id),
@@ -190,7 +190,7 @@ CREATE TABLE IF NOT EXISTS convenzione
     id_usr_ultima_modifica  INT                 NOT NULL    REFERENCES usr (id),
     id_tipo                 INT                 NOT NULL    REFERENCES tipo_convenzione (id),
     id_stato                INT                 NOT NULL    REFERENCES stato_convenzione (id),
-    id_scopo                INT                 NOT NULL    REFERENCES finalita (id),
+    -- id_scopo                INT                 NOT NULL    REFERENCES finalita (id),
     id_convenzione          INT                             REFERENCES convenzione (id) -- self-relationship
 );
 
@@ -222,6 +222,20 @@ CREATE TABLE IF NOT EXISTS contributo_economico
     id_usr_ultima_modifica  INT                 NOT NULL    REFERENCES usr (id),
     id_convenzione          INT                 NOT NULL    REFERENCES convenzione (id),
     id_contraente           INT                 NOT NULL    REFERENCES contraente (id)
+);
+
+-- Relazione tra convenzione e finalità.
+-- Le finalità di una convenzione: 
+-- 1. non sono obbligatorie (non è necessario che almeno una sia specificata) 
+-- 2. possono essere più di una per una stessa convenzione.
+CREATE TABLE IF NOT EXISTS convenzione_finalita
+(
+    data_ultima_modifica    DATE DEFAULT CURRENT_DATE   NOT NULL,
+    ora_ultima_modifica     TIME DEFAULT CURRENT_TIME   NOT NULL,
+    id_usr_ultima_modifica  INT                         NOT NULL    REFERENCES usr (id),
+    id_convenzione          INT                         NOT NULL    REFERENCES convenzione (id),
+    id_finalita             INT                         NOT NULL    REFERENCES finalita (id),
+    PRIMARY KEY (id_convenzione, id_finalita)
 );
 
 -- Relazione tra convenzione e contraenti.
@@ -273,11 +287,11 @@ CREATE TABLE IF NOT EXISTS convenzione_grp
 (
     id_convenzione          INT                         NOT NULL    REFERENCES convenzione (id),
     id_grp                  INT                         NOT NULL    REFERENCES grp (id),    
-    notify                  BOOLEAN DEFAULT FALSE       NOT NULL,
-    select                  BOOLEAN DEFAULT FALSE       NOT NULL,
-    update                  BOOLEAN DEFAULT FALSE       NOT NULL,
-    insert                  BOOLEAN DEFAULT FALSE       NOT NULL,
-    delete                  BOOLEAN DEFAULT FALSE       NOT NULL,
+    notifica                BOOLEAN DEFAULT FALSE       NOT NULL,
+    selezione               BOOLEAN DEFAULT FALSE       NOT NULL,
+    aggiornamento           BOOLEAN DEFAULT FALSE       NOT NULL,
+    inserimento             BOOLEAN DEFAULT FALSE       NOT NULL,
+    eliminazione            BOOLEAN DEFAULT FALSE       NOT NULL,
     data_ultima_modifica    DATE DEFAULT CURRENT_DATE   NOT NULL,
     ora_ultima_modifica     TIME DEFAULT CURRENT_TIME   NOT NULL,
     id_usr_ultima_modifica  INT                         NOT NULL    REFERENCES usr (id),
@@ -299,7 +313,7 @@ GRANT ALL ON ALL TABLES IN SCHEMA public TO lfrigo;
 -- Diritti dell'utente pubblico (www)
 -- REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM www;
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO www;
-GRANT INSERT, UPDATE ON access_log, convenzione, contraente, contraente_convenzione, referente, contributo_economico TO www;
+GRANT INSERT, UPDATE ON access_log, convenzione, contraente, contraente_convenzione, convenzione_finalita, referente, contributo_economico TO www;
 -- Deve valorizzare il gruppo all'inserimento della convenzione; in futuro potrebbe essere utile anche l'aggiornamento
 GRANT INSERT, UPDATE ON convenzione_grp TO www;
 -- www: Permission to change the password!
@@ -330,12 +344,17 @@ CREATE INDEX IF NOT EXISTS id_personaruolo_codicecsa_index ON persona_ruolo (cod
 CREATE INDEX IF NOT EXISTS id_convenzione_usr_index ON convenzione (id_usr_ultima_modifica);
 CREATE INDEX IF NOT EXISTS id_convenzione_tipoconvenzione_index ON convenzione (id_tipo);
 CREATE INDEX IF NOT EXISTS id_convenzione_statoconvenzione_index ON convenzione (id_stato);
-CREATE INDEX IF NOT EXISTS id_convenzione_finalita_index ON convenzione (id_scopo);
-CREATE INDEX IF NOT EXISTS id_convenzione_convenzione_index ON convenzione (id_convenzione); -- self-relationship
+CREATE INDEX IF NOT EXISTS id_convenzione_convenzione_index ON convenzione (id_convenzione); -- self-relationship    
+-- CREATE INDEX IF NOT EXISTS id_convenzione_finalita_index ON convenzione (id_scopo);
 
 -- INDEXES ON contraente
 CREATE INDEX IF NOT EXISTS id_contraente_usr_index ON contraente (id_usr_ultima_modifica);
 CREATE INDEX IF NOT EXISTS id_contraente_tipocontraente_index ON contraente (id_tipo);
+
+-- INDEXES ON relazione tra convenzione e finalità
+CREATE INDEX IF NOT EXISTS id_convenzionefinalita_usr_index ON convenzione_finalita (id_usr_ultima_modifica);
+CREATE INDEX IF NOT EXISTS id_convenzionefinalita_convenzione_index ON convenzione_finalita (id_convenzione);
+CREATE INDEX IF NOT EXISTS id_convenzionefinalita_finalita_index ON convenzione_finalita (id_finalita);    
 
 -- INDEXES ON relazione tra contraenti e convenzione
 CREATE INDEX IF NOT EXISTS id_contraenteconvenzione_usr_index ON contraente_convenzione (id_usr_ultima_modifica);
