@@ -149,7 +149,7 @@
     <context-param>
         <description>Every page is mounted here</description>
         <param-name>templateJsp</param-name>
-        <param-value>/template.jsp</param-value>
+        <param-value>/jsp/template.jsp</param-value>
     </context-param>
 
     <context-param>
