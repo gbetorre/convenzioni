@@ -331,7 +331,7 @@ public class ConfigManager extends HttpServlet {
         for (int i = 0; i < classiCommand.size(); i++) {
             voceMenu = classiCommand.get(i);
             try {
-                classCommand = (Command) Class.forName("it.rol.command." + voceMenu.getNomeClasse()).newInstance();
+                classCommand = (Command) Class.forName("it.col.command." + voceMenu.getNomeClasse()).newInstance();
                 classCommand.init(voceMenu);
                 commands.put(voceMenu.getNome(), classCommand);
             } catch (ClassNotFoundException cnfe) {
