@@ -241,7 +241,7 @@ public class CommandBean implements Serializable {
     /**
      * @param v un oggetto String contenente l'etichetta per la voce
      */
-    public void setLabelWeb(String v) {
+    public void setLabel(String v) {
         this.label = v;
     }
     
@@ -281,7 +281,7 @@ public class CommandBean implements Serializable {
     /**
      * @param v oggetto String usato per impostare il nome della pagina jsp associata alla it.univr.di.uol.command.Command {@link #getNomeClasse()}
      */
-    public void setPaginaJsp(String v) {
+    public void setPagina(String v) {
         this.pagina = v;
     }
     
