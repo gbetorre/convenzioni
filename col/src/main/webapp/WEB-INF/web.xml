@@ -57,6 +57,13 @@
       <load-on-startup>1</load-on-startup>
     </servlet>
     
+  <!-- Note: Raw browsing Configuration -->
+    
+    <servlet-mapping>
+      <servlet-name>default</servlet-name>
+      <url-pattern>/vendor/*</url-pattern>
+    </servlet-mapping>
+    
    <!-- Note: Custom Error Pages -->
 
     <error-page>
@@ -171,20 +178,26 @@
     </context-param>
     
     <context-param>
+        <description>Plugins directory</description>
+        <param-name>urlDirFrameworks</param-name>
+        <param-value>vendor/</param-value>
+    </context-param>
+    
+    <context-param>
         <description>Stylesheets directory</description>
-        <param-name>urlDirectoryStili</param-name>
+        <param-name>urlDirStyles</param-name>
         <param-value>assets/css/</param-value>
     </context-param>
     
     <context-param>
         <description>Client side scripts directory</description>
-        <param-name>urlDirectoryScript</param-name>
+        <param-name>urlDirScripts</param-name>
         <param-value>assets/js/</param-value>
     </context-param>
     
     <context-param>
         <description>Images directory</description>
-        <param-name>urlDirectoryImmagini</param-name>
+        <param-name>urlDirImages</param-name>
         <param-value>assets/images/</param-value>
     </context-param>
 
