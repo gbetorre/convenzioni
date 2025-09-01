@@ -1,6 +1,56 @@
-# convenzioni
+### Lingue
+[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/gbetorre/convenzioni/blob/master/README.md)
+[![it](https://img.shields.io/badge/lang-it-yellow.svg)](https://github.com/gbetorre/convenzioni/blob/master/README.it.md)
 
-Web application to trace, and manage, the government conventions.
+---
+
+[![GPL-3.0 license](https://img.shields.io/badge/license-GPL-blue)](https://github.com/gbetorre/convenzioni/blob/main/LICENSE)
+
+<div align="center">
+  <h3 align="center">COL-GeCo</h3>
+  <img src="https://github.com/gbetorre/convenzioni/blob/main/col/src/main/webapp/assets/images/screenshot/gecko-small.jpg" alt="Logo">
+  <p align="center">
+    Web application to trace, and manage, the government conventions.
+    <br><br>
+    <a href="https://github.com/gbetorre/convenzioni"><strong>Explore files »</strong></a>
+    <br><br>
+    <a href="https://github.com/gbetorre/convenzioni/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/gbetorre/convenzioni/pulls">Request Feature</a>
+    ·
+    <a href="https://github.com/gbetorre/convenzioni/blob/master/README.it.md">Need Italian?&nbsp;<img src="https://github.com/gbetorre/rischi/blob/main/web/img/italy.png" alt="IT" width="40" height="40"></a>
+  </p>
+</div>
+
+# COL-GeC(k)o
+
+The convention management software (COL-GECO) is a modular software that arose from the need, within the public administration, 
+to track agreements, framework agreements, investee companies, management boards, and any other type of agreement 
+between external parties and the public administration itself.
+
+The goal is to create an organized and constantly updated register: 
+1. to obtain a schedule for informing and notifying users about upcoming agreements that are about to expire; 
+2. to be able to provide monthly summaries and reminders about upcoming deadlines.
+
+## Regarding modularity
+
+The main information domain, which is the subject of the initial development, relates to conventions, but the software 
+is designed to gradually extending the domain to other entities, which deal with the public administration.
+
+The software is designed in a modular way, so that it can be adapted to any administration interested in adopting an open source schedule.
+
+Moreover, the ways in which the software alerts you to deadlines and summarizes activities can be extended to several modalities:
+<!--
+# In a nutshell
+
+I ment to achieve 
+-->
+## 
+
+The software is not ready yet: please, let me cook! Also, I have other fish to fry, too.
+
+When will be ready, I will release, package or tag
+
 
 # E-R
 
