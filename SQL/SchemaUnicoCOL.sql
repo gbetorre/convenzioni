@@ -99,6 +99,7 @@ CREATE TABLE IF NOT EXISTS persona
     data_nascita            DATE                NOT NULL,
     codice_fiscale          CHAR(16)            NOT NULL,
     id_ab                   INT                 NOT NULL,
+    matricola               INT                 ,
     cittadinanza            VARCHAR(128)        ,
     email                   VARCHAR(128)        NOT NULL,
     note                    TEXT                ,
@@ -161,6 +162,7 @@ CREATE TABLE IF NOT EXISTS persona_ruolo
 (
     id_persona             INT                  NOT NULL    REFERENCES persona (id),
     codice_csa             CHAR(2)              NOT NULL    REFERENCES ruolo_giuridico (codice_csa),
+    informativa            VARCHAR(128)        ,
     PRIMARY KEY (id_persona, codice_csa)
 );
 
