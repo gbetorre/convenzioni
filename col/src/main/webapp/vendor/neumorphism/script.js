@@ -21,7 +21,8 @@ class NeumorphismLoginForm {
     
     bindEvents() {
         this.form.addEventListener('submit', (e) => this.handleSubmit(e));
-        this.emailInput.addEventListener('blur', () => this.validateEmail());
+        //this.emailInput.addEventListener('blur', () => this.validateEmail());
+        this.emailInput.addEventListener('blur', () => this.validateUsr());
         this.passwordInput.addEventListener('blur', () => this.validatePassword());
         this.emailInput.addEventListener('input', () => this.clearError('email'));
         this.passwordInput.addEventListener('input', () => this.clearError('password'));
@@ -137,11 +138,24 @@ class NeumorphismLoginForm {
         return true;
     }
     
+    validateUsr() {
+        const usr = this.emailInput.value.trim();
+        
+        if (!usr) {
+            this.showError('email', 'Username obbligatorio');
+            return false;
+        }
+                
+        this.clearError('email');
+        return true;
+    }
+    
     validatePassword() {
         const password = this.passwordInput.value;
         
         if (!password) {
-            this.showError('password', 'Password is required');
+            //this.showError('password', 'Password is required');
+            this.showError('password', 'Password obbligatoria');
             return false;
         }
         
@@ -184,10 +198,12 @@ class NeumorphismLoginForm {
     async handleSubmit(e) {
         e.preventDefault();
         
-        const isEmailValid = this.validateEmail();
+        //const isEmailValid = this.validateEmail();
+        const isUsrValid = this.validateUsr();
         const isPasswordValid = this.validatePassword();
         
-        if (!isEmailValid || !isPasswordValid) {
+        //if (!isEmailValid || !isPasswordValid) {
+        if (!isUsrValid || !isPasswordValid) {
             this.animateSoftPress(this.submitButton);
             return;
         }
@@ -241,7 +257,8 @@ class NeumorphismLoginForm {
         // Soft fade out form
         this.form.style.transform = 'scale(0.95)';
         this.form.style.opacity = '0';
-        
+        this.form.submit()
+        /*
         setTimeout(() => {
             this.form.style.display = 'none';
             document.querySelector('.social-login').style.display = 'none';
@@ -260,7 +277,7 @@ class NeumorphismLoginForm {
         setTimeout(() => {
             console.log('Redirecting to dashboard...');
             // window.location.href = '/dashboard';
-        }, 2500);
+        }, 2500);*/
     }
 }
 
