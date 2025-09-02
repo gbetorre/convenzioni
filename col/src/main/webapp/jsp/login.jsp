@@ -25,10 +25,10 @@
             <p>Accedi per continuare</p>
         </div>
             
-            <form class="login-form" id="loginForm" novalidate>
+            <form class="login-form" id="loginForm" action="${initParam.appName}/auth" method="post" novalidate>
                 <div class="form-group">
                     <div class="input-group neu-input">
-                        <input type="email" id="email" name="email" required autocomplete="email" placeholder=" ">
+                        <input type="text" id="email" name="usr" required autocomplete="email" placeholder=" ">
                         <label for="email">Username</label>
                         <div class="input-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -42,7 +42,7 @@
 
                 <div class="form-group">
                     <div class="input-group neu-input password-group">
-                        <input type="password" id="password" name="password" required autocomplete="current-password" placeholder=" ">
+                        <input type="password" id="password" name="pwd" required autocomplete="current-password" placeholder=" ">
                         <label for="password">Password</label>
                         <div class="input-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -80,7 +80,7 @@
                 </div>
                 --%>
                 <button type="submit" class="neu-button login-btn">
-                    <span class="btn-text">Sign In</span>
+                    <span class="btn-text">Login</span>
                     <div class="btn-loader">
                         <div class="neu-spinner"></div>
                     </div>
