@@ -27,18 +27,33 @@
       <version>4.13.1</version>
       <scope>test</scope>
     </dependency>
+    <!-- JAXB API for javax.xml.bind -->
+    <dependency>
+        <groupId>javax.xml.bind</groupId>
+        <artifactId>jaxb-api</artifactId>
+        <version>2.3.0</version>
+    </dependency>
+    <!-- JAXB Runtime implementation -->
+    <dependency>
+        <groupId>org.glassfish.jaxb</groupId>
+        <artifactId>jaxb-runtime</artifactId>
+        <version>2.3.0</version>
+    </dependency>
+    <!-- Java Servlet API -->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
       <version>3.1.0</version>
       <scope>provided</scope>
     </dependency>
+    <!-- JSP Servlet API -->
     <dependency>
       <groupId>javax.servlet.jsp</groupId>
       <artifactId>javax.servlet.jsp-api</artifactId>
       <version>2.2.1</version>
       <scope>provided</scope>
     </dependency>
+    <!-- JSTL / Expression Language API -->
     <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>jstl</artifactId>
@@ -49,16 +64,19 @@
         <artifactId>standard</artifactId>
         <version>1.1.2</version>
     </dependency>
+    <!-- common-beanutils API -->
     <dependency>
         <groupId>commons-beanutils</groupId>
         <artifactId>commons-beanutils</artifactId>
         <version>1.11.0</version> <!-- latest stable version as of 2025 -->
     </dependency>
+    <!-- cos API -->
     <dependency>
         <groupId>com.jfinal</groupId>
         <artifactId>cos</artifactId>
         <version>2017.5</version>
     </dependency>
+    <!-- JNDI driver for PostgreSQL dbms  -->
     <dependency>
         <groupId>org.postgresql</groupId>
         <artifactId>postgresql</artifactId>
