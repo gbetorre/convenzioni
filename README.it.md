@@ -40,11 +40,11 @@ interessata a dotarsi di uno scadenzario Open Source.<br>
 Inoltre, le modalità tramite cui il software avvisa circa scadenze e riepiloga le attività, possono estendersi 
 a varie modalità: 
 
-* dall’e-mail 
-* al calendario condiviso, 
-* da notifiche push 
-* a riepiloghi periodici creati in automatico in percorsi condivisi 
-* o scaricabili on-demand in base all’input dell’utente<br>
+* ✉️ e-mail 
+* 📆 calendario condiviso 
+* 💬 notifiche push 
+* 📂 riepiloghi periodici creati in automatico in percorsi condivisi 
+* ⬇️ anche scaricabili on-demand in base all’input dell’utente<br>
 e così via.
 
 # In sintesi
