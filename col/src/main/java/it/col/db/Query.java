@@ -134,15 +134,37 @@ public interface Query extends Serializable {
             "   WHERE   login = ?" +
             "       AND (( passwd IS NULL OR passwd = ? ) " +
             "           AND ( passwdform IS NULL OR passwdform = ? ))";
-
+    
     /**
-     * <p>Estrae il ruolo di una persona
+     * <p>Estrae i ruoli giuridici di una persona
      * avente login passato come parametro,
      * assumendo che sulla login ci sia un vincolo di UNIQUE.</p>
      */
-    public static final String GET_RUOLOUTENTE = "";
-            // TODO
-            
+    public static final String GET_RUOLI =
+            "SELECT " +
+            "       PR.id_persona       AS \"id\"" +
+            "   ,   PR.codice_csa       AS \"nome\"" +
+            "   ,   PR.informativa      AS \"informativa\"" +
+            "   FROM persona_ruolo PR" +
+            "   ,   persona P" +        // CLASSIC JOIN, for once
+            "   WHERE PR.id_persona = P.id" +
+            "       AND PR.id_persona = ? ";
+
+    /**
+     * <p>Estrae il ruolo applicativo di un utente
+     * avente login passato come parametro,
+     * assumendo che sulla login ci sia un vincolo di UNIQUE.</p>
+     */
+    public static final String GET_RUOLO =
+            "SELECT " +
+            "       RA.id               AS \"id\"" +
+            "   ,   RA.nome             AS \"nome\"" +
+            "   ,   RA.informativa      AS \"informativa\"" +
+            "   ,   RA.ordinale         AS \"ordinale\"" +
+            "   FROM ruolo_applicativo RA " +
+            "       INNER JOIN usr U ON U.id_ruolo = RA.id" +
+            "   WHERE U.login = ? ";
+    
     /**
      * <p>Estrae identificativo tupla ultimo accesso, se esiste
      * per l'utente il cui username viene passato come parametro.</p>
