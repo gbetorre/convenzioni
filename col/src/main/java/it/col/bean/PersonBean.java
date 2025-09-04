@@ -76,8 +76,6 @@ public class PersonBean implements Serializable {
     private String sesso;
     /** Codice fiscale della persona */
     private String codiceFiscale;
-    /** Specifica se la persona &egrave; obliata */
-    private boolean oblio;
     /** Flag per specificare se la persona stessa debba essere visibile nel contesto della struttura/ufficio di appartenenza */
     private boolean mostraPersona;
     /** E&ndash;mail della persona */
@@ -96,22 +94,10 @@ public class PersonBean implements Serializable {
     private boolean tempoPieno;
     /** Note */
     private String note;
-    /** Lista di ruoli applicativi della persona */
+    /** Lista di ruoli giuridici della persona */
     private Vector<CodeBean> ruoli;
-    /** Campo note contenente una descrizione testuale del ruolo giuridico della persona */
-    private String ruoloGiuridico;
-    /** Codice ruolo giuridico della persona */
-    private String codRuoloGiuridico;
-    /** Codice area funzionale della persona  */
-    private String codAreaFunzionale;
-    /** Flag specificante se si tratta di una persona con incarico di responsabilit&agrave; */
-    private boolean responsabile;
-    /** String specificante l'eventuale responsabilit&agrave; organizzativa */
-    private String livResponsabilitaOrganizzativa;
-    /** String specificante l'eventuale funzione specialistica  */
-    private String livFunzioneSpecialistica;
-    /** String specificante l'eventuale livello di tecnico di laboratorio */
-    private String livTecnicoLaboratorio;
+    /** Campo note contenente il ruolo applicativo della persona */
+    private String ruolo;
     /** Identificativo del dipartimento cui la persona afferisce */
     protected int idDipartimento;
     /** Nome del dipartimento cui la persona afferisce */
@@ -128,7 +114,6 @@ public class PersonBean implements Serializable {
         nome = cognome = codiceFiscale = email = urlPersonalPage = null;
         dataNascita = new Date(0);
         eta = CodeBean.BEAN_DEFAULT_ID;
-        responsabile = oblio = false;
         mostraPersona = tempoPieno = true;
         sesso = null;
         url = null;
@@ -136,10 +121,7 @@ public class PersonBean implements Serializable {
         foto = null;
         usrId = CodeBean.BEAN_DEFAULT_ID;
         ruoli = null;
-        ruoloGiuridico = null;
-        codRuoloGiuridico = null;
-        codAreaFunzionale = null;
-        livResponsabilitaOrganizzativa = livFunzioneSpecialistica = livTecnicoLaboratorio = null;
+        ruolo = null;
         dipartimento = urlDipartimento = null;
     }
 
@@ -247,10 +229,11 @@ public class PersonBean implements Serializable {
     }
 
     /**
-     * @return ruoloGiuridico
+     * Restituisce il ruolo applicativo dell'utente
+     * @return ruolo
      */
-    public String getRuoloGiuridico() {
-        return this.ruoloGiuridico;
+    public String getRuolo() {
+        return this.ruolo;
     }
 
     /**
@@ -357,8 +340,8 @@ public class PersonBean implements Serializable {
     /**
      * @param ruoloGiuridico
      */
-    public void setRuoloGiuridico(String string) {
-        ruoloGiuridico = string;
+    public void setRuolo(String string) {
+        ruolo = string;
     }
 
     /**
@@ -456,20 +439,6 @@ public class PersonBean implements Serializable {
     }
 
     /**
-     * @return responsabile
-     */
-    public boolean isResponsabile() {
-        return responsabile;
-    }
-
-    /**
-     * @param responsabile
-     */
-    public void setResponsabile(boolean b) {
-        responsabile = b;
-    }
-
-    /**
      * @param fotoFileDoc
      */
     public void setFoto(Vector<FileDocBean> fotoFileDoc) {
@@ -508,99 +477,15 @@ public class PersonBean implements Serializable {
 		this.usrId = usrId;
 	}
 
-	/**
-	 * @return the oblio
-	 */
-	public boolean isOblio() {
-		return oblio;
-	}
-
-	/**
-	 * @param oblio the oblio to set
-	 */
-	public void setOblio(boolean oblio) {
-		this.oblio = oblio;
-	}
-
     /**
-     * @return codAreaFunzionale
-     */
-    public String getCodAreaFunzionale() {
-        return codAreaFunzionale;
-    }
-
-    /**
-     * @param codAreaFunzionale
-     */
-    public void setCodAreaFunzionale(String codAreaFunzionale) {
-        this.codAreaFunzionale = codAreaFunzionale;
-    }
-
-    /**
-     * @return codRuoloGiuridico
-     */
-    public String getCodRuoloGiuridico() {
-        return codRuoloGiuridico;
-    }
-
-    /**
-     * @param codRuoloGiuridico
-     */
-    public void setCodRuoloGiuridico(String codRuoloGiuridico) {
-        this.codRuoloGiuridico = codRuoloGiuridico;
-    }
-
-    /**
-     * @return the livResponsabilitaOrganizzativa
-     */
-    public String getLivResponsabilitaOrganizzativa() {
-        return livResponsabilitaOrganizzativa;
-    }
-
-    /**
-     * @param livResponsabilitaOrganizzativa the livResponsabilitaOrganizzativa to set
-     */
-    public void setLivResponsabilitaOrganizzativa(String livResponsabilitaOrganizzativa) {
-        this.livResponsabilitaOrganizzativa = livResponsabilitaOrganizzativa;
-    }
-
-    /**
-     * @return the livFunzioneSpecialistica
-     */
-    public String getLivFunzioneSpecialistica() {
-        return livFunzioneSpecialistica;
-    }
-
-    /**
-     * @param livFunzioneSpecialistica the livFunzioneSpecialistica to set
-     */
-    public void setLivFunzioneSpecialistica(String livFunzioneSpecialistica) {
-        this.livFunzioneSpecialistica = livFunzioneSpecialistica;
-    }
-
-    /**
-     * @return the livTecnicoLaboratorio
-     */
-    public String getLivTecnicoLaboratorio() {
-        return livTecnicoLaboratorio;
-    }
-
-    /**
-     * @param livTecnicoLaboratorio the livTecnicoLaboratorio to set
-     */
-    public void setLivTecnicoLaboratorio(String livTecnicoLaboratorio) {
-        this.livTecnicoLaboratorio = livTecnicoLaboratorio;
-    }
-
-    /**
-     * @return the ruoli
+     * @return i ruoli giuridici della persona
      */
     public Vector<CodeBean> getRuoli() {
         return ruoli;
     }
 
     /**
-     * @param ruoli the ruoli to set
+     * @param ruoli i ruoli giuridici da impostare
      */
     public void setRuoli(Vector<CodeBean> ruoli) {
         this.ruoli = ruoli;
