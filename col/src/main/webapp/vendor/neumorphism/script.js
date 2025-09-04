@@ -212,7 +212,7 @@ class NeumorphismLoginForm {
         
         try {
             // Simulate soft authentication
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            await new Promise(resolve => setTimeout(resolve, 1500));
             
             // Show neumorphic success
             this.showNeumorphicSuccess();
@@ -257,7 +257,8 @@ class NeumorphismLoginForm {
         // Soft fade out form
         this.form.style.transform = 'scale(0.95)';
         this.form.style.opacity = '0';
-        this.form.submit()
+        //this.successMessage.classList.add('show');
+        this.form.submit();
         /*
         setTimeout(() => {
             this.form.style.display = 'none';
