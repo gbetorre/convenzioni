@@ -203,22 +203,9 @@ public class HomePageCommand extends ItemBean implements Command, Constants {
          *             Rami in cui occorre che l'utente sia loggato             *
          * ******************************************************************** */
         try {
-            // Il parametro di navigazione 'rilevazione' è obbligatorio
-            if (!codeSur.equals(DASH) && ConfigManager.getSurveys().containsKey(codeSur)) {
-                // In questo punto la sessione deve esistere e l'utente deve esserne loggato
-                try {
-                    user = getLoggedUser(req);
-                } catch (CommandException ce) {
-                    String msg = "Si e\' tentato di accedere a una funzione senza essere loggati, o a sessione scaduta.\n";
-                    LOG.severe("Problema a livello di autenticazione: " + msg + ce.getMessage());
-                    throw (ce);
-                }
-                // Se l'utente è loggato ed esiste il parametro di rilevazione, mostra la pagina di landing
+            if (isLoggedUser(req)) {
                 fileJspT = nomeFileLanding;
             } else {
-                if (isLoggedUser(req)) {
-                    error = "Funzione non trovata.";
-                }
                 fileJspT = nomeFileElenco;
             }
         } catch (IllegalStateException ise) {
