@@ -43,7 +43,6 @@ import java.sql.SQLException;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -51,7 +50,6 @@ import javax.sql.DataSource;
 import it.col.bean.BeanUtil;
 import it.col.bean.CodeBean;
 import it.col.bean.CommandBean;
-import it.col.bean.ItemBean;
 import it.col.bean.PersonBean;
 import it.col.exception.AttributoNonValorizzatoException;
 import it.col.exception.WebStorageException;
@@ -460,39 +458,43 @@ public class DBWrapper extends QueryImpl {
      * @return <code>CodeBean</code> - CodeBean contenente la password criptata e il seme
      * @throws WebStorageException se si verifica un problema nell'esecuzione della query, nell'accesso al db o in qualche tipo di puntamento
      */
-    @SuppressWarnings({ "null", "static-method" })
+    @SuppressWarnings({ "static-method" })
     public CodeBean getEncryptedPassword(String username)
                                   throws WebStorageException {
-        Connection con = null;
-        PreparedStatement pst = null;
-        ResultSet rs = null;
-        CodeBean password = null;
-        int nextInt = 0;
-        try {
-            con = col_manager.getConnection();
-            pst = con.prepareStatement(GET_ENCRYPTEDPASSWORD);
-            pst.clearParameters();
-            pst.setString(++nextInt, username);
-            rs = pst.executeQuery();
-            if (rs.next()) {
-                password = new CodeBean();
-                BeanUtil.populate(password, rs);
+        try (Connection con = col_manager.getConnection()) {
+            PreparedStatement pst = null;
+            ResultSet rs = null;
+            CodeBean password = null;
+            int nextInt = 0;
+            try {
+                pst = con.prepareStatement(GET_ENCRYPTEDPASSWORD);
+                pst.clearParameters();
+                pst.setString(++nextInt, username);
+                rs = pst.executeQuery();
+                if (rs.next()) {
+                    password = new CodeBean();
+                    BeanUtil.populate(password, rs);
+                }
+                return password;
+            } catch (SQLException sqle) {
+                String msg = FOR_NAME + "Oggetto PersonBean non valorizzato; problema nella query dell\'utente.\n";
+                LOG.severe(msg);
+                throw new WebStorageException(msg + sqle.getMessage(), sqle);
+            } finally {
+                try {
+                    con.close();
+                } catch (NullPointerException npe) {
+                    String msg = FOR_NAME + "Ooops... problema nella chiusura della connessione.\n";
+                    LOG.severe(msg);
+                    throw new WebStorageException(msg + npe.getMessage());
+                } catch (SQLException sqle) {
+                    throw new WebStorageException(FOR_NAME + sqle.getMessage());
+                }
             }
-            return password;
         } catch (SQLException sqle) {
-            String msg = FOR_NAME + "Oggetto PersonBean non valorizzato; problema nella query dell\'utente.\n";
+            String msg = FOR_NAME + "Problema con la creazione della connessione.\n";
             LOG.severe(msg);
             throw new WebStorageException(msg + sqle.getMessage(), sqle);
-        } finally {
-            try {
-                con.close();
-            } catch (NullPointerException npe) {
-                String msg = FOR_NAME + "Ooops... problema nella chiusura della connessione.\n";
-                LOG.severe(msg);
-                throw new WebStorageException(msg + npe.getMessage());
-            } catch (SQLException sqle) {
-                throw new WebStorageException(FOR_NAME + sqle.getMessage());
-            }
         }
     }
 
@@ -503,65 +505,83 @@ public class DBWrapper extends QueryImpl {
      * @param username  username della persona che ha eseguito il login
      * @param password  password della persona che ha eseguito il login
      * @return <code>PersonBean</code> - PersonBean rappresentante l'utente loggato
-     * @throws it.rol.exception.WebStorageException se si verifica un problema nell'esecuzione della query, nell'accesso al db o in qualche tipo di puntamento
-     * @throws it.rol.exception.AttributoNonValorizzatoException  eccezione che viene sollevata se questo oggetto viene usato e l'id della persona non &egrave; stato valorizzato (&egrave; un dato obbligatorio)
+     * @throws it.col.exception.WebStorageException se si verifica un problema nell'esecuzione della query, nell'accesso al db o in qualche tipo di puntamento
+     * @throws it.col.exception.AttributoNonValorizzatoException  eccezione che viene sollevata se questo oggetto viene usato e l'id della persona non &egrave; stato valorizzato (&egrave; un dato obbligatorio)
      */
-    @SuppressWarnings({ "null", "static-method" })
+    @SuppressWarnings({ "static-method" })
     public PersonBean getUser(String username,
                               String password)
-                       throws WebStorageException, AttributoNonValorizzatoException {
-        Connection con = null;
-        PreparedStatement pst = null;
-        ResultSet rs, rs1 = null;
-        PersonBean usr = null;
-        int nextInt = 0;
-        Vector<CodeBean> vRuoli = new Vector<>();
-        try {
-            con = col_manager.getConnection();
-            pst = con.prepareStatement(GET_USR);
-            pst.clearParameters();
-            pst.setString(++nextInt, username);
-            pst.setString(++nextInt, password);
-            pst.setString(++nextInt, password);
-            rs = pst.executeQuery();
-            if (rs.next()) {
-                usr = new PersonBean();
-                BeanUtil.populate(usr, rs);
-                // Se ha trovato l'utente, ne cerca il ruolo
-                pst = null;
-                pst = con.prepareStatement(GET_RUOLOUTENTE);
+                       throws WebStorageException, 
+                              AttributoNonValorizzatoException {
+        try (Connection con = col_manager.getConnection()) {
+            PreparedStatement pst = null;
+            ResultSet rs, rs1, rs2 = null;
+            PersonBean usr = null;
+            int nextInt = NOTHING;
+            Vector<CodeBean> vRuoli = new Vector<>();
+            String ruoloApplicativo = null;
+            try {
+                pst = con.prepareStatement(GET_USR);
                 pst.clearParameters();
-                pst.setString(1, username);
-                rs1 = pst.executeQuery();
-                while(rs1.next()) {
-                    CodeBean ruolo = new CodeBean();
-                    BeanUtil.populate(ruolo, rs1);
-                    vRuoli.add(ruolo);
+                pst.setString(++nextInt, username);
+                pst.setString(++nextInt, password);
+                pst.setString(++nextInt, password);
+                rs = pst.executeQuery();
+                if (rs.next()) {
+                    usr = new PersonBean();
+                    BeanUtil.populate(usr, rs);
+                    /* Se ha trovato l'utente, ne cerca i ruoli giuridici */
+                    pst = null;
+                    pst = con.prepareStatement(GET_RUOLI);
+                    pst.clearParameters();
+                    pst.setInt(1, usr.getId());
+                    rs1 = pst.executeQuery();
+                    while (rs1.next()) {
+                        CodeBean ruolo = new CodeBean();
+                        BeanUtil.populate(ruolo, rs1);
+                        vRuoli.add(ruolo);
+                    }
+                    usr.setRuoli(vRuoli);
+                    /* Se ha trovato l'utente, ne cerca il ruolo applicativo */
+                    pst = null;
+                    pst = con.prepareStatement(GET_RUOLO);
+                    pst.clearParameters();
+                    pst.setString(1, username);
+                    rs2 = pst.executeQuery();
+                    if (rs2.next()) {
+                        CodeBean ruolo = new CodeBean();
+                        BeanUtil.populate(ruolo, rs2);
+                        ruoloApplicativo = (ruolo.getNome() != null) ? ruolo.getNome() : ND;
+                    }
+                    usr.setRuolo(ruoloApplicativo);
                 }
-                usr.setRuoli(vRuoli);
+                // Just tries to engage the Garbage Collector
+                pst = null;
+                // Get Out
+                return usr;
+            } catch (SQLException sqle) {
+                String msg = FOR_NAME + "Oggetto PersonBean non valorizzato; problema nella query dell\'utente.\n";
+                LOG.severe(msg);
+                throw new WebStorageException(msg + sqle.getMessage(), sqle);
+            } catch (ClassCastException cce) {
+                String msg = FOR_NAME + "Problema in una conversione di tipi nella query dell\'utente.\n";
+                LOG.severe(msg);
+                throw new WebStorageException(msg + cce.getMessage(), cce);
+            } finally {
+                try {
+                    con.close();
+                } catch (NullPointerException npe) {
+                    String msg = FOR_NAME + "Ooops... problema nella chiusura della connessione.\n";
+                    LOG.severe(msg);
+                    throw new WebStorageException(msg + npe.getMessage());
+                } catch (SQLException sqle) {
+                    throw new WebStorageException(FOR_NAME + sqle.getMessage());
+                }
             }
-            // Just tries to engage the Garbage Collector
-            pst = null;
-            // Get Out
-            return usr;
         } catch (SQLException sqle) {
-            String msg = FOR_NAME + "Oggetto PersonBean non valorizzato; problema nella query dell\'utente.\n";
+            String msg = FOR_NAME + "Problema con la creazione della connessione.\n";
             LOG.severe(msg);
             throw new WebStorageException(msg + sqle.getMessage(), sqle);
-        } catch (ClassCastException cce) {
-            String msg = FOR_NAME + "Problema in una conversione di tipi nella query dell\'utente.\n";
-            LOG.severe(msg);
-            throw new WebStorageException(msg + cce.getMessage(), cce);
-        } finally {
-            try {
-                con.close();
-            } catch (NullPointerException npe) {
-                String msg = FOR_NAME + "Ooops... problema nella chiusura della connessione.\n";
-                LOG.severe(msg);
-                throw new WebStorageException(msg + npe.getMessage());
-            } catch (SQLException sqle) {
-                throw new WebStorageException(FOR_NAME + sqle.getMessage());
-            }
         }
     }
 
