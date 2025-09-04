@@ -269,7 +269,7 @@ public class SessionManager extends HttpServlet implements Constants {
                 // Redirige sull'indirizzo
                 res.sendRedirect(res.encodeRedirectURL(getServletContext().getInitParameter("appName") + postAuthLand)); */
                 // Torna sempre alla home "vetrina"
-                res.sendRedirect(res.encodeRedirectURL("/rol"));
+                res.sendRedirect(res.encodeRedirectURL("/col"));
             }
             else {
                 // Log dell'evento
