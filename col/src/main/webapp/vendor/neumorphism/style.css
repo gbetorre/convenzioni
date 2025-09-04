@@ -438,6 +438,23 @@ body {
     transition: all 0.3s ease;
 }
 
+.neu-large {
+    width: 150px;
+    height: 50px;
+    background: #e0e5ec;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c7293;
+    box-shadow: 
+        6px 6px 15px #bec3cf,
+        -6px -6px 15px #ffffff;
+    transition: all 0.3s ease;
+}
+
 .neu-social:hover {
     transform: translateY(-2px);
     box-shadow: 
