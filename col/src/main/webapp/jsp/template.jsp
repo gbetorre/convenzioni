@@ -55,7 +55,7 @@
   </c:catch>
   <c:out value="${exception}" />
     <!-- Scripts -->
-    <script src="${initParam.urlDirFrameworks}jquery/jquery.min.js"></script>
+<%--     <script src="${initParam.urlDirFrameworks}jquery/jquery.min.js"></script> --%>
     <script src="${initParam.urlDirFrameworks}bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="${initParam.urlDirScripts}owl-carousel.js"></script>
     <script src="${initParam.urlDirScripts}animation.js"></script>
