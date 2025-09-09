@@ -66,7 +66,7 @@
     </div>
   </div>
 
-
+  <!-- 
   <div class="popular-categories">
     <div class="container">
       <div class="row">
@@ -225,19 +225,98 @@
       </div>
     </div>
   </div>
+  -->
+
+
+<!-- DataTables Bootstrap 5 CSS -->
+<!--   <link href="https://cdn.datatables.net/1.13.5/css/dataTables.bootstrap5.min.css" rel="stylesheet" /> -->
+<!--   <link href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css" rel="stylesheet" /> -->
+<link rel="stylesheet" href="${initParam.urlDirFrameworks}DataTables/css/datatables.min.css" type="text/css" />
+
+<div class="container my-4">
+  <h2>Apartment Listings</h2>
+  <table id="apartmentTable" class="table table-striped table-bordered" style="width:100%">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Location</th>
+        <th>Price</th>
+        <th>Bedrooms</th>
+        <th>Bathrooms</th>
+        <th>Size (sq ft)</th>
+        <th>Available From</th>
+        <th>Contact Email</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>101</td>
+        <td>Sunny Apartment</td>
+        <td>New York</td>
+        <td>$1500</td>
+        <td>2</td>
+        <td>1</td>
+        <td>850</td>
+        <td>2025-10-01</td>
+        <td>contact@sunnyapt.com</td>
+        <td>Available</td>
+      </tr>
+      <tr>
+        <td>102</td>
+        <td>City View Flat</td>
+        <td>San Francisco</td>
+        <td>$2200</td>
+        <td>3</td>
+        <td>2</td>
+        <td>1200</td>
+        <td>2025-09-15</td>
+        <td>info@cityviewflat.com</td>
+        <td>Occupied</td>
+      </tr>
+      <!-- add more rows here -->
+    </tbody>
+  </table>
+</div>
+<script src="vendor/jquery/jquery-3.7.1.min.js"></script>
+
+<!-- DataTables JS -->
+<!-- <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script> -->
+<!-- <script src="https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap5.min.js"></script> -->
+<script src="${initParam.urlDirFrameworks}DataTables/js/datatables.min.js" type="text/javascript"></script>
+
+<script>
+  $(document).ready(function () {
+    $('#apartmentTable').DataTable({
+      "pageLength": 10,
+      "lengthChange": true,
+      "ordering": true,
+      "searching": true,
+      "info": true,
+      "autoWidth": false,
+      "language": {
+        "search": "_INPUT_",
+        "searchPlaceholder": "Filter apartments..."
+      }
+    });
+  });
+</script>
 
 
   <div class="recent-listing">
     <div class="container">
+      <!-- 
       <div class="row">
         <div class="col-lg-12">
           <div class="section-heading">
             <h2>Recent Listing</h2>
             <h6>Check Them Out</h6>
           </div>
-        </div>
+        -->
+  
         <div class="col-lg-12">
-          <div class="owl-carousel owl-listing">
+
             <div class="item">
               <div class="row">
                 <div class="col-lg-12">
@@ -502,7 +581,7 @@
                 </div>
               </div>
             </div>
-          </div>
+
         </div>
       </div>
     </div>
