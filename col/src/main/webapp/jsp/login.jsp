@@ -1,39 +1,38 @@
 <%@ page contentType="text/html;" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<c:if test="${error}">
-  <div class="alert alert-danger alert-dismissible fade show" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-    <strong>ATTENZIONE: </strong>${msg}
-  </div>
-</c:if>
-<c:catch var="exception">
+    <!-- Login page specific style -->
     <link rel="stylesheet" href="${initParam.urlDirFrameworks}neumorphism/style.css" type="text/css" />
+<c:catch var="exception">    
     <div class="login-container">
+    <c:if test="${error}">
+      <div class="alert alert-danger text-center fade show" role="alert">
+        <strong>ATTENZIONE: </strong>
+        ${msg}
+      </div>
+    </c:if>
       <div class="login-card">
         <div class="login-header">
           <div class="neu-icon">
             <div class="icon-inner">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                  <circle cx="12" cy="7" r="4"/>
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
               </svg>
             </div>
           </div>
-            <h2>Convenzioni On Line</h2>
-            <p>Accedi per continuare</p>
+          <h2>Convenzioni On Line</h2>
+          <p>Accedi per continuare</p>
         </div>
             
-            <div class="success-message" id="successMessage">
-                <div class="success-icon neu-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                        <polyline points="20 6 9 17 4 12"/>
-                    </svg>
-                </div>
-                <h3>Success!</h3>
-                <p>Redirecting to your dashboard...</p>
+        <div class="success-message" id="successMessage">
+            <div class="success-icon neu-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"/>
+                </svg>
             </div>
+            <h3>Success!</h3>
+            <p>Redirecting to your dashboard...</p>
+        </div>
             
             <form class="login-form" id="loginForm" action="${initParam.appName}/auth" method="post" novalidate>
                 <div class="form-group">
@@ -102,18 +101,8 @@
                 <span>COL [Convenzioni On Line]</span>
                 <div class="divider-line"></div>
             </div>
+            <%@ include file="about.jspf"%>
 
-            <div class="social-login">
-                <button type="button" class="social-btn neu-large">
-                    Versione: 0.11 
-                </button>
-                <button type="button" class="social-btn neu-large">
-                    Data rilascio: 05/09/2025
-                </button>
-                <button type="button" class="social-btn neu-social">
-                   &copy; 2025
-                </button>
-            </div>
 <%--
             <div class="signup-link">
                 <p>Don't have an account? <a href="#">Sign up</a></p>
