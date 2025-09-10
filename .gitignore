@@ -31,3 +31,8 @@ col/.classpath
 col/.project
 col/.settings
 col/.mvn
+
+# Maven stuff
+col/src/main/resources
+col/src/main/webapp/vendor/bootstrap/js/.gitignore
+
