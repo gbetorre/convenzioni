@@ -162,7 +162,7 @@ CREATE TABLE IF NOT EXISTS persona_ruolo
 (
     id_persona             INT                  NOT NULL    REFERENCES persona (id),
     codice_csa             CHAR(2)              NOT NULL    REFERENCES ruolo_giuridico (codice_csa),
-    informativa            VARCHAR(128)        ,
+    informativa            VARCHAR(128)         ,
     PRIMARY KEY (id_persona, codice_csa)
 );
 
@@ -185,6 +185,7 @@ CREATE TABLE IF NOT EXISTS convenzione
     data_sottoscrizione     DATE                NOT NULL,
     nota_sottoscrizione     TEXT                ,
     data_scadenza           DATE                NOT NULL,
+    nota_scadenza           TEXT                ,
     num_repertorio          VARCHAR(1024)       NOT NULL,
     link                    VARCHAR(1024)       ,
     data_ultima_modifica    DATE                NOT NULL,
@@ -192,7 +193,6 @@ CREATE TABLE IF NOT EXISTS convenzione
     id_usr_ultima_modifica  INT                 NOT NULL    REFERENCES usr (id),
     id_tipo                 INT                 NOT NULL    REFERENCES tipo_convenzione (id),
     id_stato                INT                 NOT NULL    REFERENCES stato_convenzione (id),
-    -- id_scopo                INT                 NOT NULL    REFERENCES finalita (id),
     id_convenzione          INT                             REFERENCES convenzione (id) -- self-relationship
 );
 
