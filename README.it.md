@@ -77,6 +77,8 @@ Inoltre, qualunque esigenza specifica e o richiesta di documentazione ulteriore 
 # History
 
 ```
+* [0.1.2] (Sep 10, 2025) Implementata pagina di errore
+* [0.1.1] (Sep 05, 2025) Implementata login
 * [0.1.0] (Aug 29, 2025) Add README.it and logo
 * [0.0.9] (Aug 28, 2025) Add neumorphism login form
 * [0.0.8] (Aug 07, 2025) Bugfix
