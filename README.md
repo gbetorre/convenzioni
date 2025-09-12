@@ -55,3 +55,21 @@ When will be ready, I will release, package or tag
 # E-R
 
 ![Entity-Relationships diagram](SQL/SchemaER.png)
+
+# History
+
+```
+* [0.1.3] (Sep 12, 2025) First draft of agreements extraction
+* [0.1.2] (Sep 10, 2025) Implement error page
+* [0.1.1] (Sep 05, 2025) Implement login
+* [0.1.0] (Aug 29, 2025) Add README.it and logo
+* [0.0.9] (Aug 28, 2025) Add neumorphism login form
+* [0.0.8] (Aug 07, 2025) Bugfix
+* [0.0.7] (Aug 06, 2025)
+* [0.0.6] (Jul 24, 2025)
+* [0.0.5] (Jul 22, 2025)
+* [0.0.4] (Jul 21, 2025)
+* [0.0.3] (Jul 14, 2025)
+* [0.0.2] (Jul 10, 2025)
+* [0.0.1] (Jul 02, 2025)
+```
