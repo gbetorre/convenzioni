@@ -187,9 +187,35 @@ public interface Query extends Serializable {
             "   WHERE U.login = ?";
 
     /* ********************************************************************** *
-     *                            Query di Selezione                          *
+     *                    Query di Selezione "applicative"                    *
      * ********************************************************************** */
-
+    /**
+     * <p>Estrae le convenzioni.</p>
+     */
+    public static final String GET_CONVENTIONS =
+            "SELECT " +
+            "       C.id                AS \"id\"" +
+            "   ,   C.titolo            AS \"titolo\"" +
+            "   ,   C.informativa        AS \"informativa\"" +
+            "   ,   C.ordinale           AS \"ordinale\"" +
+            "   ,   C.data_approvazione  AS \"dataApprovazione\"" +
+            "   ,   C.nota_approvazione  AS \"notaApprovazione\"" +
+            "   ,   C.data_approvazione2 AS \"dataApprovazione2\"" +
+            "   ,   C.nota_approvazione2 AS \"notaApprovazione2\"" +
+            "   ,   C.data_sottoscrizione AS \"dataSottoscrizione\"" +
+            "   ,   C.nota_sottoscrizione AS \"notaSottoscrizione\"" +
+            "   ,   C.data_scadenza      AS \"dataScadenza\"" +
+            "   ,   C.nota_scadenza      AS \"notaScadenza\"" +
+            "   ,   C.num_repertorio     AS \"numRepertorio\"" +
+            "   ,   C.data_ultima_modifica AS \"dataUltimaModifica\"" +
+            "   ,   C.ora_ultima_modifica  AS \"oraUltimaModifica\"" +
+            "   ,   C.id_usr_ultima_modifica AS \"idUsrUltimaModifica\"" +
+            "   ,   C.id_tipo            AS \"idTipo\"" +
+            "   ,   C.id_stato           AS \"idStato\"" +
+            "   FROM convenzione C" +
+            "   WHERE C.id_stato = (SELECT id FROM stato_convenzione WHERE nome = 'ATTIVO')" +
+            "   ORDER BY C.ordinale";
+    
     
     /* ************************************************************************ *
      *  Interfacce di metodi che costruiscono dinamicamente Query di Selezione  *
