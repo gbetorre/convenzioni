@@ -40,6 +40,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -50,6 +51,7 @@ import javax.sql.DataSource;
 import it.col.bean.BeanUtil;
 import it.col.bean.CodeBean;
 import it.col.bean.CommandBean;
+import it.col.bean.Convenzione;
 import it.col.bean.PersonBean;
 import it.col.exception.AttributoNonValorizzatoException;
 import it.col.exception.WebStorageException;
@@ -559,6 +561,89 @@ public class DBWrapper extends QueryImpl {
                 pst = null;
                 // Get Out
                 return usr;
+            } catch (SQLException sqle) {
+                String msg = FOR_NAME + "Oggetto PersonBean non valorizzato; problema nella query dell\'utente.\n";
+                LOG.severe(msg);
+                throw new WebStorageException(msg + sqle.getMessage(), sqle);
+            } catch (ClassCastException cce) {
+                String msg = FOR_NAME + "Problema in una conversione di tipi nella query dell\'utente.\n";
+                LOG.severe(msg);
+                throw new WebStorageException(msg + cce.getMessage(), cce);
+            } finally {
+                try {
+                    con.close();
+                } catch (NullPointerException npe) {
+                    String msg = FOR_NAME + "Ooops... problema nella chiusura della connessione.\n";
+                    LOG.severe(msg);
+                    throw new WebStorageException(msg + npe.getMessage());
+                } catch (SQLException sqle) {
+                    throw new WebStorageException(FOR_NAME + sqle.getMessage());
+                }
+            }
+        } catch (SQLException sqle) {
+            String msg = FOR_NAME + "Problema con la creazione della connessione.\n";
+            LOG.severe(msg);
+            throw new WebStorageException(msg + sqle.getMessage(), sqle);
+        }
+    }
+
+    
+    /**
+     * <p>Restituisce la lista delle convenzioni attive.</p>
+     *
+// TODO COMMENTO
+     * @return <code>PersonBean</code> - PersonBean rappresentante l'utente loggato
+     * @throws it.col.exception.WebStorageException se si verifica un problema nell'esecuzione della query, nell'accesso al db o in qualche tipo di puntamento
+     * @throws it.col.exception.AttributoNonValorizzatoException  eccezione che viene sollevata se questo oggetto viene usato e l'id della persona non &egrave; stato valorizzato (&egrave; un dato obbligatorio)
+     */
+    @SuppressWarnings({ "static-method" })
+    public ArrayList<Convenzione> getConventions()
+                       throws WebStorageException, 
+                              AttributoNonValorizzatoException {
+        try (Connection con = col_manager.getConnection()) {
+            PreparedStatement pst = null;
+            ResultSet rs, rs1, rs2 = null;
+            Convenzione c = null;
+            int nextInt = NOTHING;
+            ArrayList<Convenzione> convenzioni = new ArrayList<>();
+            String ruoloApplicativo = null;
+            try {
+                pst = con.prepareStatement(GET_CONVENTIONS);
+                pst.clearParameters();
+                rs = pst.executeQuery();
+                if (rs.next()) {
+                    c = new Convenzione();
+                    BeanUtil.populate(c, rs);
+                    convenzioni.add(c);
+                    /* Se ha trovato l'utente, ne cerca i ruoli giuridici *
+                    pst = null;
+                    pst = con.prepareStatement(GET_RUOLI);
+                    pst.clearParameters();
+                    pst.setInt(1, usr.getId());
+                    rs1 = pst.executeQuery();
+                    while (rs1.next()) {
+                        CodeBean ruolo = new CodeBean();
+                        BeanUtil.populate(ruolo, rs1);
+                        vRuoli.add(ruolo);
+                    }
+                    usr.setRuoli(vRuoli);
+                    // Se ha trovato l'utente, ne cerca il ruolo applicativo
+                    pst = null;
+                    pst = con.prepareStatement(GET_RUOLO);
+                    pst.clearParameters();
+                    pst.setString(1, username);
+                    rs2 = pst.executeQuery();
+                    if (rs2.next()) {
+                        CodeBean ruolo = new CodeBean();
+                        BeanUtil.populate(ruolo, rs2);
+                        ruoloApplicativo = (ruolo.getNome() != null) ? ruolo.getNome() : ND;
+                    }
+                    usr.setRuolo(ruoloApplicativo);*/
+                }
+                // Just tries to engage the Garbage Collector
+                pst = null;
+                // Get Out
+                return convenzioni; // TODO ECCEZIONI
             } catch (SQLException sqle) {
                 String msg = FOR_NAME + "Oggetto PersonBean non valorizzato; problema nella query dell\'utente.\n";
                 LOG.severe(msg);
