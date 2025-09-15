@@ -37,9 +37,6 @@
 package it.col;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,9 +48,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import it.col.bean.ItemBean;
 import it.col.command.Command;
-import it.col.command.HomePageCommand;
 import it.col.exception.CommandException;
 import it.col.util.Constants;
 import it.col.util.Utils;
@@ -154,30 +149,6 @@ public class Main extends HttpServlet {
             log(FOR_NAME + "Eccezione generica: " + e);
             flush(req, res, errorJsp);
         }
-        /*
-         * Prepara le breadcrumbs (questo valore puo' essere sovrascritto da Command)
-         */
-        try {
-            /*
-             * Crea la lista parametrizzandola sulla root dell'applicazione
-             * e la trasmette alla destinazione
-             */
-            if (req.getQueryString() != null) {
-                LinkedList<ItemBean> bC = HomePageCommand.makeBreadCrumbs(ConfigManager.getAppName(), req.getQueryString(), null);
-                req.setAttribute("breadCrumbs", bC);
-            }
-        } catch (CommandException ce) {
-            String msg = FOR_NAME +
-                         "L\'errore e\' stato generato dalla seguente chiamata: " +
-                         "HomePageCommand.makeBreadCrumbs(" +
-                         getServletContext().getInitParameter("appName") +
-                         ", " +
-                         req.getQueryString() + ")";
-            log.log(Level.SEVERE, msg, ce);
-            req.setAttribute("message", ce.getMessage());
-            req.setAttribute("javax.servlet.jsp.jspException", ce);
-            flush(req, res, errorJsp);
-        }
         try {
             /*
              * Cerca la command associata al parametro 'ent'
@@ -234,25 +205,6 @@ public class Main extends HttpServlet {
          * Prepara il menu
          */
         String surveyCode = req.getParameter(Constants.PARAM_SURVEY);
-        try {
-            /*
-             * Crea il menu parametrizzandolo sul codice rilevazione, parametro 'r'
-             * e, se lo genera, lo trasmette alla destinazione
-             */
-            LinkedHashMap<ItemBean, ArrayList<ItemBean>> vO = HomePageCommand.makeMegaMenu(ConfigManager.getAppName(), surveyCode);
-            req.setAttribute("menu", vO);
-        } catch (CommandException ce) {
-            String msg = FOR_NAME +
-                         "L\'errore e\' stato generato dalla seguente chiamata: " +
-                         "HomePageCommand.makeMegaMenu(" +
-                         getServletContext().getInitParameter("appName") +
-                         ", " +
-                         req.getParameter("r") + ")";
-            log.log(Level.SEVERE, msg, ce);
-            req.setAttribute("message", ce.getMessage());
-            req.setAttribute("javax.servlet.jsp.jspException", ce);
-            flush(req, res, errorJsp);
-        }
         /*
          * Disabilita Cache
          */
@@ -342,29 +294,6 @@ public class Main extends HttpServlet {
          *  Setta nella request il valore del <base href... />
          */
         req.setAttribute("baseHref", baseHref);
-        /*
-         * Prepara il menu
-         */
-        String surveryCode = req.getParameter("r");
-        try {
-            /*
-             * Crea il menu parametrizzandolo sul codice rilevazione, parametro 'r'
-             * e, se lo genera, lo trasmette alla destinazione
-             */
-            LinkedHashMap<ItemBean, ArrayList<ItemBean>> vO = HomePageCommand.makeMegaMenu(getServletContext().getInitParameter("appName"), surveryCode);
-            req.setAttribute("menu", vO);
-        } catch (CommandException ce) {
-            String msg = FOR_NAME +
-                         "L\'errore e\' stato generato dalla seguente chiamata: " +
-                         "HomePageCommand.makeMegaMenu(" +
-                         getServletContext().getInitParameter("appName") +
-                         ", " +
-                         req.getParameter("r");
-            log.log(Level.SEVERE, msg, ce);
-            req.setAttribute("message", ce.getMessage());
-            req.setAttribute("javax.servlet.jsp.jspException", ce);
-            flush(req, res, errorJsp);
-        }
         /*
          * Disabilita Cache
          */
