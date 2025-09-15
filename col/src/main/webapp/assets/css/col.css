@@ -1,0 +1,238 @@
+/*---------------------- HORIZONTAL ROWS ------------------------*/
+
+hr {
+  clear: both; height: 1px;
+  border-top: 1px solid transparent;
+  border-right: 0 solid #FFFFFF;
+  border-bottom: 0 solid #FFFFFF;
+  border-left: 0 solid #FFFFFF;
+}
+
+hr.separator {
+  height: 1px; 
+  border-style: none;
+  background-color: transparent; 
+  display: block; 
+  clear: both;  
+  margin-bottom: 10px;  
+  margin-top: 10px;
+}
+
+hr.short {
+  height: 1px; 
+  border-style: none;
+  background-color: transparent; 
+  display: block; 
+  clear: both;  
+  margin-bottom: 4px;  
+  margin-top: 4px;
+}
+
+hr.home {
+  height: 1px;
+  border-style: none;
+  background-color: transparent; 
+  display: block; 
+  clear: both;
+  margin-top: -10px;
+}
+
+hr.hrclear {
+	margin: 0; 
+	padding: 0; 
+	clear: both;  
+	visibility: hidden;
+}
+
+hr.row       {
+  clear: left;
+  margin: 15px 0; 
+  border-top-width: 1px;
+  border-top-style: dotted;
+  border-top-color: #CCC;
+}
+
+/*---------------------- DATATABLE ------------------------*/
+
+/* Reduce overall font size */
+.dataTable {
+    font-size: 0.75rem;  /* About 75% of default font size */
+}
+
+/* Reduce padding in table cells */
+.dataTable th,
+.dataTable td {
+    padding: 4px 6px;  /* Smaller vertical and horizontal padding */
+}
+
+/* Optional: smaller header font */
+.dataTable thead th {
+    font-size: 0.8rem;
+    font-weight: 600; /* keep headers readable */
+}
+
+/* Optional: reduce row height */
+.dataTable tbody tr {
+    height: 24px; /* tighter row height */
+}
+
+/* Make font-family compact and readable */
+.dataTable {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Wrap long text on overflow */
+.dataTable td {
+    white-space: normal !important;
+    word-wrap: break-word;
+    max-width: 150px;
+}
+
+/* Optional: allow horizontal scroll if too many columns */
+.dataTable-container {
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+/*------------------- startbootstrap.com/template/sb-admin ---------------------*/
+
+.badge {
+  display: inline-block;
+  padding: 0.25em 0.4em;
+  font-size: 75%;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .badge {
+    transition: none;
+  }
+}
+a.badge:hover, a.badge:focus {
+  text-decoration: none;
+}
+
+.badge:empty {
+  display: none;
+}
+
+.btn .badge {
+  position: relative;
+  top: -1px;
+}
+
+.badge-pill {
+  padding-right: 0.6em;
+  padding-left: 0.6em;
+  border-radius: 10rem;
+}
+
+.badge-primary {
+  color: #fff;
+  background-color: #007bff;
+}
+a.badge-primary:hover, a.badge-primary:focus {
+  color: #fff;
+  background-color: #0062cc;
+}
+a.badge-primary:focus, a.badge-primary.focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+}
+
+.badge-secondary {
+  color: #fff;
+  background-color: #6c757d;
+}
+a.badge-secondary:hover, a.badge-secondary:focus {
+  color: #fff;
+  background-color: #545b62;
+}
+a.badge-secondary:focus, a.badge-secondary.focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.5);
+}
+
+.badge-success {
+  color: #fff;
+  background-color: #28a745;
+}
+a.badge-success:hover, a.badge-success:focus {
+  color: #fff;
+  background-color: #1e7e34;
+}
+a.badge-success:focus, a.badge-success.focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5);
+}
+
+.badge-info {
+  color: #fff;
+  background-color: #17a2b8;
+}
+a.badge-info:hover, a.badge-info:focus {
+  color: #fff;
+  background-color: #117a8b;
+}
+a.badge-info:focus, a.badge-info.focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(23, 162, 184, 0.5);
+}
+
+.badge-warning {
+  color: #212529;
+  background-color: #ffc107;
+}
+a.badge-warning:hover, a.badge-warning:focus {
+  color: #212529;
+  background-color: #d39e00;
+}
+a.badge-warning:focus, a.badge-warning.focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.5);
+}
+
+.badge-danger {
+  color: #fff;
+  background-color: #dc3545;
+}
+a.badge-danger:hover, a.badge-danger:focus {
+  color: #fff;
+  background-color: #bd2130;
+}
+a.badge-danger:focus, a.badge-danger.focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.5);
+}
+
+.badge-light {
+  color: #212529;
+  background-color: #f8f9fa;
+}
+a.badge-light:hover, a.badge-light:focus {
+  color: #212529;
+  background-color: #dae0e5;
+}
+a.badge-light:focus, a.badge-light.focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(248, 249, 250, 0.5);
+}
+
+.badge-dark {
+  color: #fff;
+  background-color: #343a40;
+}
+a.badge-dark:hover, a.badge-dark:focus {
+  color: #fff;
+  background-color: #1d2124;
+}
+a.badge-dark:focus, a.badge-dark.focus {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(52, 58, 64, 0.5);
+}
+ 
