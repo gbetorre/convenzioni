@@ -37,43 +37,58 @@
 package it.col.bean;
 
 import java.util.Date;
-import java.time.LocalTime;
+import java.sql.Time;
 
 import it.col.exception.AttributoNonValorizzatoException;
 
 /**
- * 
+ * JavaBean representing an agreement
  */
 public class Convenzione extends CodeBean {
 
+    /** A serializable class must declare a static final serialVersionUID field */
+    private static final long serialVersionUID = 7412922227541757849L;
+    /** Title of the agreement */
     private String titolo;
-    private String informativa;
-    private Integer ordinale;
+    /** Approval date */
     private Date dataApprovazione;
+    /** Notes about approval */
     private String notaApprovazione;
+    /** Second approval date */
     private Date dataApprovazione2;
+    /** Notes about second approval date */
     private String notaApprovazione2;
+    /** Subscription date */
     private Date dataSottoscrizione;
+    /** Subscription notes */
     private String notaSottoscrizione;
+    /** Expiration date */
     private Date dataScadenza;
+    /** Expiration notes */
     private String notaScadenza;
+    /** Protocol number */
     private String numRepertorio;
+    /** Last modified date */
     private Date dataUltimaModifica;
-    private LocalTime oraUltimaModifica;
+    /** Last modified time */
+    private Time oraUltimaModifica;
+    /** Last modified author */
     private Integer idUsrUltimaModifica;
-    private Integer idTipo;
-    private Integer idStato;
+    /** Type label */
+    private String tipo;
+    /** State label */
+    private String stato;
 
     
     /**
-     * Default constructor initializing fields to default values.
-     * Objects (String, Date, LocalTime) to null; Integers to -2 (conventional default).
+     * Default constructor: initializing fields to default values.
+     * - Objects (String, Date, LocalTime) to null; 
+     * - Integers to -2 (conventional default);
+     * - Booleans to false
      */
     public Convenzione() {
         super();
         this.titolo = null;
-        this.informativa = null;
-        this.ordinale = -2;
         this.dataApprovazione = null;
         this.notaApprovazione = null;
         this.dataApprovazione2 = null;
@@ -85,23 +100,52 @@ public class Convenzione extends CodeBean {
         this.numRepertorio = null;
         this.dataUltimaModifica = null;
         this.oraUltimaModifica = null;
-        this.idUsrUltimaModifica = -2;
-        this.idTipo = -2;
-        this.idStato = -2;
+        this.idUsrUltimaModifica = BEAN_DEFAULT_ID;
+        this.tipo = null;
+        this.stato = null;
     }
 
     
     /**
      * Parameterized constructor which calls setters for each field.
+     * 
+     * @param id agreement id
+     * @param titolo agreement title
+     * @param informativa agreement description
+     * @param ordinale agreement ordering number
+     * @param dataApprovazione date of approval
+     * @param notaApprovazione notes about approval
+     * @param dataApprovazione2 2nd date of approval
+     * @param notaApprovazione2 notes about second date of approval
+     * @param dataSottoscrizione date of subscription
+     * @param notaSottoscrizione notes about subscription
+     * @param dataScadenza expiration date
+     * @param notaScadenza notes about expiration date
+     * @param numRepertorio protocol number
+     * @param dataUltimaModifica last date modified
+     * @param oraUltimaModifica last time modified
+     * @param idUsrUltimaModifica last user which modified
+     * @param tipo label for tipology 
+     * @param stato label for state of agreement 
      */
-    public Convenzione(int id, String titolo, String informativa, Integer ordinale,
-                      Date dataApprovazione, String notaApprovazione,
-                      Date dataApprovazione2, String notaApprovazione2,
-                      Date dataSottoscrizione, String notaSottoscrizione,
-                      Date dataScadenza, String notaScadenza,
-                      String numRepertorio, Date dataUltimaModifica,
-                      LocalTime oraUltimaModifica, Integer idUsrUltimaModifica,
-                      Integer idTipo, Integer idStato) {
+    public Convenzione(int id, 
+                       String titolo, 
+                       String informativa, 
+                       Integer ordinale,
+                       Date dataApprovazione, 
+                       String notaApprovazione,
+                       Date dataApprovazione2, 
+                       String notaApprovazione2,
+                       Date dataSottoscrizione, 
+                       String notaSottoscrizione,
+                       Date dataScadenza, 
+                       String notaScadenza,
+                       String numRepertorio, 
+                       Date dataUltimaModifica,
+                       Time oraUltimaModifica, 
+                       Integer idUsrUltimaModifica,
+                       String tipo, 
+                       String stato) {
         setId(id);
         setTitolo(titolo);
         setInformativa(informativa);
@@ -118,180 +162,195 @@ public class Convenzione extends CodeBean {
         setDataUltimaModifica(dataUltimaModifica);
         setOraUltimaModifica(oraUltimaModifica);
         setIdUsrUltimaModifica(idUsrUltimaModifica);
-        setIdTipo(idTipo);
-        setIdStato(idStato);
+        setTipo(tipo);
+        setStato(stato);
     }
 
 
     /**
-     * @param o
-     * @throws AttributoNonValorizzatoException
+     * Parameterized constructor which calls the mother class
+     * 
+     * @param o object which to clone properties
+     * @throws AttributoNonValorizzatoException if some mandatory properties is not correctly set
      */
-    public Convenzione(it.col.bean.CodeBean o) throws AttributoNonValorizzatoException {
+    public Convenzione(it.col.bean.CodeBean o) 
+                throws AttributoNonValorizzatoException {
         super(o);
-        // TODO Auto-generated constructor stub
     }
 
+    
     /**
-     * @param id
-     * @param nome
-     * @param informativa
-     * @param ordinale
+     * @param id agreement id
+     * @param nome agreement name
+     * @param informativa agreement description
+     * @param ordinale agreement ordering number
      */
     public Convenzione(int id, String nome, String informativa, int ordinale) {
         super(id, nome, informativa, ordinale);
-        // TODO Auto-generated constructor stub
     }
 
 
-    /** @return the titolo */
+    /** @return the title of the agreement */
     public String getTitolo() {
-        return titolo;
+        return this.titolo;
     }
 
-    /** @param titolo the titolo to set */
+    /** @param titolo the title to set */
     public void setTitolo(String titolo) {
         this.titolo = titolo;
     }
+    
 
-    /** @return the dataApprovazione */
+    /** @return the approval date */
     public Date getDataApprovazione() {
-        return dataApprovazione;
+        return this.dataApprovazione;
     }
 
-    /** @param dataApprovazione the dataApprovazione to set */
+    /** @param dataApprovazione the approval date to set */
     public void setDataApprovazione(Date dataApprovazione) {
         this.dataApprovazione = dataApprovazione;
     }
+    
 
-    /** @return the notaApprovazione */
+    /** @return the approval note */
     public String getNotaApprovazione() {
-        return notaApprovazione;
+        return this.notaApprovazione;
     }
 
-    /** @param notaApprovazione the notaApprovazione to set */
+    /** @param notaApprovazione the approval note to set */
     public void setNotaApprovazione(String notaApprovazione) {
         this.notaApprovazione = notaApprovazione;
     }
 
-    /** @return the dataApprovazione2 */
+    
+    /** @return the approvale 2nd date */
     public Date getDataApprovazione2() {
-        return dataApprovazione2;
+        return this.dataApprovazione2;
     }
 
-    /** @param dataApprovazione2 the dataApprovazione2 to set */
+    /** @param dataApprovazione2 the approval 2nd date to set */
     public void setDataApprovazione2(Date dataApprovazione2) {
         this.dataApprovazione2 = dataApprovazione2;
     }
 
-    /** @return the notaApprovazione2 */
+    
+    /** @return the approval 2nd notes */
     public String getNotaApprovazione2() {
-        return notaApprovazione2;
+        return this.notaApprovazione2;
     }
 
-    /** @param notaApprovazione2 the notaApprovazione2 to set */
+    /** @param notaApprovazione2 the approval 2nd notes to set */
     public void setNotaApprovazione2(String notaApprovazione2) {
         this.notaApprovazione2 = notaApprovazione2;
     }
 
-    /** @return the dataSottoscrizione */
+    
+    /** @return the subscription date */
     public Date getDataSottoscrizione() {
-        return dataSottoscrizione;
+        return this.dataSottoscrizione;
     }
 
-    /** @param dataSottoscrizione the dataSottoscrizione to set */
+    /** @param dataSottoscrizione the subscription date to set */
     public void setDataSottoscrizione(Date dataSottoscrizione) {
         this.dataSottoscrizione = dataSottoscrizione;
     }
 
-    /** @return the notaSottoscrizione */
+    
+    /** @return the subscription notes */
     public String getNotaSottoscrizione() {
-        return notaSottoscrizione;
+        return this.notaSottoscrizione;
     }
 
-    /** @param notaSottoscrizione the notaSottoscrizione to set */
+    /** @param notaSottoscrizione the subscription notes to set */
     public void setNotaSottoscrizione(String notaSottoscrizione) {
         this.notaSottoscrizione = notaSottoscrizione;
     }
 
-    /** @return the dataScadenza */
+    
+    /** @return the expiration date */
     public Date getDataScadenza() {
-        return dataScadenza;
+        return this.dataScadenza;
     }
 
-    /** @param dataScadenza the dataScadenza to set */
+    /** @param dataScadenza the expiration date to set */
     public void setDataScadenza(Date dataScadenza) {
         this.dataScadenza = dataScadenza;
     }
 
-    /** @return the notaScadenza */
+    
+    /** @return the expiration notes */
     public String getNotaScadenza() {
-        return notaScadenza;
+        return this.notaScadenza;
     }
 
-    /** @param notaScadenza the notaScadenza to set */
+    /** @param notaScadenza the expiration notes to set */
     public void setNotaScadenza(String notaScadenza) {
         this.notaScadenza = notaScadenza;
     }
 
-    /** @return the numRepertorio */
+    
+    /** @return the protocol number */
     public String getNumRepertorio() {
-        return numRepertorio;
+        return this.numRepertorio;
     }
 
-    /** @param numRepertorio the numRepertorio to set */
+    /** @param numRepertorio the protocol number to set */
     public void setNumRepertorio(String numRepertorio) {
         this.numRepertorio = numRepertorio;
     }
 
-    /** @return the dataUltimaModifica */
+    
+    /** @return the last modified date */
     public Date getDataUltimaModifica() {
-        return dataUltimaModifica;
+        return this.dataUltimaModifica;
     }
 
-    /** @param dataUltimaModifica the dataUltimaModifica to set */
+    /** @param dataUltimaModifica the last modified date to set */
     public void setDataUltimaModifica(Date dataUltimaModifica) {
         this.dataUltimaModifica = dataUltimaModifica;
     }
 
-    /** @return the oraUltimaModifica */
-    public LocalTime getOraUltimaModifica() {
-        return oraUltimaModifica;
+    
+    /** @return the last modified time */
+    public Time getOraUltimaModifica() {
+        return this.oraUltimaModifica;
     }
 
-    /** @param oraUltimaModifica the oraUltimaModifica to set */
-    public void setOraUltimaModifica(LocalTime oraUltimaModifica) {
+    /** @param oraUltimaModifica the last modified time to set */
+    public void setOraUltimaModifica(Time oraUltimaModifica) {
         this.oraUltimaModifica = oraUltimaModifica;
     }
 
-    /** @return the idUsrUltimaModifica */
+    
+    /** @return the last modified author */
     public Integer getIdUsrUltimaModifica() {
-        return idUsrUltimaModifica;
+        return this.idUsrUltimaModifica;
     }
 
-    /** @param idUsrUltimaModifica the idUsrUltimaModifica to set */
+    /** @param idUsrUltimaModifica the last modified id user to set */
     public void setIdUsrUltimaModifica(Integer idUsrUltimaModifica) {
         this.idUsrUltimaModifica = idUsrUltimaModifica;
     }
 
-    /** @return the idTipo */
-    public Integer getIdTipo() {
-        return idTipo;
+    /** @return the tipology of the agreement */
+    public String getTipo() {
+        return this.tipo;
     }
 
-    /** @param idTipo the idTipo to set */
-    public void setIdTipo(Integer idTipo) {
-        this.idTipo = idTipo;
+    /** @param tipo the tipology to set */
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
-    /** @return the idStato */
-    public Integer getIdStato() {
-        return idStato;
+    
+    /** @return the stato */
+    public String getStato() {
+        return this.stato;
     }
 
-    /** @param idStato the idStato to set */
-    public void setIdStato(Integer idStato) {
-        this.idStato = idStato;
+    /** @param stato the stato to set */
+    public void setStato(String stato) {
+        this.stato = stato;
     }
     
 }
