@@ -139,30 +139,6 @@ public class DBWrapper extends QueryImpl {
     /* ********************************************************** *
      *                     Metodi di SELEZIONE                    *
      * ********************************************************** */
-    
-    
-
-    /* ********************************************************** *
-     *                    Metodi di INSERIMENTO                   *
-     * ********************************************************** */
-    
-
-    
-    /* ********************************************************** *
-     *                  Metodi di AGGIORNAMENTO                   *
-     * ********************************************************** */
-    
-
-    
-    /* ********************************************************** *
-     *                  Metodi di ELIMINAZIONE                    *
-     * ********************************************************** */
-    
-
-    
-    /* ********************************************************** *
-     *                      Metodi "di servizio"                  *
-     * ********************************************************** */
 
     /**
      * <p>Restituisce un Vector di Command.</p>
@@ -348,66 +324,6 @@ public class DBWrapper extends QueryImpl {
             }
         }
     }
-    
-    
-    /**
-     * <p>Restituisce un valore boolean <code>true</code> se esiste un file
-     * di dato nome, in data entit&agrave; e dato attributo, 
-     * tutti passati come argomenti.</p>
-     *
-     * @param nomeEntita prefisso del nome dell'entit&agrave; in cui verificare l'esistenza dell'allegato
-     * @param nomeAttributo suffisso del nome dell'entit&agrave; in cui verificare l'esistenza dell'allegato
-     * @param nomeFile nome del file di cui verificare la presenza nell'entit&agrave; di nome ricavabile dai parametri
-     * @return <code>boolean</code> - true se il nome del file &egrave; gi&agrave; presente, false altrimenti
-     * @throws WebStorageException se si verifica un problema di tipo SQL o in qualche puntamento
-     */
-    @SuppressWarnings({ "null", "static-method" })
-    public boolean existsFileName(String nomeEntita, 
-                                  String nomeAttributo,
-                                  String nomeFile)
-                           throws WebStorageException {
-        Connection con = null;
-        PreparedStatement pst = null;
-        ResultSet rs = null;
-        String table = nomeEntita + "_" + nomeAttributo;        
-        String query =
-                "SELECT " +  table + ".*" +
-                "  FROM "  + table +
-                "   WHERE file = ?";
-        try {
-            con = col_manager.getConnection();
-            try {
-                pst = con.prepareStatement(query);
-            } catch (NullPointerException npe) {
-                String msg = FOR_NAME + "Ooops... problema nel puntamento della connessione.\n";
-                LOG.severe(msg);
-                throw new WebStorageException(msg + npe.getMessage());
-            }
-            pst.clearParameters();
-            pst.setString(1, nomeFile);
-            rs = pst.executeQuery();
-            // Il nome esiste già
-            if (rs.next()) {
-                return true;
-            }
-            // Il nome non esiste
-            return false;
-        } catch (SQLException sqle) {
-            String msg = FOR_NAME + "Problema nella query.\n";
-            LOG.severe(msg); 
-            throw new WebStorageException(msg + sqle.getMessage(), sqle);
-        } finally {
-            try {
-                con.close();
-            } catch (NullPointerException npe) {
-                String msg = FOR_NAME + "Ooops... problema nella chiusura della connessione.\n";
-                LOG.severe(msg); 
-                throw new WebStorageException(msg + npe.getMessage());
-            } catch (SQLException sqle) {
-                throw new WebStorageException(FOR_NAME + sqle.getMessage());
-            }
-        }
-    }
 
 
     /**
@@ -557,7 +473,7 @@ public class DBWrapper extends QueryImpl {
                     }
                     usr.setRuolo(ruoloApplicativo);
                 }
-                // Just tries to engage the Garbage Collector
+                // Try to engage the Garbage Collector
                 pst = null;
                 // Get Out
                 return usr;
@@ -591,65 +507,40 @@ public class DBWrapper extends QueryImpl {
     /**
      * <p>Restituisce la lista delle convenzioni attive.</p>
      *
-// TODO COMMENTO
-     * @return <code>PersonBean</code> - PersonBean rappresentante l'utente loggato
+     * @param user utente che ha effettuato la richiesta
+     * @return <code>ArrayList&lt;Convenzione&gt;</code> - lista convenzioni trovate
      * @throws it.col.exception.WebStorageException se si verifica un problema nell'esecuzione della query, nell'accesso al db o in qualche tipo di puntamento
      * @throws it.col.exception.AttributoNonValorizzatoException  eccezione che viene sollevata se questo oggetto viene usato e l'id della persona non &egrave; stato valorizzato (&egrave; un dato obbligatorio)
      */
     @SuppressWarnings({ "static-method" })
-    public ArrayList<Convenzione> getConventions()
-                       throws WebStorageException, 
-                              AttributoNonValorizzatoException {
+    public ArrayList<Convenzione> getConventions(PersonBean user)
+                                          throws WebStorageException, 
+                                                 AttributoNonValorizzatoException {
         try (Connection con = col_manager.getConnection()) {
             PreparedStatement pst = null;
-            ResultSet rs, rs1, rs2 = null;
+            ResultSet rs = null;
             Convenzione c = null;
-            int nextInt = NOTHING;
             ArrayList<Convenzione> convenzioni = new ArrayList<>();
-            String ruoloApplicativo = null;
             try {
+                // TODO: Controllare i diritti dell'utente
                 pst = con.prepareStatement(GET_CONVENTIONS);
                 pst.clearParameters();
                 rs = pst.executeQuery();
-                if (rs.next()) {
+                while (rs.next()) {
                     c = new Convenzione();
                     BeanUtil.populate(c, rs);
                     convenzioni.add(c);
-                    /* Se ha trovato l'utente, ne cerca i ruoli giuridici *
-                    pst = null;
-                    pst = con.prepareStatement(GET_RUOLI);
-                    pst.clearParameters();
-                    pst.setInt(1, usr.getId());
-                    rs1 = pst.executeQuery();
-                    while (rs1.next()) {
-                        CodeBean ruolo = new CodeBean();
-                        BeanUtil.populate(ruolo, rs1);
-                        vRuoli.add(ruolo);
-                    }
-                    usr.setRuoli(vRuoli);
-                    // Se ha trovato l'utente, ne cerca il ruolo applicativo
-                    pst = null;
-                    pst = con.prepareStatement(GET_RUOLO);
-                    pst.clearParameters();
-                    pst.setString(1, username);
-                    rs2 = pst.executeQuery();
-                    if (rs2.next()) {
-                        CodeBean ruolo = new CodeBean();
-                        BeanUtil.populate(ruolo, rs2);
-                        ruoloApplicativo = (ruolo.getNome() != null) ? ruolo.getNome() : ND;
-                    }
-                    usr.setRuolo(ruoloApplicativo);*/
                 }
-                // Just tries to engage the Garbage Collector
+                // Try to engage the Garbage Collector
                 pst = null;
                 // Get Out
-                return convenzioni; // TODO ECCEZIONI
+                return convenzioni;
             } catch (SQLException sqle) {
-                String msg = FOR_NAME + "Oggetto PersonBean non valorizzato; problema nella query dell\'utente.\n";
+                String msg = FOR_NAME + "Problema nella query delle convenzioni.\n";
                 LOG.severe(msg);
                 throw new WebStorageException(msg + sqle.getMessage(), sqle);
             } catch (ClassCastException cce) {
-                String msg = FOR_NAME + "Problema in una conversione di tipi nella query dell\'utente.\n";
+                String msg = FOR_NAME + "Problema in una conversione di tipi.\n";
                 LOG.severe(msg);
                 throw new WebStorageException(msg + cce.getMessage(), cce);
             } finally {
@@ -670,6 +561,16 @@ public class DBWrapper extends QueryImpl {
         }
     }
 
+
+    /* ********************************************************** *
+     *                    Metodi di INSERIMENTO                   *
+     * ********************************************************** */
+    
+
+    
+    /* ********************************************************** *
+     *                  Metodi di AGGIORNAMENTO                   *
+     * ********************************************************** */
 
     /**
      * <p>Verifica se per l'utente loggato esiste una tupla che indica
@@ -766,5 +667,10 @@ public class DBWrapper extends QueryImpl {
             throw new WebStorageException(msg + sqle.getMessage(), sqle);
         }
     }
+
+
+    /* ********************************************************** *
+     *                  Metodi di ELIMINAZIONE                    *
+     * ********************************************************** */
 
 }
