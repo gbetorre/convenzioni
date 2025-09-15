@@ -36,91 +36,52 @@
 
 package it.col.command;
 
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Vector;
 import java.util.logging.Logger;
-import java.util.regex.PatternSyntaxException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import com.oreilly.servlet.ParameterParser;
 
-import it.col.ConfigManager;
-import it.col.util.Constants;
+import it.col.Main;
+import it.col.bean.CommandBean;
+import it.col.bean.Convenzione;
+import it.col.bean.PersonBean;
 import it.col.db.DBManager;
 import it.col.db.DBWrapper;
-import it.col.Main;
-import it.col.db.Query;
-import it.col.util.Utils;
-import it.col.bean.CodeBean;
-import it.col.bean.CommandBean;
-import it.col.bean.ItemBean;
-import it.col.bean.PersonBean;
-import it.col.exception.AttributoNonValorizzatoException;
 import it.col.exception.CommandException;
 import it.col.exception.WebStorageException;
+import it.col.util.Constants;
 
 
 /**
- * <p><code>HomePageCommand.java</code><br />
- * Gestisce la root dell'applicazione.</p>
+ * <p><code>HomePageCommand.java</code>
+ * Manage the root applicazione at Command layer.</p>
  *
  * @author <a href="mailto:gianroberto.torre@gmail.com">Giovanroberto Torre</a>
  */
-public class HomePageCommand extends ItemBean implements Command, Constants {
+public class HomePageCommand extends CommandBean implements Command, Constants {
 
-    /**
-     * La serializzazione necessita di dichiarare una costante di tipo long
-     * identificativa della versione seriale.
-     * (Se questo dato non fosse inserito, verrebbe calcolato in maniera automatica
-     * dalla JVM, e questo potrebbe portare a errori riguardo alla serializzazione).
-     */
+    /** Seralization needs a long type const, identifying the serial version.   */
     private static final long serialVersionUID = -4437906730411178543L;
-    /**
-     *  Nome di questa classe
-     *  (utilizzato per contestualizzare i messaggi di errore)
-     */
-    /* friendly */
+    /** The name of this (for the error messages)                               */
     static final String FOR_NAME = "\n" + Logger.getLogger(new Throwable().getStackTrace()[0].getClassName()) + ": "; //$NON-NLS-1$
-    /* $NON-NLS-1$ silence a warning that Eclipse emits when it encounters
-     * string literals.
-     * The idea is that UI messages should not be embedded as string literals,
-     * but rather sourced from a resource file
-     * (so that they can be translated, proofed, etc).*/
-    /**
-     * Log per debug in produzione
-     */
+    /** Debug log                                                               */
     protected static Logger LOG = Logger.getLogger(Main.class.getName());
-    /**
-     * Pagina a cui la command reindirizza per mostrare la form di login
-     */
+    /** Login page                                                              */
     private static final String nomeFileElenco = "/jsp/login.jsp";
-    /**
-     * Pagina a cui la command reindirizza per mostrare le scelte iniziali
-     */
+    /** Landing page                                                            */
     private static final String nomeFileLanding = "/jsp/landing.jsp";
-    /**
-     * DataBound.
-     */
+    /** DataBound                                                               */
     private static DBWrapper db;
-    /**
-     * Nome del database su cui insiste l'applicazione
-     */
+    /** Database name                                                           */
     private static String dbName = null;
-    /**
-     * Ultima rilevazione
-     */
-    private static CodeBean lastSurvey;
 
 
     /**
-     * Crea una nuova istanza di HomePageCommand
+     * Create a new instance of HomePageCommand
      */
     public HomePageCommand() {
         /*;*/   // It doesn't anything
@@ -128,36 +89,33 @@ public class HomePageCommand extends ItemBean implements Command, Constants {
 
 
     /**
-     * <p>Raccoglie i valori dell'oggetto ItemBean
-     * e li passa a questa classe command.</p>
+     * <p>Initialize the Command by the values received from the voice.</p>
 	 *
-	 * @param voceMenu la VoceMenuBean pari alla Command presente.
-	 * @throws it.col.exception.CommandException se l'attributo paginaJsp di questa command non e' stato valorizzato.
+	 * @param voice the CommandBean representing this Command
+	 * @throws it.col.exception.CommandException whether mandatory properties are not present
      */
     @Override
-    public void init(CommandBean voceMenu) throws CommandException {
-        this.setId(voceMenu.getId());
-        this.setNome(voceMenu.getNome());
-        this.setLabelWeb(voceMenu.getLabel());
-        this.setNomeClasse(voceMenu.getNomeClasse());
-        this.setPaginaJsp(voceMenu.getPagina());
-        this.setInformativa(voceMenu.getInformativa());
-        if (this.getPaginaJsp() == null) {
-          String msg = FOR_NAME + "La voce menu' " + this.getNome() + " non ha il campo paginaJsp. Impossibile visualizzare i risultati.\n";
+    public void init(CommandBean voice) throws CommandException {
+        this.setId(voice.getId());
+        this.setNome(voice.getNome());
+        this.setLabel(voice.getLabel());
+        this.setNomeClasse(voice.getNomeClasse());
+        this.setPagina(voice.getPagina());
+        this.setInformativa(voice.getInformativa());
+        if (this.getPagina() == null) {
+          String msg = FOR_NAME + "La command " + this.getNome() + " non ha il campo pagina. Impossibile visualizzare i risultati.\n";
           throw new CommandException(msg);
         }
         try {
-            // Attiva la connessione al database
+            // Activate database connection
             db = new DBWrapper();
-            // Recupera l'ultima rilevazione
-            //lastSurvey = db.getSurvey(Query.GET_ALL_BY_CLAUSE, Query.GET_ALL_BY_CLAUSE);
         }
         catch (WebStorageException wse) {
             String msg = FOR_NAME + "Non e\' possibile avere una connessione al database.\n" + wse.getMessage();
             throw new CommandException(msg, wse);
         }
         catch (Exception e) {
-            String msg = FOR_NAME + "Problemi nel caricare gli stati.\n" + e.getMessage();
+            String msg = FOR_NAME + "Problemi nell'inizializzazione della Command.\n" + e.getMessage();
             throw new CommandException(msg, e);
         }
     }
@@ -188,8 +146,8 @@ public class HomePageCommand extends ItemBean implements Command, Constants {
          * ******************************************************************** */
         // Parser per la gestione assistita dei parametri di input
         ParameterParser parser = new ParameterParser(req);
-        // Recupera o inizializza 'codice rilevazione' (Survey)
-        String codeSur = parser.getStringParameter(PARAM_SURVEY, DASH);
+        // 
+        ArrayList<Convenzione> conventions = null;
         /* ******************************************************************** *
          *      Instanzia nuova classe WebStorage per il recupero dei dati      *
          * ******************************************************************** */
@@ -204,6 +162,7 @@ public class HomePageCommand extends ItemBean implements Command, Constants {
          * ******************************************************************** */
         try {
             if (isLoggedUser(req)) {
+                conventions = db.getConventions(getLoggedUser(req));
                 fileJspT = nomeFileLanding;
             } else {
                 fileJspT = nomeFileElenco;
@@ -246,6 +205,13 @@ public class HomePageCommand extends ItemBean implements Command, Constants {
         }
         // Imposta la Pagina JSP di forwarding
         req.setAttribute("fileJsp", fileJspT);
+        /* ******************************************************************** *
+         *              Settaggi in request dei valori calcolati                *
+         * ******************************************************************** */
+        // Imposta nella request elenco completo convenzioni
+        if (conventions != null) {
+            req.setAttribute("convenzioni", conventions);
+        }
         if (error != null) {
             req.setAttribute("error", true);
             req.setAttribute("msg", error);
@@ -337,388 +303,6 @@ public class HomePageCommand extends ItemBean implements Command, Constants {
             LOG.severe(msg);
             throw new CommandException(msg + e.getMessage(), e);
         }
-    }
-
-
-    /* ************************************************************************ *
-     * Metodi di generazione di liste di voci (per MENU,submenu,breadcrumbs...) *
-     * ************************************************************************ */
-
-    /**
-     * <p>Restituisce una <code>tabella hash</code> contenente i sottomenu
-     * di voci di livello superiore, le quali svolgono anche la funzione
-     * di chiavi della tabella stessa.</p>
-     * <p>La <code>tabella hash</code> ha come chiave un oggetto
-     * di tipo <code>ItemBean</code> che rappresenta la voce principale, e come valore una
-     * struttura vettoriale ordinata, contenente le voci del sottomenu che alla chiave
-     * fa riferimento.<br>
-     * Naturalmente, l'oggetto che fa da chiave implementa <code>l'Override</code>
-     * dei metodi necessari all'impiego come chiave, appunto, di tabella hash:
-     * <pre>equals(), hashCode()</pre> &ndash;
-     * oltre, a fare l'Override di altri metodi, utili per gli ordinamenti:
-     * <pre>compareTo(), toString()</pre></p>
-     *
-     * @param appName nome della web application, seguente la root, per la corretta generazione dei link delle voci
-     * @param surCode identificativo della rilevazione corrente oppure della rilevazione di default in caso di accesso utente a piu' di una rilevazione
-     * @return <code>LinkedHashMap&lt;ItemBean, ArrayList&lt;ItemBean&gt;&gt; - tabella hash contenente il menu completo, costituita da una chiave che contiene i dati della voce principale ed un valore che contiene la lista delle sue voci
-     * @throws CommandException se si verifica un problema
-     */
-    public static LinkedHashMap<ItemBean, ArrayList<ItemBean>> makeMegaMenu(String appName,
-                                                                            String surCode)
-                                                                     throws CommandException {
-        ArrayList<ItemBean> vV = null;
-        LinkedHashMap<ItemBean, ArrayList<ItemBean>> vO = null;
-        try {
-            vO = new LinkedHashMap<ItemBean, ArrayList<ItemBean>>(11);
-            LinkedList<ItemBean> titles = makeMenuOrizzontale(appName, surCode);
-            for (ItemBean title : titles) {
-                vV = new ArrayList<ItemBean>();
-                vO.put(title, vV);
-            }
-            return vO;
-        } catch (ArrayStoreException ase) {     // AttributoNonValorizzatoException
-            String msg = FOR_NAME + "Si e\' verificato un problema nell\'accesso ad un elemento di una struttura vettoriale.\n";
-            LOG.severe(msg);
-            throw new CommandException(msg + ase.getMessage(), ase);
-        } catch (TypeNotPresentException tnpe) {    // WebStorageException
-            String msg = FOR_NAME + "Si e\' verificato un problema nel recupero di un tipo.\n";
-            LOG.severe(msg);
-            throw new CommandException(msg + tnpe.getMessage(), tnpe);
-        } catch (NullPointerException npe) {
-            String msg = FOR_NAME + "Si e\' verificato un problema di puntamento a null.\n";
-            LOG.severe(msg);
-            throw new CommandException(msg + npe.getMessage(), npe);
-        } catch (Exception e) {
-            String msg = FOR_NAME + "Si e\' verificato un problema.\n";
-            LOG.severe(msg);
-            throw new CommandException(msg + e.getMessage(), e);
-        }
-    }
-
-
-    /**
-     * <p>Restituisce una struttura vettoriale <cite>(by the way:
-     * with insertion order)</cite> contenente le voci principali
-     * del (mega)menu orizzontale del sito di gestione dei processi
-     * on-line <em>(prol)</em>.
-     *
-     * @param appName nome della web application, seguente la root
-     * @param surCode identificativo della rilevazione corrente oppure della rilevazione di default in caso di accesso utente a piu' di una rilevazione
-     * @return <code>LinkedList&lt;ItemBean&gt;</code> - struttura vettoriale, rispettante l'ordine di inserimento, che contiene le voci di primo livello
-     * @throws CommandException nel caso in cui si verifichi un problema nel recupero di un attributo obbligatorio, o in qualche altro tipo di puntamento
-     */
-    private static LinkedList<ItemBean> makeMenuOrizzontale(String appName,
-                                                            String surCode)
-                                                     throws CommandException {
-        int nextId = MAIN_MENU;
-        LinkedList<ItemBean> mO = new LinkedList<>();
-        // MACROPROCESSI
-        ItemBean vO = new ItemBean();
-        vO.setId(++nextId);
-        vO.setNome(COMMAND_PROCESS);
-        vO.setNomeReale(PART_PROCESS);
-        vO.setLabelWeb("Macroprocessi");
-        vO.setInformativa("La navigazione per macroprocessi fornisce un quadro d\'insieme dei rischi");
-        vO.setUrl(makeUrl(appName, vO, vO.getNomeReale(), surCode));
-        vO.setIcona("pc.png");
-        vO.setLivello(MAIN_MENU);
-        mO.add(vO);
-        // STRUTTURE
-        vO = null;
-        vO = new ItemBean();
-        vO.setId(++nextId);
-        vO.setNome(COMMAND_STRUCTURES);
-        vO.setLabelWeb("Organigramma");
-        vO.setInformativa("La navigazione per strutture fornisce un quadro delle produzioni");
-        vO.setUrl(makeUrl(appName, vO, null, surCode));
-        vO.setIcona("act.png");
-        vO.setLivello(MAIN_MENU);
-        mO.add(vO);
-        // RISCHI
-        vO = null;
-        vO = new ItemBean();
-        vO.setId(++nextId);
-        vO.setNome(COMMAND_RISK);
-        vO.setLabelWeb("Rischi Corruttivi");
-        vO.setInformativa("La navigazione per rischio corruttivo fornisce un quadro delle problematiche relative");
-        vO.setUrl(makeUrl(appName, vO, null, surCode));
-        vO.setIcona("per.png");
-        vO.setLivello(MAIN_MENU);
-        mO.add(vO);
-        // REPORT
-        vO = null;
-        vO = new ItemBean();
-        vO.setId(++nextId);
-        vO.setNome(COMMAND_PROCESS);
-        vO.setNomeReale(PART_SEARCH);
-        vO.setLabelWeb("Report");
-        vO.setInformativa("La reportistica permette di incrociare varie dimensioni");
-        vO.setUrl(makeUrl(appName, vO, vO.getNomeReale(), surCode));
-        vO.setIcona("mon.png");
-        vO.setLivello(MAIN_MENU);
-        mO.add(vO);
-        return mO;
-    }
-
-
-    /**
-     * <p>Restituisce una String che rappresenta un url da impostare in una
-     * voce di menu, il cui padre viene passato come argomento, come
-     * analogamente la web application seguente la root ed un eventuale
-     * parametro aggiuntivo.</p>
-     *
-     * @param appName nome della web application, seguente la root, per la corretta generazione dell'url
-     * @param title voce di livello immediatamente superiore alla voce per la quale si vuol generare l'url
-     * @param part eventuale valore del parametro 'p' della Querystring
-     * @param surCode identificativo della rilevazione corrente oppure della rilevazione di default in caso di accesso utente a piu' di una rilevazione
-     * @return <code>String</code> - url ben formato e valido, da applicare a una voce di menu
-     * @throws CommandException se si verifica un problema nell'accesso a qualche parametro o in qualche altro puntamento
-     */
-    private static String makeUrl(String appName,
-                                  ItemBean title,
-                                  String part,
-                                  String surCode)
-                           throws CommandException {
-        String entParam = SLASH + QM + ConfigManager.getEntToken() + EQ;
-        StringBuffer url = new StringBuffer(appName);
-        try {
-            url.append(entParam).append(title.getNome());
-            if (part != null) {
-                url.append("&p=").append(part);
-            }
-            url.append("&r=").append(surCode);
-            return String.valueOf(url);
-        } catch (NullPointerException npe) {
-            String msg = FOR_NAME + "Si e\' verificato un problema di puntamento a null.\n";
-            LOG.severe(msg);
-            throw new CommandException(msg + npe.getMessage(), npe);
-        } catch (Exception e) {
-            String msg = FOR_NAME + "Si e\' verificato un problema di natura non identificata.\n";
-            LOG.severe(msg);
-            throw new CommandException(msg + e.getMessage(), e);
-        }
-    }
-
-
-    /**
-     * <p>Restituisce una struttura vettoriale <cite>(with insertion order)</cite>
-     * contenente le breadcrumbs lasciate dall'utente nel percorso seguito fino
-     * alla richiesta corrente.</p>
-     * <p>Non si pu&ograve; passare direttamente la richiesta e lasciare che
-     * il metodo si arrangi a recuperare i parametri (con getParameterNames)
-     * perch&eacute; la richiesta conosciuta da questa classe non corrisponde
-     * alla richiesta del chiamante. In linea teorica, si potrebbe effettuare
-     * questa operazione, modificando questo metodo in modo che accetti la
-     * richiesta come argomento, e passandola come parametro; tuttavia, 
-     * la richiesta &egrave; un oggetto oneroso, e soprattutto
-     * creerebbe confusione in una Command che &egrave;
-     * creata a sua volta per gestire richieste...<br />
-     * <small>NOTA: In questa classe vi sono metodi che accettano come parametro
-     * una richiesta, ispezionandone e restituendone i valori, ma si tratta di
-     * metodi di debug, utilizzati dal programmatore finalizzati appunto ad
-     * ispezionare lo stato della richiesta, non metodi da utilizzare per
-     * generare output: quindi non &egrave; la stessa cosa.</small></p>
-     *
-     * @param appName    nome della web application, seguente la root
-     * @param pageParams la queryString contenente tutti i parametri di navigazione
-     * @param extraInfo  parametro facoltativo; se significativo, permette di specificare una foglia ad hoc; in tal caso viene aggiunto il link alla ex-foglia
-     * @return <code>LinkedList&lt;ItemBean&gt;</code> - struttura vettoriale, rispettante l'ordine di inserimento, che contiene le voci seguite dall'utente nella navigazione fino alla richiesta corrente
-     * @throws CommandException se si verifica un problema nell'accesso a qualche parametro o in qualche altro puntamento
-     */
-    public static LinkedList<ItemBean> makeBreadCrumbs(String appName,
-                                                       String pageParams,
-                                                       String extraInfo)
-                                                throws CommandException {
-        int prime = 13;                 // per ottimizzare
-        // Ottiene l'elenco delle Command
-        Vector<CommandBean> classiCommand = ConfigManager.getClassiCommand();
-        // Genera l'etichetta per nodo radice
-        final String homeLbl = Utils.capitalize(COMMAND_HOME);
-        // Dichiara la struttura per la lista di voci da usare per generare le breadcrumbs
-        AbstractList<ItemBean> nav = new LinkedList<>();
-        // Variabili di appoggio
-        String codeSurvey, tokenSurvey = null;
-        // Dictonary contenente i soli valori del token 'p' permessi
-        LinkedHashMap<String, String> allowedParams = new LinkedHashMap<>(prime);
-        // Lista dei token che NON devono generare breadcrumbs ("token vietati")
-        LinkedList<String> deniedTokens = new LinkedList<>();
-        // Aggiunge un tot di token vietati, caricati dinamicamente
-        String deniedPattern1 = "sliv";
-        String deniedPattern2 = "pliv";
-        for (int i = 1; i <= 4; i++) {
-            String patternToDeny1 = new String(deniedPattern1 + i);
-            String patternToDeny2 = new String(deniedPattern2 + i);
-            deniedTokens.add(patternToDeny1);
-            deniedTokens.add(patternToDeny2);
-        }
-        // Aggiunge le esclusioni per data e ora ed eventuali altri parametri (p.es. id) che non devono essere marcati
-        deniedTokens.add("d");
-        deniedTokens.add("t");
-        deniedTokens.add("idO");
-        deniedTokens.add("msg");
-        deniedTokens.add("mliv");
-        // Aggiunge i valori del token 'p' che devono generare breadcrumb associandoli a un'etichetta da mostrare in breadcrumb
-        allowedParams.put(PART_SEARCH,              "Ricerca");
-        allowedParams.put(PART_SELECT_STR,          "Scelta Struttura");
-        allowedParams.put(PART_PROCESS,             "Scelta Processi");
-        allowedParams.put(PART_SELECT_QST,          "Quesiti");
-        allowedParams.put(PART_CONFIRM_QST,         "Riepilogo");
-        allowedParams.put(PART_SELECT_QSS,          "Interviste");
-        allowedParams.put(PART_RESUME_QST,          "Risposte");
-        allowedParams.put(PART_OUTPUT,              "Output");
-        allowedParams.put(PART_FACTORS,             "Fattori abilitanti");
-        allowedParams.put(PART_INSERT_MONITOR_DATA, "Dettagli");
-        try {
-            // Tokenizza la querystring in base all'ampersand
-            String[] tokens = pageParams.split(AMPERSAND);
-            // Prepara la lista dei parametri da esporre nelle breadcrumbs
-            Map<String, String> tokensAsMap = new LinkedHashMap<>(prime);
-            // Esamina ogni token
-            for (int i = 0; i < tokens.length; i++) {
-                // Ottiene la coppia: 'parametro=valore'
-                String couple = tokens[i];
-                // Estrae il solo parametro
-                String paramName = couple.substring(NOTHING, couple.indexOf(EQ));
-                // Estrae il solo valore
-                String paramValue = couple.substring(couple.indexOf(EQ));
-                // Test: il token trovato NON rientra in quelli da escludere? 
-                if (!deniedTokens.contains(paramName)) {
-                    // Allora il token genererà una breadcrumb
-                    tokensAsMap.put(paramName, paramValue);
-                    // Le variabili locali non servono più...
-                    couple = paramName = paramValue = null;
-                }
-            }
-            // Recupera il codice rilevazione
-            codeSurvey = tokensAsMap.get(PARAM_SURVEY).substring(SUB_MENU);
-            // Controllo sull'input (il codice rilevazione deve essere valido!)
-            if (!ConfigManager.getSurveys().containsKey(codeSurvey)) {
-                // "Se non dispone di un codice rilevazione, gliene verrà assegnato uno d'ufficio"...
-                tokenSurvey = PARAM_SURVEY + EQ + ConfigManager.getSurveyList().get(MAIN_MENU).getNome();
-            } else {
-                // Se dispone di un codice rilevazione valido, verrà usato quello
-                tokenSurvey = PARAM_SURVEY + tokensAsMap.get(PARAM_SURVEY);
-            }
-            // Il link alla home è fisso
-            //final String homeLnk = appName + ROOT_QM + ConfigManager.getEntToken() + EQ + COMMAND_HOME + AMPERSAND + tokenSurvey;
-            final String homeLnk = "/col";
-            // Crea un oggetto per incapsulare il link della root
-            ItemBean root = new ItemBean(appName, homeLbl, homeLnk, MAIN_MENU);
-            // Aggiunge la root alle breadcrumbs
-            nav.add(root);
-            // Scorre tutti i token calcolati per generare le corrispettive breadcrumbs
-            for (java.util.Map.Entry<String, String> entry : tokensAsMap.entrySet()) {
-                String key = entry.getKey();
-                String value = entry.getValue();
-                String labelWeb = null;
-                if (key.equals(ConfigManager.getEntToken())) {
-                    for (CommandBean command : classiCommand) {
-                        if (command.getNome().equals((value.substring(SUB_MENU)))) {
-                            labelWeb = command.getLabel();
-                            break;
-                        }
-                    }
-                } else if (allowedParams.containsKey(value.substring(SUB_MENU))) {
-                    labelWeb = allowedParams.get(value.substring(SUB_MENU));
-                }
-                String url = appName + ROOT_QM + key + value + AMPERSAND + tokenSurvey;
-                if (!url.equals(homeLnk)) {
-                    ItemBean item = new ItemBean(key, labelWeb, url, SUB_MENU);
-                    if (!key.equals(PARAM_SURVEY)) {
-                        nav.add(item);
-                    }
-                }
-            }
-            if (extraInfo != null) {
-                nav.add(new ItemBean(extraInfo, extraInfo, extraInfo, SUB_MENU));
-            }
-            return (LinkedList<ItemBean>) nav;
-        } catch (PatternSyntaxException pse) {
-            String msg = FOR_NAME + "Si e\' verificato un problema di parsing della queryString.\n";
-            LOG.severe(msg);
-            throw new CommandException(msg + pse.getMessage(), pse);
-        } catch (NullPointerException npe) {
-            String msg = FOR_NAME + "Si e\' verificato un problema di puntamento a null.\n";
-            LOG.severe(msg);
-            throw new CommandException(msg + npe.getMessage(), npe);
-        } catch (Exception e) {
-            String msg = FOR_NAME + "Si e\' verificato un problema di natura non identificata.\n";
-            LOG.severe(msg);
-            throw new CommandException(msg + e.getMessage(), e);
-        }
-    }
-    
-    
-    /**
-     * <p>Prende in input una struttura di breadcrumbs gi&agrave; formata 
-     * (serie di link corenti con il percorso seguito dall'utente fino 
-     * alla richiesta corrente) e restituisce una struttura di breadcrumbs 
-     * basata su quella ottenuta come parametro ma avente,
-     * come ultima foglia, un'etichetta passata come parametro, se questo
-     * &egrave; significativo, dando anche la possibilit&agrave; di eliminare 
-     * un numero di foglie a piacere, specificato tramite un parametro: <dl>
-     * <dt>0</dt><dd> =&gt; non toglie nulla,</dd>
-     * <dt>1</dt><dd> =&gt; toglie l'ultima foglia,</dd> 
-     * <dt>2</dt><dd> =&gt; toglie l'ultima e la penultima foglia</dd>
-     * </dl>etc.<br>
-     * Esempio:
-     * <pre>makeBreadCrumbs(nav, 0, "label")</pre>
-     * aggiunge la foglia "label" alle breadcrumbs contenute in nav
-     * (la foglia per definizione non ha link).</p>
-     * 
-     * @param nav       lista di breadcrumbs preesistente
-     * @param items     numero di foglie da potare (opzionale)
-     * @param extraInfo etichetta da aggiungere come ultima foglia (opzionale)
-     * @return <code>LinkedList&lt;ItemBean&gt;</code> - struttura vettoriale, rispettante l'ordine di inserimento, rimaneggiata
-     * @throws CommandException se si verifica un problema nell'accesso a qualche parametro o in qualche altro puntamento
-     */
-    public static LinkedList<ItemBean> makeBreadCrumbs(LinkedList<ItemBean> nav,
-                                                       int items,
-                                                       String extraInfo)
-                                                throws CommandException {
-        // Pota le foglie di Lorien
-        if (items > NOTHING) {
-            for (int i = 0; i < items; i++) {
-                nav.removeLast();
-            }
-        }
-        // Aggiunge una foglia di Valinor
-        if (extraInfo != null && !extraInfo.equals(VOID_STRING)) {
-            nav.add(new ItemBean(extraInfo, extraInfo, extraInfo, SUB_MENU));
-        }
-        // Restituisce l'albero potato e/o rimaneggiato
-        return nav;
-    }
-
-    
-    /**
-     * <p>Prende in input una struttura di breadcrumbs gi&agrave; formata 
-     * (serie di link corenti con il percorso seguito dall'utente fino 
-     * alla richiesta corrente) e sostituisce la foglia di dato indice index
-     * con un nuovo oggetto che riceve come parametro extraInfo.</p>
-     * 
-     * @param nav       lista di breadcrumbs preesistente
-     * @param index     l'indice della foglia da sostituire
-     * @param extraInfo la foglia sostitutiva
-     * @return <code>LinkedList&lt;ItemBean&gt;</code> - struttura vettoriale, rispettante l'ordine originale, rimaneggiata
-     * @throws CommandException se si verifica un problema nell'accesso a qualche parametro o in qualche altro puntamento
-     */
-    public static LinkedList<ItemBean> makeBreadCrumbs(final LinkedList<ItemBean> nav,
-                                                       int index,
-                                                       ItemBean extraInfo)
-                                                throws CommandException {
-        LinkedList<ItemBean> newNav = (LinkedList<ItemBean>) nav.clone();
-        // Rimuove una foglia di Lorien
-        if (index > NOTHING) {  
-            // Non avrebbe senso rimuovere 'home'
-            newNav.remove(index);
-            // La sostituisce con una foglia di Valinor
-            if (extraInfo != null) {
-                newNav.set(index, extraInfo);
-            }
-        }
-        // Restituisce l'albero rimaneggiato
-        return newNav;
     }
     
 
@@ -837,21 +421,6 @@ public class HomePageCommand extends ItemBean implements Command, Constants {
             }
         }
         return false;
-    }
-
-    /* ************************************************************************ *
-     *                    Getters sulle variabili di classe                     *
-     * ************************************************************************ */
-
-    /**
-     * <p>Restituisce la rilevazione con data pi&uacute; recente.</p>
-     *
-     * @return <code>LinkedList&lt;CodeBean&gt;</code> - una lista ordinata di tutti i possibili valori con cui puo' essere descritta la complessita' di un elemento
-     * @throws AttributoNonValorizzatoException se l'id del CodeBean che rappresenta l'ultima rilevazione non e' stato valorizzato (p.es. per un difetto della query)
-     */
-    public static CodeBean getLastSurvey()
-                                  throws AttributoNonValorizzatoException {
-        return new CodeBean(lastSurvey);
     }
 
 }
