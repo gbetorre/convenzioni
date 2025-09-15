@@ -1,70 +1,87 @@
-  <div class="main-banner">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="top-text header-text">
-            <h6>Oltre 80+ Convenzioni Attive</h6>
-            <h2>Cerca Convenzione</h2>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:setLocale value="it_IT"/>
+<c:set var="cons" value="${requestScope.convenzioni}" scope="page" />
+    <link rel="stylesheet" href="${initParam.urlDirStyles}col.css">
+    <link rel="stylesheet" href="${initParam.urlDirFrameworks}DataTables/css/datatables.min.css" type="text/css" />
+    <div class="main-banner">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="top-text header-text">
+              <h6>
+                <span class="badge badge-pill badge-light">
+                  <c:out value="${cons.size()}" />
+                </span> 
+                &nbsp;Convenzioni Attive
+              </h6>
+              <h2>Cerca Convenzione</h2>
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <form id="search-form" name="gs" method="post" role="search" action="#">
+              <div class="row">
+                <div class="col-lg-3 align-self-center">
+                  <fieldset>
+                    <select name="area" class="form-select" aria-label="Area" id="chooseCategory" onchange="this.form.click()">
+                      <option selected>Tutte le tipologie</option>
+                      <option value="New Village">ACCORDO</option>
+                      <option value="Old Town">ACCORDO QUADRO</option>
+                      <option value="Modern City">ACCORDO ATTUATIVO</option>
+                      <option value="Old Town">CONVENZIONE</option>
+                      <option value="Modern City">CONVENZIONE QUADRO</option>
+                      <option value="New Village">PROTOCOLLO D`INTESA</option>
+                      <option value="Old Town">CONTO TERZI</option>
+                      <option value="Modern City">COMODATO</option>
+                      <option value="Modern City">CONTRATTO</option>
+                    </select>
+                  </fieldset>
+                </div>
+                <div class="col-lg-3 align-self-center">
+                  <fieldset>
+                    <input type="text" name="address" class="searchText" placeholder="Chiave di ricerca" autocomplete="on" required>
+                  </fieldset>
+                </div>
+                <div class="col-lg-3 align-self-center">
+                  <fieldset>
+                    <select name="price" class="form-select" aria-label="Default select example" id="chooseCategory" onchange="this.form.click()">
+                      <option selected>Tutte le finalit&agrave;</option>
+                      <option value="$100 - $250">DIDATTICA</option>
+                      <option value="$250 - $500">RICERCA</option>
+                      <option value="$500 - $1000">TERZA MISSIONE</option>
+                      <option value="$1000+">TERZO SETTORE</option>
+                      <option>CENTRO INTERUNIVERSITARIO</option>
+                    </select>
+                  </fieldset>
+                </div>
+                <div class="col-lg-3">                        
+                    <fieldset>
+                        <button class="main-button"><i class="fa fa-search"></i> Cerca</button>
+                    </fieldset>
+                </div>
+              </div>
+            </form>
+          </div>
+          <hr class="separator">
+          <hr class="row">
+          <div class="col-lg-12">
+            <div class="row text-white text-center">
+              <h4>oppure filtra qui sotto tra le convenzioni attive</h4>
+            <!--           
+            <ul class="categories">
+              <li><a href="category.html"><span class="icon"><img src="assets/images/search-icon-01.png" alt="Home"></span> Apartments</a></li>
+              <li><a href="listing.html"><span class="icon"><img src="assets/images/search-icon-02.png" alt="Food"></span> Food &amp; Life</a></li>
+              <li><a href="#"><span class="icon"><img src="assets/images/search-icon-03.png" alt="Vehicle"></span> Cars</a></li>
+              <li><a href="#"><span class="icon"><img src="assets/images/search-icon-04.png" alt="Shopping"></span> Shopping</a></li>
+              <li><a href="#"><span class="icon"><img src="assets/images/search-icon-05.png" alt="Travel"></span> Traveling</a></li>
+            </ul>
+            -->
+            </div>
           </div>
         </div>
-        <div class="col-lg-12">
-          <form id="search-form" name="gs" method="post" role="search" action="#">
-            <div class="row">
-              <div class="col-lg-3 align-self-center">
-                <fieldset>
-                  <select name="area" class="form-select" aria-label="Area" id="chooseCategory" onchange="this.form.click()">
-                    <option selected>Tutte le tipologie</option>
-                    <option value="New Village">ACCORDO</option>
-                    <option value="Old Town">ACCORDO QUADRO</option>
-                    <option value="Modern City">ACCORDO ATTUATIVO</option>
-                    <option value="Old Town">CONVENZIONE</option>
-                    <option value="Modern City">CONVENZIONE QUADRO</option>
-                    <option value="New Village">PROTOCOLLO D`INTESA</option>
-                    <option value="Old Town">CONTO TERZI</option>
-                    <option value="Modern City">COMODATO</option>
-                    <option value="Modern City">CONTRATTO</option>
-                  </select>
-                </fieldset>
-              </div>
-              <div class="col-lg-3 align-self-center">
-                  <fieldset>
-                      <input type="address" name="address" class="searchText" placeholder="Chiave di ricerca" autocomplete="on" required>
-                  </fieldset>
-              </div>
-              <div class="col-lg-3 align-self-center">
-                <fieldset>
-                  <select name="price" class="form-select" aria-label="Default select example" id="chooseCategory" onchange="this.form.click()">
-                    <option selected>Tutte le finalit&agrave;</option>
-                    <option value="$100 - $250">DIDATTICA</option>
-                    <option value="$250 - $500">RICERCA</option>
-                    <option value="$500 - $1000">TERZA MISSIONE</option>
-                    <option value="$1000+">TERZO SETTORE</option>
-                    <option>CENTRO INTERUNIVERSITARIO</option>
-                  </select>
-                </fieldset>
-              </div>
-              <div class="col-lg-3">                        
-                  <fieldset>
-                      <button class="main-button"><i class="fa fa-search"></i> Cerca</button>
-                  </fieldset>
-              </div>
-            </div>
-          </form>
-        </div>
-        <!-- 
-        <div class="col-lg-10 offset-lg-1">
-          <ul class="categories">
-            <li><a href="category.html"><span class="icon"><img src="assets/images/search-icon-01.png" alt="Home"></span> Apartments</a></li>
-            <li><a href="listing.html"><span class="icon"><img src="assets/images/search-icon-02.png" alt="Food"></span> Food &amp; Life</a></li>
-            <li><a href="#"><span class="icon"><img src="assets/images/search-icon-03.png" alt="Vehicle"></span> Cars</a></li>
-            <li><a href="#"><span class="icon"><img src="assets/images/search-icon-04.png" alt="Shopping"></span> Shopping</a></li>
-            <li><a href="#"><span class="icon"><img src="assets/images/search-icon-05.png" alt="Travel"></span> Traveling</a></li>
-          </ul>
-        </div>
-         -->
       </div>
     </div>
-  </div>
 
   <!-- 
   <div class="popular-categories">
@@ -227,58 +244,43 @@
   </div>
   -->
 
-
 <!-- DataTables Bootstrap 5 CSS -->
 <!--   <link href="https://cdn.datatables.net/1.13.5/css/dataTables.bootstrap5.min.css" rel="stylesheet" /> -->
 <!--   <link href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css" rel="stylesheet" /> -->
-<link rel="stylesheet" href="${initParam.urlDirFrameworks}DataTables/css/datatables.min.css" type="text/css" />
 
-<div class="container my-4">
-  <h2>Apartment Listings</h2>
-  <table id="apartmentTable" class="table table-striped table-bordered" style="width:100%">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Location</th>
-        <th>Price</th>
-        <th>Bedrooms</th>
-        <th>Bathrooms</th>
-        <th>Size (sq ft)</th>
-        <th>Available From</th>
-        <th>Contact Email</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>101</td>
-        <td>Sunny Apartment</td>
-        <td>New York</td>
-        <td>$1500</td>
-        <td>2</td>
-        <td>1</td>
-        <td>850</td>
-        <td>2025-10-01</td>
-        <td>contact@sunnyapt.com</td>
-        <td>Available</td>
-      </tr>
-      <tr>
-        <td>102</td>
-        <td>City View Flat</td>
-        <td>San Francisco</td>
-        <td>$2200</td>
-        <td>3</td>
-        <td>2</td>
-        <td>1200</td>
-        <td>2025-09-15</td>
-        <td>info@cityviewflat.com</td>
-        <td>Occupied</td>
-      </tr>
-      <!-- add more rows here -->
-    </tbody>
-  </table>
-</div>
+    <div class="container my-4">
+      <h2>Elenco Convenzioni</h2>
+      <table id="apartmentTable" class="table table-striped table-bordered datatable">
+        <thead>
+          <tr>
+            <th>Tipologia</th>
+            <th>Titolo</th>
+            <th>Data approvazione</th>
+            <th>Nota approvazione</th>
+            <th>Data sottoscrizione</th>
+            <th>Nota sottoscrizione</th>
+            <th>Data scadenza</th>
+            <th>Nota scadenza</th>
+            <th>Num. repertorio</th>
+          </tr>
+        </thead>
+        <tbody>
+        <c:forEach var="con" items="${pageScope.cons}">
+          <tr>
+            <td><c:out value="${con.tipo}" /></td>
+            <td><c:out value="${con.titolo}" /></td>
+            <td><fmt:formatDate value="${con.dataApprovazione}" pattern="dd MMMMM yyyy" /></td>
+            <td><c:out value="${con.notaApprovazione}" /></td>
+            <td><c:out value="${con.dataSottoscrizione}" /></td>
+            <td><c:out value="${con.notaSottoscrizione}" /></td>
+            <td><c:out value="${con.dataScadenza}" /></td>
+            <td><c:out value="${con.notaScadenza}" /></td>
+            <td><c:out value="${con.numRepertorio}" /></td>
+          </tr>
+        </c:forEach>
+        </tbody>
+      </table>
+    </div>
 
 
 <!-- DataTables JS -->
@@ -289,31 +291,36 @@
 <script>
   $(document).ready(function () {
     $('#apartmentTable').DataTable({
-      "pageLength": 10,
+      "pageLength":   10,
       "lengthChange": true,
-      "ordering": true,
-      "searching": true,
-      "info": true,
-      "autoWidth": false,
+      "ordering":     true,
+      "searching":    true,
+      "info":         true,
+      "autoWidth":    false,
       "language": {
         "search": "_INPUT_",
-        "searchPlaceholder": "Filter apartments..."
+        "searchPlaceholder": "Filtra convenzione...",
+        "lengthMenu": "Mostra _MENU_ risultati per pagina",    // Label for the dropdown to select page length
+        "info": "Mostrati _START_ a _END_ di _TOTAL_",  // Info about currently shown entries
+        "infoEmpty": "Mostrati 0 a 0 di 0 risultati trovati",      // When empty
+        "infoFiltered": "(filtrati da _MAX_ di risultati totali)", // Filter info
+        "zeroRecords": "Nessun risultato trovato"     // When no results found
       }
     });
   });
 </script>
 
-
+      <!-- 
   <div class="recent-listing">
     <div class="container">
-      <!-- 
+
       <div class="row">
         <div class="col-lg-12">
           <div class="section-heading">
             <h2>Recent Listing</h2>
             <h6>Check Them Out</h6>
           </div>
-        -->
+
   
         <div class="col-lg-12">
 
@@ -586,3 +593,5 @@
       </div>
     </div>
   </div>
+        -->
+        
