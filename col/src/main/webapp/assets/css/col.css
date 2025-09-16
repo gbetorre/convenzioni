@@ -1,12 +1,30 @@
-/*---------------------- HORIZONTAL ROWS ------------------------*/
+/*-------------------------------- DASHED ARROW --------------------------------*/
 
-hr {
-  clear: both; height: 1px;
-  border-top: 1px solid transparent;
-  border-right: 0 solid #FFFFFF;
-  border-bottom: 0 solid #FFFFFF;
-  border-left: 0 solid #FFFFFF;
+a.arrow-link {
+  display: block;
+  width: 0;
+  height: 0;
+  margin: 20px auto;
+  border-left: 20px dashed transparent;
+  border-right: 20px dashed transparent;
+  border-top: 30px dashed white;
+  cursor: pointer;
+  text-decoration: none; /* no underline */
 }
+
+.welcome-message {
+  font-family: "Great Vibes", cursive;
+  color: white;
+  font-size: 1.8rem;
+  font-weight: 400;
+  font-style: italic;
+  position: relative;
+  transform: translateY(-40%);
+  display: inline-block;
+  margin-left: 20px;
+}
+
+/*------------------------------ HORIZONTAL ROWS -------------------------------*/
 
 hr.separator {
   height: 1px; 
@@ -52,7 +70,7 @@ hr.row       {
   border-top-color: #CCC;
 }
 
-/*---------------------- DATATABLE ------------------------*/
+/*-------------------------------- DATATABLE -----------------------------------*/
 
 /* Reduce overall font size */
 .dataTable {
