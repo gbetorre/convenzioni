@@ -111,6 +111,7 @@ Il software è un'applicazione Java three-tier
 # History
 
 ```
+* [0.1.5] (Sep 16, 2025) Implementato messaggio di benvenuto post-login
 * [0.1.4] (Sep 15, 2025) Implementata generazione elenco convenzioni in pagina di landing
 * [0.1.3] (Sep 12, 2025) Prima bozza estrazione convenzioni
 * [0.1.2] (Sep 10, 2025) Implementata pagina di errore

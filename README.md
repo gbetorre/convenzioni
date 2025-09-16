@@ -59,6 +59,7 @@ When will be ready, I will release, package or tag
 # History
 
 ```
+* [0.1.5] (Sep 16, 2025) Implemented post-login welcome back message
 * [0.1.4] (Sep 15, 2025) Implemented dynamic agreements list in landing page
 * [0.1.3] (Sep 12, 2025) First draft of agreements extraction
 * [0.1.2] (Sep 10, 2025) Implement error page
