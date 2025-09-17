@@ -73,7 +73,7 @@ import it.col.exception.CommandException;
  * <p>Created on Thu Jul 10 03:50:19 PM CEST 2025</p>
  * 
  * @author Roberto Posenato
- * @author <a href="mailto:giovanroberto.torre@univr.it">Giovanroberto Torre</a>
+ * @author <a href="mailto:gianroberto.torre@gmail.com">Giovanroberto Torre</a>
  */
 public class DataUrl implements Constants {
 
