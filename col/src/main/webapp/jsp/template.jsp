@@ -1,7 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%-- c:set var="head" value="${requestScope.header}" scope="page" />
-<c:set var="foot" value="${requestScope.footer}" scope="page" /--%>
 <!DOCTYPE html>
 <html lang="it">
   <head>
@@ -32,34 +30,22 @@
       <%@ include file="header.jspf" %>
     </div>
     </c:if>
-    <%-- Menu orizzontale -->
-    <div id="divMenu"> -->
-      <%@ include file="menu.jspf"%>
-    </div> 
-     --%>
     <!-- Corpo pagina -->
-    <div class="page"><%--
-      <a href="#top" id="goTop">
-        <span>
-          <img src="${initParam.urlDirectoryImmagini}ico-up.png" class="imgTop">
-        </span>
-      </a> --%>
+    <div class="page">
       <jsp:include page="${fileJsp}" />
     </div>
     <br><br>
-    <%-- Footer -->
+    <%-- Footer 
     <footer>
       <%@ include file="footer.jspf" %>
     </footer>
     --%>
-  </c:catch>
-  <c:out value="${exception}" />
-    <!-- Scripts -->
-<%--     <script src="${initParam.urlDirFrameworks}jquery/jquery.min.js"></script> --%>
     <script src="${initParam.urlDirFrameworks}bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="${initParam.urlDirScripts}owl-carousel.js"></script>
     <script src="${initParam.urlDirScripts}animation.js"></script>
     <script src="${initParam.urlDirScripts}imagesloaded.js"></script>
     <script src="${initParam.urlDirScripts}custom.js"></script>
+  </c:catch>
+  <c:out value="${exception}" />
   </body>
 </html>
