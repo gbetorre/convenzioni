@@ -202,10 +202,6 @@ public class Main extends HttpServlet {
          */
         req.setAttribute("baseHref", baseHref);
         /*
-         * Prepara il menu
-         */
-        String surveyCode = req.getParameter(Constants.PARAM_SURVEY);
-        /*
          * Disabilita Cache
          */
         res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
