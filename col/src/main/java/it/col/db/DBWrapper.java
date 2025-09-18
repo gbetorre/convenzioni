@@ -448,6 +448,8 @@ public class DBWrapper extends QueryImpl {
                 if (rs.next()) {
                     usr = new PersonBean();
                     BeanUtil.populate(usr, rs);
+                    // Aggiusta i nomi (prima lettera grande, altre piccole)
+                    usr.setNome(Utils.formatNames(usr.getNome()));
                     /* Se ha trovato l'utente, ne cerca i ruoli giuridici */
                     pst = null;
                     pst = con.prepareStatement(GET_RUOLI);
