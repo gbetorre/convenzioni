@@ -274,54 +274,7 @@ public class Data extends HttpServlet implements Constants {
         AbstractMap<?,?> mappa = null;
         // Message
         log.info("===> Log su servlet Data. <===");
-        // Decodifica la richiesta
-        try {
-            // Lista delle Command abilitate a servire un output csv
-            csvCommands.add(COMMAND_PROCESS);   //Estrazione processi   ("data?q=pr")
-            csvCommands.add(COMMAND_STRUCTURES);//Estrazione strutture  ("data?q=st")
-            csvCommands.add(COMMAND_AUDIT);     //Estrazione interviste ("data?q=in")
-            csvCommands.add(COMMAND_RISK);      //Estrazione rischi     ("data?q=ri")
-            csvCommands.add(COMMAND_REPORT);    //Estrazione rischi     ("data?q=mu")
-            // Verifica se deve servire un output su file
-            if (format != null && !format.isEmpty()) {
-                // Output è Comma Separated Values
-                if (format.equalsIgnoreCase(CSV)) {
 
-                        return;
-                    }
-                }
-                // Output è Rich Text Format
-                else if (format.equalsIgnoreCase(RTF)) {
-                    // Controlla che la command su cui si invoca la funzione sia quella abilitata
-                    if (qToken.equalsIgnoreCase(COMMAND_REPORT)) {
- 
-                        return;
-                    }
-                }
-                // Output è HyperText Markup Language
-                else if (format.equalsIgnoreCase(HTML)) {
-                    // Al momento l'unica Command abilitata a gestire output html
-                    if (qToken.equalsIgnoreCase(COMMAND_REPORT)) {
-                        // Genera il file RTF
-                        makeHTML(req, res, part);
-                        // Non ha finito: deve invocare la pagina dinamica 
-                        // (che a sua volta fornirà l'output per l'html statico scaricato)
-                    }
-                }
-                // Output è in finestra di popup
-                else {
-                    // Ultimo valore ammesso: pop
-                    if (!format.equalsIgnoreCase("pop")) { 
-                        // Valore del parametro 'out' non ammesso
-                        String msg = FOR_NAME + "Valore del parametro \'out\' (" + format + ") non consentito. Impossibile visualizzare i risultati.\n";
-                        log.severe(msg);
-                        throw new ServletException(msg);
-                    }
-                }
-
-        } catch (Exception ce) {
-            throw new ServletException(FOR_NAME + "Problema nel recupero dei dati richiesti.\n" + ce.getMessage(), ce);
-        }
         // Forworda la richiesta, esito finale di tutto
         RequestDispatcher dispatcher = servletContext.getRequestDispatcher(fileJsp);
         dispatcher.forward(req, res);
@@ -405,44 +358,6 @@ public class Data extends HttpServlet implements Constants {
                           String.format("%02d", new Integer(now.get(Calendar.MINUTE))) +
                           String.format("%02d", new Integer(now.get(Calendar.SECOND)));
         return fileName;
-    }
-
-    
-    /**
-     * <p>Calcola il colore di highlight in Rich Text Format.</p>
-     * <p>Purtroppo, questo formato, sviluppato da Microsoft, non 
-     * implementa in modo efficace tutti gli attributi di formattazione
-     * ed &egrave; molto dipendente dall'editor utilizzato per la visualizzazione
-     * e dal sistema operativo che lo ospita, per cui le codifiche degli highlight,
-     * che, almeno sulla carta, dovevano essere ben definite 
-     * (<a href="https://www.biblioscape.com/rtf15_spec.htm#Heading45">v. p.es.</a>), 
-     * non si comportano come atteso (oppure, l'implementazione richiederebbe 
-     * maggiore approfondimento).<br>
-     * In ogni caso, questo formato, che pure sembrava un ottimo compromesso
-     * fra human readibility, formattazione ricca (appunto) e ampia fruibilit&egrave; 
-     * e portabilit&agrave;, si rivela in realt&agrave; rigido, tutt'altro che "ricco",
-     * ormai obsoleto e poco profittevole in termini di investimento di tempo di sviluppo.<br>
-     * Preferibile, pertanto, puntare oggi direttamente su un formato estremamente
-     * preciso, come PDF, oppure direttamente su librerie per la generazione in formati
-     * pi&uacute; attuali, proprietari (e.g. .docx) o aperti (e.g. ODF).</p> 
-     * 
-     * @param riskLevel livello di rischio da evidenziare 
-     * @return valore di highlight da stampare nel documento
-     */
-    public static String getHighlight(String riskLevel) {
-        if (riskLevel.equals(LIVELLI_RISCHIO[0])) {
-            return "\\highlight4";
-        } else if (riskLevel.equals(LIVELLI_RISCHIO[1])) {
-            return "\\highlight0";
-        } else if (riskLevel.equals(LIVELLI_RISCHIO[2])) {
-            return "\\highlight1";
-        } else if (riskLevel.equals(LIVELLI_RISCHIO[3])) {
-            return "\\highlight2";
-        } else if (riskLevel.equals(LIVELLI_RISCHIO[4])) {
-            return "\\highlight13";
-        } else {
-            return "\\highlight0";
-        }
     }
     
     
