@@ -152,6 +152,43 @@ public class Utils implements Constants {
         return new String(s1 + s.substring(1));
     }
     
+    
+    /**
+     * <p>Data in input una stringa di nomi qualunque, restituisce la stringa 
+     * avente lo stesso contenuto dell'originale ma con la prima lettera
+     * di ogni nome in maiuscolo e il resto in minuscolo.</p>
+     * <p>Esempio:<ul>
+     * <li>formatNames("ELIZA") -> Eliza</li>
+     * <li>formatNames("CHARLES LINDBERG") -> Charles Lindberg</li>
+     * <li>formatNames("JOHN JACOB JINGLEHEIMER") -> John Jacob Jingleheimer</li>
+     * <li>formatNames("James MORGAN") -> James Morgan</li>
+     *  </ul></p>
+     *  
+     * @param names la String da formattare
+     * @return <code>String</code> lista di nomi formattati
+     */
+    public static String formatNames(String names) {
+        String[] words = names.trim().split("\\s+");
+        StringBuilder formatted = new StringBuilder();
+        int count = 0;
+        // Parse names and capitalize the first letter, lowerizing the rest
+        do {
+            String word = words[count];
+            if (word.length() == 0) {
+                continue;
+            }
+            // Each token: capitalize first letter, lowercase rest
+            formatted.append(Character.toUpperCase(word.charAt(0)))
+                     .append(word.substring(1).toLowerCase());
+            count++;
+            // Test if there are other (middle) names
+            if (count < words.length) {
+                formatted.append(" ");
+            }
+        } while (count < words.length);
+        return formatted.toString();
+    }
+    
 
     /**
      * <p>Controlla se una stringa corrisponde a un valore intero.</p>
