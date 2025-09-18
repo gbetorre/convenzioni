@@ -414,18 +414,6 @@ public class ConfigManager extends HttpServlet {
          * le etichette utilizzabili nella costruzione dei nomi dei files 
          * generati dall'applicazione in funzione del valore del parametro p.
          */
-        labels = null;
-        // La istanzia
-        labels = new ConcurrentHashMap<>();
-        // La carica
-        labels.put(Constants.PART_SELECT_QSS,   Constants.INTERVIEWS);
-        labels.put(Constants.PART_RESUME_QST,   Constants.INTERVIEW);
-        labels.put(Constants.COMMAND_STRUCTURES,Constants.STRUCTURES);
-        labels.put(Constants.COMMAND_PROCESS,   Constants.PROCESS);
-        labels.put(Constants.COMMAND_RISK,      Constants.RISKS);
-        labels.put(Constants.COMMAND_REPORT,    Constants.REPORT_MDM);
-        labels.put(Constants.PART_SELECT_STR,   Constants.LOG_IND);
-        labels.put(Constants.PART_MEASURES,     Constants.REPORT_MDM_MES);
     }
 
 
