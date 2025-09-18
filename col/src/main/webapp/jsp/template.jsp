@@ -34,12 +34,9 @@
     <div class="page">
       <jsp:include page="${fileJsp}" />
     </div>
-    <br><br>
-    <%-- Footer 
-    <footer>
-      <%@ include file="footer.jspf" %>
-    </footer>
-    --%>
+    <!-- Footer -->
+    <hr class="separator"> 
+    <%@ include file="footer.jspf" %>
     <script src="${initParam.urlDirFrameworks}bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="${initParam.urlDirScripts}owl-carousel.js"></script>
     <script src="${initParam.urlDirScripts}animation.js"></script>
