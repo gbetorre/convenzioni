@@ -38,15 +38,13 @@ package it.col.util;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.LinkedList;
 
 import it.col.bean.CodeBean;
 
 
 /**
  * <p>Questa &egrave; l'interfaccia contenente le costanti utilizzabili da tutti i 
- * consumer java della web-application &nbsp;<code>Rischi on Line (rol)</code>.</p>
+ * consumer java della web-application &nbsp;<code>Convenzioni on Line (col)</code>.</p>
  * <p>Definisce costanti di utilit&agrave;,
  * insiemi di valori ammessi per parametri applicativi, maschere di input, 
  * etichette etc.</p>
@@ -55,7 +53,7 @@ import it.col.bean.CodeBean;
  */
 public interface Constants extends Serializable {
     /* ************************************************************************ *
-     *        Costanti parlanti per valori interi di inizializzazione           *
+     *            Costanti parlanti per valori di inizializzazione              *
      *  - Se un valore vale -1 significa che è stato inizializzato da Command   *
      *  - Se un valore vale -2 significa che è stato inizializzato nel Bean     *
      *  - Se un valore vale  0 è la cardinalità di una struttura vuota          *    
@@ -125,222 +123,29 @@ public interface Constants extends Serializable {
      */
     public static final byte ELEMENT_LEV_4 = 4;
     /**
-     * <p>Costante parlante per impostare il livello di voci di menu
-     * che non hanno un livello superiore (sono padri di sottomenu)</p>
-     */
-    public static final int MAIN_MENU = 0;
-    /**
-     * <p>Costante parlante per impostare il livello di voci di sottomenu
-     * che hanno un solo livello superiore (padre di livello 0)</p>
-     */
-    public static final int SUB_MENU = 1;
-    /**
-     * <p>Costante parlante per la mitigazione apportata da una misura generica</p>
-     */
-    public static final float WEIGHT_GENERIC = 0.5f;
-    /**
-     * <p>Costante parlante per la mitigazione apportata da una misura generica</p>
-     */
-    public static final float WEIGHT_SPECIFIC = 1.0f;
-    /* ************************************************************************ *
-     *              Costanti parlanti per valori boolean di flags               *
-     * ************************************************************************ */
-    /**
      * <p>Costante parlante per flag di recupero sessione utente.</p>
      */
     public static final boolean IF_EXISTS_DONOT_CREATE_NEW = false;
-    /* ************************************************************************ *
-     *      Costanti corrispondenti ai parametri ammessi sulla querystring      *
-     * ************************************************************************ */
     /**
-     * <p>Costante identificante il parametro della rilevazione.</p>
+     * <p>Etichetta per valore indecidibile</p>
      */
-    public static final String PARAM_SURVEY             = "r";
-    /* 
-     * --------------------    COMMANDS    -------------------- 
-     */
+    public static final String ND = "Non determinabile";
+    /* ************************************************************************ *
+     * ---------------------------    COMMANDS    ----------------------------  *
+     * ************************************************************************ */
     /**
      * <p>Costante per il parametro identificante la HomePageCommand.</p>
      */
     public static final String COMMAND_HOME             = "home";
     /**
-     * <p>Costante per il parametro identificante la Command delle strutture.</p>
+     * <p>Costante per il parametro identificante la Command delle convenzioni.</p>
      */
-    public static final String COMMAND_STRUCTURES       = "st";    
+    public static final String COMMAND_CONV             = "conv";
+    /* ************************************************************************ *
+     * --------------------------    QUERYSTRINGS    -------------------------- *
+     * ************************************************************************ */
     /**
-     * <p>Costante per il parametro identificante la Command dei processi.</p>
-     */
-    public static final String COMMAND_PROCESS          = "pr";
-    /**
-     * <p>Costante per il parametro identificante la Command dei rischi.</p>
-     */
-    public static final String COMMAND_RISK             = "ri";
-    /**
-     * <p>Costante per il parametro identificante la Command delle interviste.</p>
-     */
-    public static final String COMMAND_AUDIT            = "in";
-    /**
-     * <p>Costante per il parametro identificante la Command della reportistica.</p>
-     */
-    public static final String COMMAND_REPORT           = "mu";
-    /**
-     * <p>Costante per il parametro identificante la Command delle misure di mitigazione.</p>
-     */
-    public static final String COMMAND_MEASURE          = "ms";
-    /**
-     * <p>Costante per il parametro identificante la Command degli indicatori
-     * di monitoraggio (sono diversi dagli indicatori di probabilit&agrave;
-     * e impatto, che si sarebbero dovuti chiamare indicatore_at).</p>
-     */
-    public static final String COMMAND_INDICATOR        = "ic";
-    /* 
-     * --------------------    MAIN PARTS    -------------------- 
-     */
-    /**
-     * <p>Costante per il parametro identificante la parte dei macroprocessi.</p>
-     */
-    public static final String PART_MACROPROCESS        = "mac";
-    /**
-     * <p>Costante per il parametro identificante parte applicazione legata ad un processo.</p>
-     */
-    public static final String PART_PROCESS             = "pro";
-    /**
-     * <p>Costante per il parametro identificante la parte di selezione strutture.</p>
-     */
-    public static final String PART_SELECT_STR          = "str";
-    /**
-     * <p>Costante per il parametro identificante parte legata ai fattori abilitanti.</p>
-     */
-    public static final String PART_FACTORS             = "fat";
-    /**
-     * <p>Costante per il parametro identificante reportistica rischi.</p>
-     */
-    public static final String PART_RISKS               = "ris";
-    /**
-     * <p>Costante per il parametro identificante reportistica misure.</p>
-     */
-    public static final String PART_MEASURES            = "mes";
-    /**
-     * <p>Costante per il parametro identificante elenco indicatori.</p>
-     */
-    public static final String PART_INDICATOR           = "ind";
-    /**
-     * <p>Costante per il parametro identificante la form di ricerca.</p>
-     */
-    public static final String PART_SEARCH              = "ric";
-    /**
-     * <p>Costante per il parametro identificante le infografiche.</p>
-     */
-    public static final String PART_GRAPHICS            = "gra";
-    /**
-     * <p>Costante per il parametro identificante elenco misure monitorate.</p>
-     */
-    public static final String PART_MONITOR             = "mon";
-    /* 
-     * --------------------    PART PARAMS    -------------------- 
-     */
-    /**
-     * <p>Costante per il parametro identificante la parte di elenco interviste.</p>
-     */
-    public static final String PART_SELECT_QSS          = "sqs";
-    /**
-     * <p>Costante per il parametro identificante la parte di presentazione quesiti.</p>
-     */
-    public static final String PART_SELECT_QST          = "sqt";
-    /**
-     * <p>Costante per il parametro identificante la parte di conferma quesiti.</p>
-     */
-    public static final String PART_CONFIRM_QST         = "cqs";
-    /**
-     * <p>Costante per il parametro identificante la parte di riepilogo quesiti.</p>
-     */
-    public static final String PART_RESUME_QST          = "rqs";
-    /**
-     * <p>Costante per il parametro identificante la funzione di aggiunta di un nuovo rischio.</p>
-     */
-    public static final String PART_INSERT_RISK         = "adr";
-    /**
-     * <p>Costante per il parametro identificante la funzione di associazione tra un rischio e un processo.</p>
-     */
-    public static final String PART_INSERT_RISK_PROCESS = "adp";
-    /**
-     * <p>Costante per il parametro identificante la funzione di associazione tra 
-     * un rischio e un fattore abilitante nel contesto di un processo.</p>
-     */
-    public static final String PART_INSERT_F_R_P        = "adf";
-    /**
-     * <p>Costante per il parametro identificante la funzione di associazione tra 
-     * un rischio e una misura di mitigazione nel contesto di un processo.</p>
-     */
-    public static final String PART_INSERT_M_R_P        = "adm";
-    /**
-     * <p>Costante per il parametro identificante la funzione di aggiunta 
-     * dettagli monitoraggio (monitor data) ad una misura monitorata.</p>
-     */
-    public static final String PART_INSERT_MONITOR_DATA = "add";
-    /**
-     * <p>Costante per il parametro identificante la funzione di selezione 
-     * dettagli monitoraggio (monitor data) relativi a una misura monitorata.</p>
-     */
-    public static final String PART_SELECT_MONITOR_DATA = "sed";
-    /**
-     * <p>Costante per il parametro identificante la funzione di aggiunta 
-     * di una nuova misura di mitigazione del rischio.</p>
-     */
-    public static final String PART_INSERT_MEASURE      = "inm";
-    /**
-     * <p>Costante per il parametro identificante la funzione di aggiunta 
-     * di un nuovo indicatore di monitoraggio.</p>
-     */
-    public static final String PART_INSERT_INDICATOR    = "ini";    
-    /**
-     * <p>Costante per il parametro identificante la funzione di aggiunta 
-     * di una nuova misurazione relativamente all'applicazione di una misura.</p>
-     */
-    public static final String PART_INSERT_MEASUREMENT  = "imm";    /**
-     * <p>Costante per il parametro identificante la funzione di visualizzazione 
-     * di una misurazione.</p>
-     */
-    public static final String PART_SELECT_MEASUREMENT  = "smm";
-    /**
-     * <p>Costante per il parametro identificante la funzione di aggiunta 
-     * di un nuovo processo o macroprocesso.</p>
-     */
-    public static final String PART_INSERT_PROCESS      = "ipr";
-    /**
-     * <p>Costante per il parametro identificante la funzione di aggiunta 
-     * di uno o pi&uacute; input collegati ad un processo.</p>
-     */
-    public static final String PART_INSERT_INPUT        = "inp";
-    /**
-     * <p>Costante per il parametro identificante la funzione di aggiunta 
-     * di uno o pi&uacute; fasi collegate ad un processo.</p>
-     */
-    public static final String PART_INSERT_ACTIVITY     = "iac";
-    /**
-     * <p>Costante per il parametro identificante la funzione di aggiunta 
-     * di strutture/soggetti collegati alle fasi.</p>
-     */
-    public static final String PART_INSERT_ACT_STRUCTS  = "ias";
-    /**
-     * <p>Costante per il parametro identificante la funzione di aggiunta 
-     * di output.</p>
-     */
-    public static final String PART_INSERT_OUTPUT       = "ino";
-    /**
-     * <p>Costante per il parametro identificante la parte di 
-     * aggiunta/aggiornamento nota PxI (giudizio sintetico).</p>
-     */
-    public static final String PART_PI_NOTE             = "pin";
-    /* 
-     * --------------------    FORMAT PARAMS    -------------------- 
-     */
-    /**
-     * <p>Costante per il parametro identificante parte applicazione legata ad input.</p>
-     */
-    public static final String PART_INPUT               = "int";
-    /**
-     * <p>Costante per il parametro identificante parte applicazione legata ad output.</p>
+     * <p>Costante per il parametro identificante il tipo di output.</p>
      */
     public static final String PART_OUTPUT              = "out";
     /**
@@ -360,6 +165,33 @@ public interface Constants extends Serializable {
      */
     public static final String REFERRAL                 = "ref";
     /* 
+     * --------------------    OPERATIONS    -------------------- 
+     */
+    /**
+     * <p>Costante per il parametro identificante che c'è da fare un'operazione.</p>
+     */
+    public static final String OPERATION                = "op";
+    /**
+     * <p>Costante per il parametro identificante l'oggetto dell'operazione.</p>
+     */
+    public static final String OBJECT                   = "obj";
+    /**
+     * <p>Costante per il parametro identificante la funzione di selezione di un elemento.</p>
+     */
+    public static final String SELECT                   = "sel";
+    /**
+     * <p>Costante per il parametro identificante la funzione di inserimenot di un elemento.</p>
+     */
+    public static final String INSERT                   = "ins";
+    /**
+     * <p>Costante per il parametro identificante la funzione di aggiornamento di un elemento.</p>
+     */
+    public static final String UPDATE                   = "upd";
+    /**
+     * <p>Costante per il parametro identificante la funzione di eliminazione di un elemento.</p>
+     */
+    public static final String DELETE                   = "del";
+    /* 
      * --------------------    OTHER PARAMS    -------------------- 
      */
     /**
@@ -370,154 +202,6 @@ public interface Constants extends Serializable {
      * <p>Costante per il parametro identificante la pagina dei credits dell'applicazione.</p>
      */
     public static final String PART_CREDITS             = "crd";
-    /* 
-     * --------------------    GENERIC OPERATIONS    -------------------- 
-     */
-    /**
-     * <p>Costante per il parametro identificante la funzione di aggiornamento di una entit&agrave;.</p>
-     */
-    public static final String UPDATE                   = "upd";
-    /**
-     * <p>Costante per il parametro identificante la funzione di eliminazione di una entit&agrave;.</p>
-     */
-    public static final String DELETE                   = "del";
-    /* ************************************************************************ *
-     *   Enumerativi statici per incapsulare i valori di enumerativi dinamici   *
-     * ************************************************************************ */
-    /**
-     * <p>Valori possibili dell'attributo stato di struttura.</p>
-     */
-    static final String[] STATI_STRUTTURA = {"ATTIVA", "DISMESSA"};
-    /**
-     * <p>Valori possibili di valori convenzionali corrispondenti 
-     * a tipi diversi di liste.<br>
-     * Rispettivamente:<dl>
-     * <dt>I</dt>
-     * <dd>Lista Input</dd>
-     * <dt>F</dt>
-     * <dd>Lista Fasi</dd>
-     * <dt>O</dt>
-     * <dd>Lista Output</dd>
-     * <dt>R</dt>
-     * <dd>Lista Rischi</dd>
-     * <dt>V</dt>
-     * <dd>Lista Interviste (V = View)</dd>
-     * <dt>M</dt>
-     * <dd>Lista Macroprocessi AT</dd>
-     * <dt>S</dt>
-     * <dd>Lista Strutture</dd>
-     * <dt>T</dt>
-     * <dd>Lista Soggetti Interessati (o Terzi = T)</dd>
-     * <dt>P</dt>
-     * <dd>Lista Processi AT</dd>
-     * <dt>C</dt>
-     * <dd>Lista Valori Indicatori precedenti (o valori in cache = C)</dd>
-     * <dt>A</dt>
-     * <dd>Lista Valori Indicatori in memoria (o valori Attuali = A)</dd>
-     * </dl>
-     * </p>
-     */
-    static final String[] TIPI_LISTE = {"I", "F", "O", "R", "V", "M", "S", "T", "P", "C", "A"};
-    /**
-     * <p>Valori possibili degli attributi probabilita, impatto, livello di rischio.</p>
-     */
-    static final String[] LIVELLI_RISCHIO = {"MINIMO", "BASSO", "MEDIO", "ALTO", "MOLTO ALTO"};
-    /**
-     * <p>Indicatore di probabiit&agrave; 1.</p>
-     */
-    static final String P1 = "P1";
-    /**
-     * <p>Indicatore di probabiit&agrave; 2.</p>
-     */
-    static final String P2 = "P2";
-    /**
-     * <p>Indicatore di probabiit&agrave; 3.</p>
-     */
-    static final String P3 = "P3";
-    /**
-     * <p>Indicatore di probabiit&agrave; 4.</p>
-     */
-    static final String P4 = "P4";
-    /**
-     * <p>Indicatore di probabiit&agrave; 5.</p>
-     */
-    static final String P5 = "P5";
-    /**
-     * <p>Indicatore di probabiit&agrave; 6.</p>
-     */
-    static final String P6 = "P6";
-    /**
-     * <p>Indicatore di probabiit&agrave; 7.</p>
-     */
-    static final String P7 = "P7";
-    /**
-     * <p>Indicatore di impatto 1.</p>
-     */
-    static final String I1 = "I1";
-    /**
-     * <p>Indicatore di impatto 2.</p>
-     */
-    static final String I2 = "I2";
-    /**
-     * <p>Indicatore di impatto 3.</p>
-     */
-    static final String I3 = "I3";
-    /**
-     * <p>Indicatore di impatto 4.</p>
-     */
-    static final String I4 = "I4";
-    /**
-     * <p>Indice sintetico di probabilit&agrave;.</p>
-     */
-    static final String P = "P";
-    /**
-     * <p>Indice sintetico di impatto.</p>
-     */
-    static final String I = "I";
-    /**
-     * <p>Giudizio sintetico (P x I).</p>
-     */
-    static final String PI = "PxI";
-    /**
-     * <p>P x I mitigato (stima).</p>
-     */
-    static final String PIM = "PxI (stima)";
-    /**
-     * <p>P x I mitigato (monitoraggio).</p>
-     */
-    static final String PIR = "PxI (reale)";
-    /**
-     * <p>Messaggio di errore sul calcolo degli indicatori.</p>
-     */
-    static final String ERR = "Non determinabile";
-    /**
-     * <p>Lista contenente i possibili valori dell'attributo stato di struttura.</p>
-     */
-    public static final LinkedList<String> STATI_STRUTTURA_AS_LIST = new LinkedList<>(Arrays.asList(STATI_STRUTTURA));
-    /**
-     * <p>Lista contenente i possibili valori degli attributi probabilita, impatto, livello di rischio.</p>
-     */
-    public static final LinkedList<String> LIVELLI_RISCHIO_AS_LIST = new LinkedList<>(Arrays.asList(LIVELLI_RISCHIO));
-    /**
-     * <p>Etichetta per struttura capofila 1</p>
-     */
-    public static final String CP1 = "capofila 1";
-    /**
-     * <p>Etichetta per struttura capofila 2</p>
-     */
-    public static final String CP2 = "capofila 2";
-    /**
-     * <p>Etichetta per struttura capofila 3</p>
-     */
-    public static final String CP3 = "capofila 3";
-    /**
-     * <p>Etichetta per struttura capofila 1</p>
-     */
-    public static final String GR = "gregaria";
-    /**
-     * <p>Etichetta per valore indecidibile</p>
-     */
-    public static final String ND = "Non determinabile";
     /* ************************************************************************ *
      *   Costanti tipografiche per la generazione di output (p.es. csv) e URL   *
      * ************************************************************************ */
@@ -663,46 +347,6 @@ public interface Constants extends Serializable {
      * Costante per il formato di file "Java Server Pages"
      */
     public static final String JSP_EXT = "jsp";
-    /**
-     * Costante per i nomi di immagini relative a strutture
-     */
-    public static final String STR_PFX = "dept_l";
-    /**
-     * Costante per i nomi di immagini relative a processi
-     */
-    public static final String PRO_PFX = "procat_l";
-    /**
-     * Costante per i nomi di estrazioni dati interviste
-     */
-    public static final String INTERVIEWS = "interviste";
-    /**
-     * Costante per i nomi di estrazioni dati intervista
-     */
-    public static final String INTERVIEW = "intervista";
-    /**
-     * Costante per i nomi di estrazioni dati strutture
-     */
-    public static final String STRUCTURES = "organigramma";
-    /**
-     * Costante per i nomi di estrazioni dati processi anticorruzione
-     */
-    public static final String PROCESS = "processi";
-    /**
-     * Costante per i nomi di estrazioni dati registro rischi corruttivi
-     */
-    public static final String RISKS = "registrorischi";
-    /**
-     * Costante per i nomi di estrazioni dati "tabella MDM"
-     */
-    public static final String REPORT_MDM = "tabella-pxi";
-    /**
-     * Costante per i nomi di estrazioni dati "tabella MDM misure"
-     */
-    public static final String REPORT_MDM_MES = "tabella-pxi-stima";
-    /**
-     * Costante per il log delle differenze tra i valori indicatori in cache e quelli in memoria
-     */
-    public static final String LOG_IND = "log_indicatori";
     /* ************************************************************************ *
      * Costanti di tempo (p.es. formati di data, date significative, etc.) *
      * ************************************************************************ */
