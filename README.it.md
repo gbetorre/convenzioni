@@ -31,6 +31,10 @@ remind riguardo le scadenze imminenti.
 
 ## Riguardo la modularità
 
+![Sample of main interface](col/src/main/webapp/assets/images/screenshot/landing0.13.png)
+
+**_Fig.1 - Esempio di pagina di landing_**
+
 Il primo dominio informativo, oggetto dello sviluppo iniziale, è relativo alle convenzioni, ma il software è concepito 
 con la mission di estendere progressivamente il dominio agli altri soggetti, di fatto e di diritto, che intraprendono 
 contratti e accordi con la PA.
@@ -108,9 +112,12 @@ Il software è un'applicazione Java three-tier
 
 ![Entity-Relationships diagram](SQL/SchemaER.png)
 
+**_Fig.2 - Diagramma Entit&agrave;-Relazione_**
+
 # History
 
 ```
+* [0.1.7] (Sep 22, 2025) Bugfix
 * [0.1.6] (Sep 18, 2025) Implementato footer
 * [0.1.5] (Sep 16, 2025) Implementato messaggio di benvenuto post-login
 * [0.1.4] (Sep 15, 2025) Implementata generazione elenco convenzioni in pagina di landing

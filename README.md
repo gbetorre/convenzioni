@@ -34,6 +34,10 @@ The goal is to create an organized and constantly updated register:
 
 ## Regarding modularity
 
+![Sample of main interface](col/src/main/webapp/assets/images/screenshot/landing0.13.png)
+
+**_Fig.1 - Landing page, version 0.1_**
+
 The main information domain, which is the subject of the initial development, relates to conventions, but the software 
 is designed to gradually extending the domain to other entities, which deal with the public administration.
 
@@ -56,9 +60,12 @@ When will be ready, I will release, package or tag
 
 ![Entity-Relationships diagram](SQL/SchemaER.png)
 
+**_Fig.2 - Entity-Relationships diagram_**
+
 # History
 
 ```
+* [0.1.7] (Sep 22, 2025) Bugfix
 * [0.1.6] (Sep 18, 2025) Implemented footer
 * [0.1.5] (Sep 16, 2025) Implemented post-login welcome back message
 * [0.1.4] (Sep 15, 2025) Implemented dynamic agreements list in landing page
