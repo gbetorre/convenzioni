@@ -74,7 +74,7 @@ import it.col.util.Utils;
  * dell'utente, dell'impostazione dei privilegi, di eventuali cookies,
  * del logout e di quant'altro occorra alle funzioni di gestione utenti
  * della web-application 
- * <code>Rischi on Line (rol)</code>.</p>
+ * <code>Convenzioni on Line (col)</code>.</p>
  *
  * @author <a href="mailto:gianroberto.torre@gmail.com">Giovanroberto Torre</a>
  */
@@ -148,30 +148,11 @@ public class SessionManager extends HttpServlet implements Constants {
      * <p>Inizializza, staticamente, alcune variabili globali.</p>
      *
      * @param config la configurazione usata dal servlet container per passare informazioni alla servlet <strong>durante l'inizializzazione</strong>
-     * @throws ServletException una eccezione che puo' essere sollevata quando la servlet incontra difficolta'
+     * @throws ServletException una eccezione che puo' essere sollevata quando la servlet incontra un problema
      */
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        /*  Nome della pagina di errore  */
-        errorJsp = getServletContext().getInitParameter("errorJsp");
-        if (errorJsp == null)
-            throw new ServletException(FOR_NAME + "\n\nManca il parametro di contesto 'errorJsp'!\n\n");
-        /*  Nome del parametro che identifica la Command da interpellare  */
-        entToken = getServletContext().getInitParameter("entToken");
-        if (entToken == null) {
-            throw new ServletException(FOR_NAME + "\n\nManca il parametro di contesto 'entToken'!\n\n");
-        }
-        /*
-         * Nome del template da invocare per l'assemblaggio dei vari componenti
-         * dell'output - nel contesto della servlet di autenticazione
-         * serve piu' che altro per redirigere sulla maschera di login
-         * in caso di invalidamento della sessione
-         */
-        templateJsp = getServletContext().getInitParameter("templateJsp");
-        if (templateJsp == null) {
-            throw new ServletException(FOR_NAME + "\n\nManca il parametro di contesto 'templateJsp'!\n\n");
-        }
     }
 
 
@@ -199,7 +180,7 @@ public class SessionManager extends HttpServlet implements Constants {
                          ".\n";
             log.info(msg);
             session.invalidate();
-            final RequestDispatcher rd = getServletContext().getRequestDispatcher(templateJsp);
+            final RequestDispatcher rd = getServletContext().getRequestDispatcher(ConfigManager.getTemplate());
             rd.forward(req, res);
         } catch (IllegalStateException ise) {
             String msg = "Impossibile redirigere l'output. Verificare se la risposta e\' stata gia\' committata.\n" + ise.getMessage();
@@ -343,7 +324,7 @@ public class SessionManager extends HttpServlet implements Constants {
                     session.setAttribute("usr", user);
                     authenticated = true;
                 } else {
-                    message.append("Errore di autenticazione. Ricontrollare Username e Password." );
+                    message.append("Errore di autenticazione!<br> Ricontrollare Username e Password." );
                     session.setAttribute("msg", message);
                     session.setAttribute("error", true);
                     authenticated = false;
