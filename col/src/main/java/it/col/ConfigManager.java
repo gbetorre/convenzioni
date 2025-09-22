@@ -351,69 +351,6 @@ public class ConfigManager extends HttpServlet {
                     throw new ServletException(error);
             }
         }
-        /*
-         * Carica una lista, che esporra' staticamente, contenente
-         * tutti i tipi di misura (informazione pubblica, non storicizzata e
-         * necessaria in vari punti dell'applicazione perche' le liste che
-         * dipendono dai tipi sono scorse dinamicamente).
-         *
-        measureTypes = null;
-        try {
-            measureTypes = db.getMeasureTypes();
-        }
-        catch (WebStorageException wse) {
-            throw new ServletException(FOR_NAME + "Problemi nel metodo che estrae i tipi di misura.\n" + wse.getMessage(), wse);
-        }
-        catch (Exception e) {
-            throw new ServletException(FOR_NAME + "Problemi nel caricare i tipi di misura.\n" + e.getMessage(), e);
-        }
-        // Carica una lista, che esporra' staticamente, contenente tutti i tipi di convenzioni
-        measureCharacters = new HashMap<>();
-        try {
-            ArrayList<CodeBean> characters = db.getMeasureCharacters();
-            for (CodeBean character : characters) {
-                measureCharacters.put(character.getInformativa(), character);
-            }
-        }
-        catch (WebStorageException wse) {
-            throw new ServletException(FOR_NAME + "Problemi nel metodo che estrae i caratteri delle misure.\n" + wse.getMessage(), wse);
-        }
-        catch (Exception e) {
-            throw new ServletException(FOR_NAME + "Problemi nel caricare i caratteri di misura.\n" + e.getMessage(), e);
-        }
-        // Carica una lista, che esporra' staticamente, contenente tutte le finalità delle convenzioni
-        indicatorTypes = null;
-        try {
-            indicatorTypes = db.getIndicatorTypes();
-        }
-        catch (WebStorageException wse) {
-            throw new ServletException(FOR_NAME + "Problemi nel metodo che estrae i tipi di indicatori.\n" + wse.getMessage(), wse);
-        }
-        catch (Exception e) {
-            throw new ServletException(FOR_NAME + "Problemi nel caricare i tipi di indicatori.\n" + e.getMessage(), e);
-        }
-        try {
-            // Istanzia la mappa quando gli serve...
-            indicatorTypesAsMap = new ConcurrentHashMap<>();
-            // for each
-            for (CodeBean type : indicatorTypes) {
-                // Chiave del dizionario dei tipi indicatore
-                Integer key = new Integer(type.getId());
-                // Valorizza la mappa contenente i tipi indicatore
-                indicatorTypesAsMap.put(key, type);                
-            }
-        }
-        catch (NullPointerException npe) {
-            throw new ServletException(FOR_NAME + "Si e\' verificato un problema di puntamento alle rilevazioni o a un altro oggetto.\n" + npe.getMessage(), npe);
-        }
-        catch (Exception e) {
-            throw new ServletException(FOR_NAME + "Problemi nel caricare la struttura contenente le rilevazioni.\n" + e.getMessage(), e);
-        }
-        /*
-         * Carica una struttura dati, che esporra' staticamente, contenente tutte 
-         * le etichette utilizzabili nella costruzione dei nomi dei files 
-         * generati dall'applicazione in funzione del valore del parametro p.
-         */
     }
 
 
@@ -424,7 +361,7 @@ public class ConfigManager extends HttpServlet {
      * Serve a ricostruire i percorsi dei fogli di stile, dei files inclusi, ecc.
      *
      * @param req  HttpServletRequest contenente il protocollo usato (p.es.: <code>http, https,</code> o <code>ftp</code>)
-     * @return <code>String</code> - una stringa che rappresenta la root, da settare nelle jsp (p.es.: <code>&lt;base href="http://www.univr.it/"&gt;</code>)
+     * @return <code>String</code> - una stringa che rappresenta la root, da settare nelle jsp (p.es.: <code>&lt;base href="https://at.univr.it/"&gt;</code>)
      */
     public static String getBaseHref(HttpServletRequest req) {
         StringBuffer baseHref = new StringBuffer();
