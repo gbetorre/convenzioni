@@ -35,8 +35,10 @@
       <jsp:include page="${fileJsp}" />
     </div>
     <!-- Footer -->
-    <hr class="separator"> 
-    <%@ include file="footer.jspf" %>
+    <c:if test="${not empty sessionScope.usr}">
+      <hr class="separator"> 
+      <%@ include file="footer.jspf" %>
+    </c:if>
     <script src="${initParam.urlDirFrameworks}bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="${initParam.urlDirScripts}owl-carousel.js"></script>
     <script src="${initParam.urlDirScripts}animation.js"></script>
