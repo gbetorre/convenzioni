@@ -37,8 +37,6 @@
 package it.col;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
@@ -48,13 +46,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 
-import it.col.bean.CodeBean;
 import it.col.bean.CommandBean;
-import it.col.bean.ItemBean;
 import it.col.command.Command;
 import it.col.db.DBWrapper;
 import it.col.exception.WebStorageException;
-import it.col.util.Constants;
 
 
 /**
@@ -92,7 +87,7 @@ public class ConfigManager extends HttpServlet {
      * non &egrave; privata ma Default (friendly) per essere visibile
      * negli elementi ovverride implementati da questa classe.</p>
      */
-    /* default */ static Logger log = Logger.getLogger(ConfigManager.class.getName());
+    static Logger log = Logger.getLogger(ConfigManager.class.getName());
     /**
      *  Nome di questa classe
      *  (utilizzato per contestualizzare i messaggi di errore)
@@ -141,41 +136,11 @@ public class ConfigManager extends HttpServlet {
      */
     private static ConcurrentHashMap<String, Command> commands;
     /**
-     * Struttura vettoriale contenente le rilevazioni trovate quando il server sale.
-     */
-    private static ArrayList<CodeBean> surveyList;
-    /**
-     * Tabella hash (dictionary) contenente le rilevazioni trovate quando il server sale.
-     */
-    private static ConcurrentHashMap<String, CodeBean> surveys;
-    /**
-     * Tabella hash (dictionary) contenente il numero di quesiti trovati per ciascuna rilevazione
-     */
-    private static ConcurrentHashMap<String, Integer> questionAmount;
-    /**
      * Tabella hash (dictionary) contenente etichette predefinite 
      * in funzione del valore del parametro 'p'; queste possono essere utilizzate
      * poi nella costruzione dei nomi dei files generati dall'applicazione
      */
     private static ConcurrentHashMap<String, String> labels;
-    /** 
-     * Lista delle tipologie delle misure di prevenzione/mitigazione
-     * del rischio corruttivo
-     */
-    private static ArrayList<CodeBean> measureTypes;
-    /** 
-     * Lista dei caratteri delle misure di prevenzione/mitigazione
-     * del rischio corruttivo
-     */
-    private static HashMap<String, CodeBean> measureCharacters;
-    /** 
-     * Lista dei tipi di indicatori di monitoraggio
-     */
-    private static ArrayList<CodeBean> indicatorTypes;
-    /**
-     * Tabella hash (dictionary) contenente i tipi di indicatori indicizzati per id
-     */
-    private static ConcurrentHashMap<Integer, CodeBean> indicatorTypesAsMap;
     /**
      * <p>Nome del parametro di inizializzazione, valorizzato nel
      * descrittore di deploy, che identifica il nome della web application.</p>
@@ -495,57 +460,6 @@ public class ConfigManager extends HttpServlet {
         return commands;
     }
 
-
-    /**
-     * <p>Restituisce una struttura di tipo Tabella hash (dictionary),
-     * contenente tutte le rilevazioni indicizzate per codice.</p>
-     * <p>Metodo getter sulla variabile privata di classe.</p>
-     *
-     * @return <code>ConcurrentHashMap&lt;String, CodeBean&gt;</code> - le rilevazioni incapsulate in CodeBean e indicizzate per proprio codice
-     */
-    public static ConcurrentHashMap<String, CodeBean> getSurveys() {
-        return surveys;
-    }
-
-
-    /**
-     * <p>Restituisce un oggetto incapsulante i valori di una rilevazione
-     * dato il suo codice passato come parametro.</p>
-     * <p>Assume che la variabile privata di classe su cui viene effettuata
-     * la ricerca sia stata correttamente valorizzata.</p>
-     *
-     * @param key il codice della rilevazione, in forma di oggetto String, che il metodo accetta come argomento
-     * @return <code>CodeBean</code> - la rilevazione cercata
-     */
-    public static CodeBean getSurvey(String key) {
-        return surveys.get(key.toUpperCase());
-    }
-
-
-    /**
-     * <p>Restituisce una struttura di tipo vettoriale, con mantenimento dell'ordine di
-     * inserimento, contenente tutte le rilevazioni indicizzate per codice.</p>
-     * <p>Metodo getter sulla variabile privata di classe.</p>
-     *
-     * @return <code>ArrayList&lt;CodeBean&gt;</code> - le rilevazioni incapsulate in CodeBean
-     */
-    public static ArrayList<CodeBean> getSurveyList() {
-        return surveyList;
-    }
-
-    
-    /**
-     * <p>Restituisce una struttura di tipo Tabella hash (dictionary),
-     * contenente il numero di quesiti trovato per ogni rilevazione.
-     * La chiave di ogni entry &egrave; il codice della rilevazione stesso.</p>
-     * <p>Metodo getter sulla variabile privata di classe.</p>
-     *
-     * @return <code>ConcurrentHashMap&lt;String, Integer&gt;</code> - il numero di quesiti trovati per ciascuna rilevazione, incapsulato in oggetto Wrapper di tipo primitivo
-     */
-    public static ConcurrentHashMap<String, Integer> getQuestionAmount() {
-        return questionAmount;
-    }
-
     
     /**
      * <p>Restituisce una struttura di tipo Tabella hash (dictionary),
@@ -558,58 +472,6 @@ public class ConfigManager extends HttpServlet {
      */
     public static ConcurrentHashMap<String, String> getLabels() {
         return labels;
-    }
-    
-    
-    /**
-     * <p>Restituisce una struttura di tipo vettoriale,
-     * contenente le tipologie di misura di prevenzione/mitigazione.
-     * del rischio corruttivo.</p>
-     *
-     * @return <code>ArrayList&lt;CodeBean&gt;</code> - lista tipi di misure
-     */
-    public static ArrayList<CodeBean> getMeasureTypes() {
-        return measureTypes;
-    }
-    
-    
-    /**
-     * <p>Restituisce una struttura di tipo dictionary,
-     * contenente i caratteri delle misure di prevenzione/mitigazione.
-     * del rischio corruttivo indicizzati per codice carattere.</p>
-     *
-     * @return <code>ArrayList&lt;CodeBean&gt;</code> - lista tipi di misure
-     */
-    public static HashMap<String, CodeBean> getMeasureCharacters() {
-        return measureCharacters;
-    }
-    
-    
-    /**
-     * <p>Restituisce una struttura di tipo vettoriale,
-     * contenente le tipologie degli indicatori.<br> 
-     * Si &egrave; resa necessaria per discriminare tra i tipi di indicatori 
-     * di monitoraggio per la verifica dell'applicazione 
-     * delle misure di mitigazione del rischio corruttivo; tuttavia, 
-     * le tipologie di indicatori sono descrittori generici ed applicabili, 
-     * ovviamente, anche agli indicatori delle dimensioni P ed I.</p>
-     *
-     * @return <code>ArrayList&lt;CodeBean&gt;</code> - lista tipi di indicatori
-     */
-    public static ArrayList<CodeBean> getIndicatorTypes() {
-        return indicatorTypes;
-    }
-    
-
-    /**
-     * <p>Restituisce una struttura di tipo Tabella hash (dictionary),
-     * contenente tutti i tipi indicatore indicizzati per id.</p>
-     * <p>Metodo getter sulla variabile privata di classe.</p>
-     *
-     * @return <code>ConcurrentHashMap&lt;Integer, CodeBean&gt;</code> - i tipi indicatore indicizzati per Wrapper di id
-     */
-    public static ConcurrentHashMap<Integer, CodeBean> getIndicatorTypesAsMap() {
-        return indicatorTypesAsMap;
     }
     
 }
