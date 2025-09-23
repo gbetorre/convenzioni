@@ -140,7 +140,7 @@ public interface Constants extends Serializable {
     /**
      * <p>Costante per il parametro identificante la Command delle convenzioni.</p>
      */
-    public static final String COMMAND_CONV             = "conv";
+    public static final String COMMAND_CONV             = "co";
     /* ************************************************************************ *
      * --------------------------    QUERYSTRINGS    -------------------------- *
      * ************************************************************************ */
