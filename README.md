@@ -51,7 +51,7 @@ I ment to achieve
 -->
 ## 
 
-The software is not ready yet: please, let me cook! Also, I have other fish to fry, too.
+The software is not ready yet: please, let me cook.
 
 When will be ready, I will release, package or tag
 
@@ -65,6 +65,7 @@ When will be ready, I will release, package or tag
 # History
 
 ```
+* [0.1.8] (Sep 23, 2025) Delegated convention management (viewing, entering, updating and so on) to a new controller component (Command) 
 * [0.1.7] (Sep 22, 2025) Bugfix
 * [0.1.6] (Sep 18, 2025) Implemented footer
 * [0.1.5] (Sep 16, 2025) Implemented post-login welcome back message
