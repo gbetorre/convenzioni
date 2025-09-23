@@ -37,127 +37,69 @@
 package it.col.command;
 
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import com.oreilly.servlet.ParameterParser;
 
-import it.col.ConfigManager;
 import it.col.Main;
 import it.col.SessionManager;
 import it.col.bean.CodeBean;
 import it.col.bean.CommandBean;
-import it.col.bean.ItemBean;
+import it.col.bean.Convenzione;
 import it.col.bean.PersonBean;
 import it.col.db.DBWrapper;
-import it.col.db.Query;
-import it.col.exception.AttributoNonValorizzatoException;
 import it.col.exception.CommandException;
 import it.col.exception.WebStorageException;
 import it.col.util.Constants;
+import it.col.util.DataUrl;
 import it.col.util.Utils;
 
 
 /** 
- * <p><code>IndicatorCommand.java</code> (ic)<br />
- * Implementa la logica per la gestione degli indicatori di monitoraggio
- * e relative misurazioni.</p>
+ * <p><code>ConventionCommand.java</code> (co)<br />
+ * It contains the logic to manage the agreements.</p>
  * 
- * <p>Created on 14:01 18/09/2024 Wed Sep 18 14:01:46 CEST 2024</p>
+ * <p>Created on 2025-09-18 16:27:27</p>
  * 
  * @author <a href="mailto:gianroberto.torre@gmail.com">Giovanroberto Torre</a>
  */
 public class ConventionCommand extends CommandBean implements Command, Constants {
 
-    /* ******************************************************************** *
-     *  Dichiara e/o inizializza variabili di classe e variabili d'istanza  *
-     * ******************************************************************** */
     /**
-     * La serializzazione necessita di dichiarare una costante di tipo long
-     * identificativa della versione seriale. 
-     * (Se questo dato non fosse inserito, verrebbe calcolato in maniera automatica
-     * dalla JVM, e questo potrebbe portare a errori riguardo alla serializzazione). 
+     *  Long type constant for serialization
      */
     private static final long serialVersionUID = -7546430466772067442L;
     /**
-     *  Nome di questa classe 
-     *  (utilizzato per contestualizzare i messaggi di errore)
+     *  Name of this
      */
     static final String FOR_NAME = "\n" + Logger.getLogger(new Throwable().getStackTrace()[0].getClassName()) + ": ";
     /**
-     * Log per debug in produzione
+     *  Log for production debug
      */
     protected static Logger LOG = Logger.getLogger(Main.class.getName());
     /**
-     * Pagina per mostrare la lista delle misure aventi dettagli di monitoraggio (registro delle misure monitorate)
-     */
-    private static final String nomeFileElenco = "/jsp/icElenco.jsp";
-    /**
-     * Pagina per mostrare la lista delle misure monitorate raggruppate per struttura (pagina iniziale monitoraggio)
-     */
-    private static final String nomeFileElencoMisure  = "/jsp/icMisure.jsp";
-    /**
-     * Pagina per mostrare i dettagli di una misura monitorata
-     */
-    private static final String nomeFileMisura = "/jsp/icMisura.jsp"; 
-    /**
-     * Pagina per mostrare la form di aggiunta dei dettagli di una misura monitorata
-     */
-    private static final String nomeFileInsertMisura = "/jsp/icMisuraForm.jsp";    
-    /**
-     * Pagina per mostrare la lista degli indicatori di una misura monitorata
-     */
-    private static final String nomeFileElencoIndicatori = "/jsp/icIndicatori.jsp";
-    /**
-     * Pagina per mostrare i dettagli di un indicatore di monitoraggio
-     */
-    private static final String nomeFileDettaglio = "/jsp/icIndicatore.jsp";
-    /**
-     * Pagina per mostrare la maschera di inserimento/modifica di un indicatore di monitoraggio
-     */
-    private static final String nomeFileInsertIndicatore = "/jsp/icIndicatoreForm.jsp";    
-    /**
-     * Pagina per mostrare la lista delle misurazioni (collegate agli indicatori) di una misura monitorata
-     */
-    private static final String nomeFileElencoMisurazioni = "/jsp/icMisurazioni.jsp";
-    /**
-     * Pagina per mostrare i dettagli di una misurazione
-     */
-    private static final String nomeFileMisurazione = "/jsp/icMisurazione.jsp";
-    /**
-     * Pagina per mostrare la maschera di inserimento di una misurazione
-     */ 
-    private static final String nomeFileInsertMisurazione = "/jsp/icMisurazioneForm.jsp";
-    /**
-     * Struttura a cui la command fa riferimento per richiamare le pagine
+     *  Map of pages managed by this Command
      */    
-    private static final HashMap<String, String> nomeFile = new HashMap<>();
+    private static final HashMap<String, CodeBean> pages = new HashMap<>();
     /**
-     * Struttura a cui la command fa riferimento per generare i titoli pagina
+     *  List page
      */    
-    private static final HashMap<String, String> titleFile = new HashMap<>();
-    /** 
-     * Lista dei tipi di indicatore
-     */
-    private static ArrayList<CodeBean> types;
+    private static final CodeBean elenco = new CodeBean("landing.jsp", "COL [Convenzioni On Line]");
+    /**
+     *  Details page
+     */    
+    private static final CodeBean dettagli = new CodeBean("coConvenzione.jsp", "Dettagli convenzione");
 
-  
-    /* ******************************************************************** *
-     *                    Routine di inizializzazione                       *
-     * ******************************************************************** */
+
     /** 
-     * <p>Raccoglie i valori dell'oggetto ItemBean
-     * e li passa a questa classe command.</p>
+     * Initialize the Command
      *
-     * @param voceMenu la VoceMenuBean pari alla Command presente.
-     * @throws CommandException se l'attributo paginaJsp di questa command non e' stato valorizzato.
+     * @param voice CommandBean for the current Command
+     * @throws CommandException if some attribute doesn't contain a correct value 
      */
     @Override
     public void init(CommandBean voice) throws CommandException {
@@ -171,33 +113,17 @@ public class ConventionCommand extends CommandBean implements Command, Constants
           String msg = FOR_NAME + "La command " + this.getNome() + " non ha il campo pagina. Impossibile visualizzare i risultati.\n";
           throw new CommandException(msg);
         }
-        /* Carica la hashmap contenente le pagine da includere in funzione dei parametri sulla querystring
-        nomeFile.put(COMMAND_INDICATOR,             nomeFileElenco);
-        nomeFile.put(PART_MEASURES,                 nomeFileElencoMisure);
-        nomeFile.put(PART_INDICATOR,                nomeFileElencoIndicatori);
-        nomeFile.put(PART_MONITOR,                  nomeFileElencoMisurazioni);
-        nomeFile.put(PART_INSERT_MONITOR_DATA,      nomeFileInsertMisura);     
-        nomeFile.put(PART_INSERT_INDICATOR,         nomeFileInsertIndicatore);
-        nomeFile.put(PART_INSERT_MEASUREMENT,       nomeFileInsertMisurazione);
-        nomeFile.put(PART_SELECT_MEASUREMENT,       nomeFileMisurazione);
-        //nomeFile.put(PART_INSERT_,  nomeFileResumeMeasure);
-        // Carica la hashmap contenente le pagine da includere in funzione dei parametri sulla querystring
-        titleFile.put(COMMAND_INDICATOR,            "Registro misure monitorate");
-        titleFile.put(PART_MEASURES,                "Pagina iniziale monitoraggio");
-        titleFile.put(PART_INDICATOR,               "Indicatori di monitoraggio");
-        titleFile.put(PART_MONITOR,                 "Monitoraggi della misura");
-        titleFile.put(PART_INSERT_MONITOR_DATA,     "Dettagli di monitoraggio");
-        titleFile.put(PART_INSERT_INDICATOR,        "Nuovo indicatore");
-        titleFile.put(PART_INSERT_MEASUREMENT,      "Nuova misurazione");
-        titleFile.put(PART_SELECT_MEASUREMENT,      "Dettagli misurazione");*/
+        // Hashmap containing pages
+        pages.put(COMMAND_CONV,     elenco);
+        pages.put(SELECT,           dettagli);
     }
     
     
     /* ******************************************************************** *
-     *                          Costruttore (vuoto)                         *
+     *                          Constructor (empty)                         *
      * ******************************************************************** */
     /** 
-     * Crea una nuova istanza di  questa Command 
+     * Create a new instance of this Command 
      */
     public ConventionCommand() {
         /*;*/   // It doesn't anything
@@ -205,59 +131,52 @@ public class ConventionCommand extends CommandBean implements Command, Constants
   
     
     /* ******************************************************************** *
-     *                   Implementazione dell'interfaccia                   *
+     *                            Implementation                            *
      * ******************************************************************** */
     /**
-     * <p>Gestisce il flusso principale.</p>
-     * <p>Prepara i bean.</p>
-     * <p>Passa nella Request i valori che verranno utilizzati dall'applicazione.</p>
+     * Manage the main flow.
+     * Prepare the beans.
+     * Transfer the parameters inserted by the user.
      * 
-     * @param req la HttpServletRequest contenente la richiesta del client
-     * @throws CommandException se si verifica un problema, tipicamente nell'accesso a campi non accessibili o in qualche altro tipo di puntamento 
+     * @param req HttpServletRequest the client request
+     * @throws CommandException if some problem occurs 
      */
     @Override
     public void execute(HttpServletRequest req) 
                  throws CommandException {
-        /* ******************************************************************** *
-         *              Dichiara e inizializza variabili locali                 *
-         * ******************************************************************** */
         // Databound
         DBWrapper db = null;
-        // Parser per la gestione assistita dei parametri di input
-        ParameterParser parser = new ParameterParser(req);
-        // Dichiara la pagina a cui reindirizzare
-        String fileJspT = null;
-        // Utente loggato
+        // DataUrl for URL management
+        DataUrl dataUrl = new DataUrl();
+        // Logged user
         PersonBean user = null;
-        // Tabella che conterrà i valori dei parametri passati dalle form
+        // Single Agreement
+        Convenzione convention = null;
+        // List of Agreements
+        ArrayList<Convenzione> conventions = null;
+        // All the params coming from forms
         HashMap<String, LinkedHashMap<String, String>> params = null;
-        // Predispone le BreadCrumbs personalizzate per la Command corrente
-        LinkedList<ItemBean> bC = null;
-        // Titolo pagina
-        String tP = null;
-        // Variabile contenente l'indirizzo per la redirect da una chiamata POST a una chiamata GET
+        // Page
+        CodeBean fileJspT = new CodeBean();
+        // Redirect from POST call to a GET request
         String redirect = null;
-        // Data di oggi sotto forma di oggetto Date
+        // Date of the day
         java.util.Date today = Utils.convert(Utils.getCurrentDate());
         /* ******************************************************************** *
-         *                    Recupera parametri e attributi                    *
+         *                  Retrieve attributes and parameters                  *
          * ******************************************************************** */
-        // Recupera o inizializza 'tipo pagina'   
-        String part = parser.getStringParameter("p", DASH);
-        // Flag di scrittura
+        // Flag of writing
         Boolean writeAsObject = (Boolean) req.getAttribute("w");
-        // Explicit Unboxing
+        // Its explicit Unboxing
         boolean write = writeAsObject.booleanValue();
-        // Recupera o inizializza 'id misura'
-        String codeMis = parser.getStringParameter("mliv", DASH);
-        // Recupera o inizializza 'id misurazione'
-        int idMon = parser.getIntParameter("nliv", DEFAULT_ID);
-        // Recupera o inizializza 'id fase di attuazione'
-        int idFas = parser.getIntParameter("idF", DEFAULT_ID);
-        // Recupera o inizializza 'id indicatore'
-        int idInd = parser.getIntParameter("idI", DEFAULT_ID);
+        // Parser of parameters
+        ParameterParser parser = new ParameterParser(req);
+        // What do we do?
+        String operation = parser.getStringParameter("op", SELECT);
+        // Retrieve, or initialize, 'id agreement'
+        int idA = parser.getIntParameter("id", DEFAULT_ID);
         /* ******************************************************************** *
-         *      Instanzia nuova classe DBWrapper per il recupero dei dati       *
+         *                          Manage the db access                        *
          * ******************************************************************** */
         try {
             db = new DBWrapper();
@@ -265,30 +184,26 @@ public class ConventionCommand extends CommandBean implements Command, Constants
             throw new CommandException(FOR_NAME + "Non e\' disponibile un collegamento al database\n." + wse.getMessage(), wse);
         }
         /* ******************************************************************** *
-         *         Previene il rischio di attacchi di tipo Garden Gate          *
+         *                  Manage Garden Gate kind of attack                   *
          * ******************************************************************** */
         try {
-            // Recupera la sessione creata e valorizzata per riferimento nella req dal metodo authenticate
+            // Here the user session must be active, otherwise something's odd
             user = SessionManager.checkSession(req.getSession(IF_EXISTS_DONOT_CREATE_NEW));
         } catch (RuntimeException re) {
             throw new CommandException(FOR_NAME + "Problema a livello dell\'autenticazione utente!\n" + re.getMessage(), re);
         }
         /* ******************************************************************** *
-         *                          Corpo del programma                         *
+         *                        Understand what to do                         *
          * ******************************************************************** */
-        // Decide il valore della pagina
         try {
-            // Recupera i tipi di indicatore
-            types = ConfigManager.getIndicatorTypes();
-            // Recupera l'elenco completo degli indicatori di monitoraggio
-            //indicators = db.getMeasures(user, VOID_SQL_STRING, Query.GET_ALL_BY_CLAUSE, survey);
 
-                // Creazione della tabella che conterrà i valori dei parametri passati dalle form
-                params = new HashMap<>();
-                // Carica in ogni caso i parametri di navigazione
-                //loadParams(part, req, params);
-                /* ======================= @PostMapping ======================= */
-                if (write) {
+
+            // Creazione della tabella che conterrà i valori dei parametri passati dalle form
+            params = new HashMap<>();
+            // Carica in ogni caso i parametri di navigazione
+            //loadParams(part, req, params);
+            /* ======================= @PostMapping ======================= */
+            if (write) {
 //                    // Controlla quale azione vuole fare l'utente
 //                    if (nomeFile.containsKey(part)) {
 //                        // Controlla quale richiesta deve gestire
@@ -330,14 +245,32 @@ public class ConventionCommand extends CommandBean implements Command, Constants
 //                        // Azione di default
 //                        // do delete?
 //                    }
-                /* ======================== @GetMapping ======================= */
-                } else {
-                    /* ------------------------------------------------ *
-                     *                        Part                      *
-                     * ------------------------------------------------ */
+            /* ======================== @GetMapping ======================= */
+            } else {
+                // 
+                switch (operation) {
+                    case "ins":
+                        // TODO
+                        break;
+                    case "upd":
+                        // TODO
+                        break;
+                    case "del":
+                        // TODO
+                        break;
+                    default:
+                        // If there is no operation, there is a SELECT operation
+                        if (idA > DEFAULT_ID) {
+                            //c = retrieveConvention(idA);
+                            //fileJspT = pages.get(operation);
+                        } else {
+                            conventions = db.getConventions(user);
+                            fileJspT = pages.get(this.getNome());
+                        }
+                        break; // not required here, still here for consistency
+                }
 //                    if (nomeFile.containsKey(part)) {
-//                        // Recupera le breadcrumbs
-//                        LinkedList<ItemBean> breadCrumbs = (LinkedList<ItemBean>) req.getAttribute("breadCrumbs");
+
 //                        // Imposta il titolo pagina
 //                        tP = titleFile.get(part);
 //                        // Gestione rami
@@ -467,10 +400,6 @@ public class ConventionCommand extends CommandBean implements Command, Constants
         /* ******************************************************************** *
          *              Settaggi in request dei valori calcolati                *
          * ******************************************************************** */
-        // Imposta nella request elenco tipologie di indicatori
-        if (types != null) {
-            req.setAttribute("tipi", types);
-        }
         // Imposta l'eventuale indirizzo a cui redirigere
         if (redirect != null) {
             req.setAttribute("redirect", redirect);
@@ -479,19 +408,20 @@ public class ConventionCommand extends CommandBean implements Command, Constants
         if (!params.isEmpty()) {
             req.setAttribute("params", params);
         }
-        // Titolo pagina in caso sia significativo
-        if (tP != null && !tP.equals(VOID_STRING)) {
-            req.setAttribute("tP", tP);
-        }    
-        // Imposta nella request le breadcrumbs in caso siano state personalizzate
-        if (bC != null) {
-            req.removeAttribute("breadCrumbs");
-            req.setAttribute("breadCrumbs", bC);
+        // Single convention, if it does exist
+        if (convention != null) {
+            req.setAttribute("convenzione", convention);
+        }
+        // List of agreements, if it does exist
+        if (conventions != null) {
+            req.setAttribute("convenzioni", conventions);
         }
         // Imposta nella request data di oggi 
         req.setAttribute("now", today);
+        // Titolo pagina
+        req.setAttribute("tP", fileJspT.getInformativa()); 
         // Imposta la Pagina JSP di forwarding
-        req.setAttribute("fileJsp", fileJspT);
+        req.setAttribute("fileJsp", "/jsp/" + fileJspT.getNome());
     }
     
     
