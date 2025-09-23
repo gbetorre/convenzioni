@@ -144,23 +144,14 @@ public class CodeBean implements Serializable {
      * @param o oggetto CodeBean i cui valori devono essere copiati
      * @throws AttributoNonValorizzatoException se l'identificativo dell'oggetto passato come argomento non e' valorizzato!
      */
-    @SuppressWarnings("unused")
     public CodeBean(CodeBean o) 
              throws AttributoNonValorizzatoException {
         // Ammette la mancata valorizzazione di quasi tutti i valori, ma non transige sull'id!
         id = o.getId();
-        // Tenta di recuperare: Nome; se non viene trovato, vi assegna il valore null
-        try {
-            nome = o.getNome();
-        } catch (AttributoNonValorizzatoException anve) {
-            nome = null;
-        }
-        // Tenta di recuperare: Informativa; se l'attributo non viene trovato, vi assegna il valore null
-        try {
-            informativa = o.getInformativa();
-        } catch (AttributoNonValorizzatoException anve) {
-            informativa = null;
-        }
+        // Tenta di recuperare: Nome
+        nome = o.getNome();
+        // Tenta di recuperare: Informativa
+        informativa = o.getInformativa();
         // Attributi che non sollevano eccezione se non inizializzati
         ordinale = o.getOrdinale();
     }
@@ -169,7 +160,7 @@ public class CodeBean implements Serializable {
     /**
      * Costruttore parametrico.
      * 
-     * CodeBean(String nome, String labelWeb, String url, int livello)
+     * CodeBean(int id, String nome, String informativa, int ordinale)
      * 
      * @param id            identificativo dell'oggetto da istanziare
      * @param nome          nome dell'oggetto da istanziare
@@ -181,6 +172,22 @@ public class CodeBean implements Serializable {
         this.nome = nome;
         this.informativa = informativa;
         this.ordinale = ordinale;
+    }
+    
+    
+    /**
+     * Costruttore parametrico in forma ridotta.
+     * Prende in input i valori da memorizzare; imposta gli altri 
+     * a valori di default. 
+     * 
+     * @param nome          nome dell'oggetto da istanziare
+     * @param informativa   descrizione estesa dell'oggetto da istanziare
+     */
+    public CodeBean(String nome, String informativa) {
+        this.id = BEAN_DEFAULT_ID;
+        this.nome = nome;
+        this.informativa = informativa;
+        this.ordinale = BEAN_DEFAULT_ID;
     }
 
     
@@ -212,20 +219,16 @@ public class CodeBean implements Serializable {
      *           Metodi getter e setter per nome            *
      * **************************************************** */
     /**
-     * Restituisce il nome di un raggruppamento.
-     * @return <code>nome</code> - la denominazione del gruppo 
-     * @throws AttributoNonValorizzatoException  eccezione che viene sollevata se questo oggetto viene usato e questo attributo non &egrave; stato valorizzato (potrebbe essere un dato obbligatorio)
+     * Restituisce il nome.
+     * @return <code>nome</code> - la denominazione
      */
-    public String getNome() throws AttributoNonValorizzatoException {
-        if (nome == null) {
-            throw new AttributoNonValorizzatoException(FOR_NAME + "Attributo nome non valorizzato!");
-        }
+    public String getNome()  {
         return this.nome;
     }
     
     /**
-     * Imposta la denominazione di un raggruppamento.
-     * @param string il nome da impostare per il gruppo
+     * Imposta la denominazione.
+     * @param string il nome da impostare
      */
     public void setNome(String string) {
         nome = string;
@@ -236,20 +239,16 @@ public class CodeBean implements Serializable {
      *           Metodi getter e setter per informativa     *
      * **************************************************** */
     /**
-     * Restituisce la descrizione di un raggruppamento.
-     * @return <code>informativa</code> - la descrizione del gruppo 
-     * @throws AttributoNonValorizzatoException  eccezione che viene sollevata se questo oggetto viene usato e questo attributo non &egrave; stato valorizzato (potrebbe essere un dato obbligatorio)
+     * Restituisce la descrizione.
+     * @return <code>informativa</code> - la descrizione
      */
-    public String getInformativa() throws AttributoNonValorizzatoException {
-        if (informativa == null) {
-            throw new AttributoNonValorizzatoException(FOR_NAME + "Attributo informativa non valorizzato!");
-        }
+    public String getInformativa() {
         return this.informativa;
     }
     
     /**
-     * Imposta la descrizione di un raggruppamento.
-     * @param string il nome da impostare per la descrizione del gruppo
+     * Imposta la descrizione.
+     * @param string il nome da impostare per la descrizione
      */
     public void setInformativa(String string) {
         informativa = string;
