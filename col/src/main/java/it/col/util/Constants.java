@@ -168,27 +168,27 @@ public interface Constants extends Serializable {
      * --------------------    OPERATIONS    -------------------- 
      */
     /**
-     * <p>Costante per il parametro identificante che c'è da fare un'operazione.</p>
+     * <p>Costante per il NOME del parametro identificante che c'è da fare un'operazione.</p>
      */
     public static final String OPERATION                = "op";
     /**
-     * <p>Costante per il parametro identificante l'oggetto dell'operazione.</p>
+     * <p>Costante per il NOME del parametro identificante l'oggetto dell'operazione.</p>
      */
     public static final String OBJECT                   = "obj";
     /**
-     * <p>Costante per il parametro identificante la funzione di selezione di un elemento.</p>
+     * <p>Costante per il VALORE del parametro identificante la funzione di selezione di un elemento.</p>
      */
     public static final String SELECT                   = "sel";
     /**
-     * <p>Costante per il parametro identificante la funzione di inserimenot di un elemento.</p>
+     * <p>Costante per il VALORE del parametro identificante la funzione di inserimenot di un elemento.</p>
      */
     public static final String INSERT                   = "ins";
     /**
-     * <p>Costante per il parametro identificante la funzione di aggiornamento di un elemento.</p>
+     * <p>Costante per il VALORE del parametro identificante la funzione di aggiornamento di un elemento.</p>
      */
     public static final String UPDATE                   = "upd";
     /**
-     * <p>Costante per il parametro identificante la funzione di eliminazione di un elemento.</p>
+     * <p>Costante per il VALORE del parametro identificante la funzione di eliminazione di un elemento.</p>
      */
     public static final String DELETE                   = "del";
     /* 
@@ -202,6 +202,17 @@ public interface Constants extends Serializable {
      * <p>Costante per il parametro identificante la pagina dei credits dell'applicazione.</p>
      */
     public static final String PART_CREDITS             = "crd";
+    /* 
+     * --------------------    OTHER VALUES    -------------------- 
+     */
+    /**
+     * <p>Costante per il valore del parametro identificante il contraente.</p>
+     */
+    public static final String CONTRACTOR               = "cont";
+    /**
+     * <p>Costante per il valore del parametro identificante il referente.</p>
+     */
+    public static final String REFEREE                  = "refe";
     /* ************************************************************************ *
      *   Costanti tipografiche per la generazione di output (p.es. csv) e URL   *
      * ************************************************************************ */
