@@ -193,7 +193,7 @@ public interface Query extends Serializable {
      * <p>Estrae le convenzioni in stato attivo.</p>
      */
     public static final String GET_CONVENTIONS =
-            "SELECT " +
+            "SELECT DISTINCT" +
             "       C.id                    AS \"id\"" +
             "   ,   C.titolo                AS \"titolo\"" +
             "   ,   C.informativa           AS \"informativa\"" +
@@ -215,6 +215,46 @@ public interface Query extends Serializable {
             "   WHERE C.id_stato = (SELECT id FROM stato_convenzione WHERE nome = 'ATTIVO')" +
             "   ORDER BY C.ordinale";
     
+    /**
+     * <p>Estrae una convenzione di dato id.</p>
+     */
+    public static final String GET_CONVENTION =
+            "SELECT " +
+            "       C.id                    AS \"id\"" +
+            "   ,   C.titolo                AS \"titolo\"" +
+            "   ,   C.informativa           AS \"informativa\"" +
+            "   ,   C.ordinale              AS \"ordinale\"" +
+            "   ,   C.data_approvazione     AS \"dataApprovazione\"" +
+            "   ,   C.nota_approvazione     AS \"notaApprovazione\"" +
+            "   ,   C.data_approvazione2    AS \"dataApprovazione2\"" +
+            "   ,   C.nota_approvazione2    AS \"notaApprovazione2\"" +
+            "   ,   C.data_sottoscrizione   AS \"dataSottoscrizione\"" +
+            "   ,   C.nota_sottoscrizione   AS \"notaSottoscrizione\"" +
+            "   ,   C.data_scadenza         AS \"dataScadenza\"" +
+            "   ,   C.nota_scadenza         AS \"notaScadenza\"" +
+            "   ,   C.num_repertorio        AS \"numRepertorio\"" +
+            "   ,   C.data_ultima_modifica  AS \"dataUltimaModifica\"" +
+            "   ,   C.ora_ultima_modifica   AS \"oraUltimaModifica\"" +
+            "   ,   C.id_usr_ultima_modifica                                    AS \"idUsrUltimaModifica\"" +
+            "   ,   (SELECT nome FROM tipo_convenzione WHERE id = C.id_tipo)    AS \"tipo\"" +
+            "   FROM convenzione C" +
+            "   WHERE C.id = ?";
+    
+    /**
+     * <p>Estrae le convenzioni in stato attivo.</p>
+     */
+    public static final String GET_CONTRACTORS =
+            "SELECT DISTINCT" +
+            "       P.id                    AS \"id\"" +
+            "   ,   P.nome                  AS \"nome\"" +
+            "   ,   P.informativa           AS \"informativa\"" +
+            "   ,   P.ordinale              AS \"ordinale\"" +
+            "   ,   P.codice_fiscale        AS \"codiceFiscale\"" +
+            "   ,   P.partita_iva           AS \"partitaIva\"" +
+            "   ,   P.email                 AS \"email\"" +
+            "   ,   (SELECT nome FROM tipo_contraente WHERE id = P.id_tipo)    AS \"note\"" +
+            "   FROM contraente P" +
+            "   ORDER BY P.ordinale, P.nome";
     
     /* ************************************************************************ *
      *  Interfacce di metodi che costruiscono dinamicamente Query di Selezione  *
