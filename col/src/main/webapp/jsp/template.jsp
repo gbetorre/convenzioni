@@ -22,6 +22,8 @@
     <link rel="stylesheet" href="${initParam.urlDirStyles}templatemo-plot-listing.css">
     <link rel="stylesheet" href="${initParam.urlDirStyles}animated.css">
     <link rel="stylesheet" href="${initParam.urlDirStyles}owl.css">
+    <!--  Customized and taylored CSS for col  -->
+    <link rel="stylesheet" href="${initParam.urlDirStyles}col.css">
   <body class="${pageScope.bgbody}">
   <c:catch var="exception">
     <!-- Header -->
