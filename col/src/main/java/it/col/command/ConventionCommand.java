@@ -86,13 +86,17 @@ public class ConventionCommand extends CommandBean implements Command, Constants
      */    
     private static final HashMap<String, CodeBean> pages = new HashMap<>();
     /**
-     *  List page
+     *  SELECT List page
      */    
     private static final CodeBean elenco = new CodeBean("landing.jsp", "COL [Convenzioni On Line]");
     /**
-     *  Details page
+     *  SELECT Details page
      */    
     private static final CodeBean dettagli = new CodeBean("coConvenzione.jsp", "Dettagli convenzione");
+    /**
+     *  UPDATE Convention: assign one or more contractors to a single convention
+     */    
+    private static final CodeBean contraenti = new CodeBean("coFormContraente.jsp", "Assegna contraente");
 
 
     /** 
@@ -116,6 +120,7 @@ public class ConventionCommand extends CommandBean implements Command, Constants
         // Hashmap containing pages
         pages.put(COMMAND_CONV,     elenco);
         pages.put(SELECT,           dettagli);
+        pages.put(CONTRACTOR,       contraenti);
     }
     
     
@@ -154,6 +159,8 @@ public class ConventionCommand extends CommandBean implements Command, Constants
         Convenzione convention = null;
         // List of Agreements
         ArrayList<Convenzione> conventions = null;
+        // List of Contractors
+        ArrayList<PersonBean> contractors = null;
         // All the params coming from forms
         HashMap<String, LinkedHashMap<String, String>> params = null;
         // Page
@@ -173,6 +180,8 @@ public class ConventionCommand extends CommandBean implements Command, Constants
         ParameterParser parser = new ParameterParser(req);
         // What do we do?
         String operation = parser.getStringParameter("op", SELECT);
+        // Which one is involved to do what we do?
+        String object = parser.getStringParameter("obj", DASH);
         // Retrieve, or initialize, 'id agreement'
         int idA = parser.getIntParameter("id", DEFAULT_ID);
         /* ******************************************************************** *
@@ -253,7 +262,17 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                         // TODO
                         break;
                     case "upd":
-                        // TODO
+                        // Test if there is a convention id
+                        if (idA > DEFAULT_ID) { 
+                            convention = db.getConvention(user, idA);
+                            // Manage the contractor(s) of the idA convention
+                            if (object.equalsIgnoreCase(CONTRACTOR)) {
+                                contractors = db.getContractors(user);
+                                // Show the form to assign a consultant to a convention
+                                fileJspT = pages.get(object);
+                            }
+                            
+                        }
                         break;
                     case "del":
                         // TODO
@@ -415,6 +434,10 @@ public class ConventionCommand extends CommandBean implements Command, Constants
         // List of agreements, if it does exist
         if (conventions != null) {
             req.setAttribute("convenzioni", conventions);
+        }
+        // List of contractors, if it does exist
+        if (contractors != null) {
+            req.setAttribute("contraenti", contractors);
         }
         // Imposta nella request data di oggi 
         req.setAttribute("now", today);
