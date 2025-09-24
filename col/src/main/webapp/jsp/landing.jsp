@@ -3,7 +3,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <fmt:setLocale value="it_IT"/>
 <c:set var="cons" value="${requestScope.convenzioni}" scope="page" />
-    <link rel="stylesheet" href="${initParam.urlDirStyles}col.css">
     <link rel="stylesheet" href="${initParam.urlDirFrameworks}DataTables/css/datatables.min.css" type="text/css" />
     <div class="main-banner">
       <div class="container">
@@ -88,7 +87,8 @@
             <th width="10%">Nota sottoscrizione</th>
             <th width="10%">Data scadenza</th>
             <th width="10%">Nota scadenza</th>
-            <th width="15%">Num. repertorio</th>
+            <th width="10%">Num. repertorio</th>
+            <th width="10%">Azioni</th>
           </tr>
         </thead>
         <tbody>
@@ -103,6 +103,25 @@
             <td><fmt:formatDate value="${con.dataScadenza}" pattern="dd MMMMM yyyy" /></td>
             <td><c:out value="${con.notaScadenza}" /></td>
             <td><c:out value="${con.numRepertorio}" /></td>
+            <td>
+              <ul class="list-inline">
+                <li class="list-inline-item me-0">
+                  <a href="${initParam.appName}/?q=pagina dei dettagli di una convenzione non ancora definita&id=${con.id}" class="btn btn-sm btn-success" title="Vedi dettagli Convenzione">
+                    <i class="fa fa-eye"></i>
+                  </a>
+                </li>
+                <li class="list-inline-item me-0">
+                  <a href="${initParam.appName}/?q=co&op=upd&obj=cont&id=${con.id}" class="btn btn-sm btn-warning" title="Assegna Contraenti">
+                    <i class="fa fa-users" aria-hidden="true"></i> 
+                  </a>
+                </li>
+                <li class="list-inline-item me-0">
+                  <a href="#" class="btn btn-sm btn-primary" title="Modifica Convenzione">
+                    <i class="fa fa-pencil"></i>
+                  </a>
+                </li>
+              </ul>
+            </td>
           </tr>
         </c:forEach>
         </tbody>
