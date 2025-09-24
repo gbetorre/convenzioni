@@ -562,6 +562,123 @@ public class DBWrapper extends QueryImpl {
             throw new WebStorageException(msg + sqle.getMessage(), sqle);
         }
     }
+    
+    
+    /**
+     * <p>Restituisce una convenzione di dato id.</p>
+     *
+     * @param user utente che ha effettuato la richiesta
+     * @param idConvention identificativo della convenzione che si vuole recuperare
+     * @return <code>Convenzione</code> - convenzione trovata
+     * @throws it.col.exception.WebStorageException se si verifica un problema nell'esecuzione della query, nell'accesso al db o in qualche tipo di puntamento
+     * @throws it.col.exception.AttributoNonValorizzatoException  eccezione che viene sollevata se questo oggetto viene usato e l'id della persona non &egrave; stato valorizzato (&egrave; un dato obbligatorio)
+     */
+    @SuppressWarnings({ "static-method" })
+    public Convenzione getConvention(PersonBean user,
+                                     int idConvention)
+                              throws WebStorageException, 
+                                     AttributoNonValorizzatoException {
+        try (Connection con = col_manager.getConnection()) {
+            PreparedStatement pst = null;
+            ResultSet rs = null;
+            Convenzione c = null;
+            try {
+                // TODO: Controllare i diritti dell'utente
+                pst = con.prepareStatement(GET_CONVENTION);
+                pst.clearParameters();
+                pst.setInt(1, idConvention);
+                rs = pst.executeQuery();
+                if (rs.next()) {
+                    c = new Convenzione();
+                    BeanUtil.populate(c, rs);
+                }
+                // Try to engage the Garbage Collector
+                pst = null;
+                // Get Out
+                return c;
+            } catch (SQLException sqle) {
+                String msg = FOR_NAME + "Problema nella query della convenzione.\n";
+                LOG.severe(msg);
+                throw new WebStorageException(msg + sqle.getMessage(), sqle);
+            } catch (ClassCastException cce) {
+                String msg = FOR_NAME + "Problema in una conversione di tipi.\n";
+                LOG.severe(msg);
+                throw new WebStorageException(msg + cce.getMessage(), cce);
+            } finally {
+                try {
+                    con.close();
+                } catch (NullPointerException npe) {
+                    String msg = FOR_NAME + "Ooops... problema nella chiusura della connessione.\n";
+                    LOG.severe(msg);
+                    throw new WebStorageException(msg + npe.getMessage());
+                } catch (SQLException sqle) {
+                    throw new WebStorageException(FOR_NAME + sqle.getMessage());
+                }
+            }
+        } catch (SQLException sqle) {
+            String msg = FOR_NAME + "Problema con la creazione della connessione.\n";
+            LOG.severe(msg);
+            throw new WebStorageException(msg + sqle.getMessage(), sqle);
+        }
+    }
+    
+    
+    /**
+     * <p>Restituisce la lista dei contraenti.</p>
+     *
+     * @param user utente che ha effettuato la richiesta
+     * @return <code>ArrayList&lt;PersonBean&gt;</code> - lista contraenti trovati
+     * @throws it.col.exception.WebStorageException se si verifica un problema nell'esecuzione della query, nell'accesso al db o in qualche tipo di puntamento
+     * @throws it.col.exception.AttributoNonValorizzatoException  eccezione che viene sollevata se questo oggetto viene usato e l'id della persona non &egrave; stato valorizzato (&egrave; un dato obbligatorio)
+     */
+    @SuppressWarnings({ "static-method" })
+    public ArrayList<PersonBean> getContractors(PersonBean user)
+                                         throws WebStorageException, 
+                                                AttributoNonValorizzatoException {
+        try (Connection con = col_manager.getConnection()) {
+            PreparedStatement pst = null;
+            ResultSet rs = null;
+            PersonBean p = null;
+            ArrayList<PersonBean> contraenti = new ArrayList<>();
+            try {
+                // TODO: Controllare i diritti dell'utente
+                pst = con.prepareStatement(GET_CONTRACTORS);
+                pst.clearParameters();
+                rs = pst.executeQuery();
+                while (rs.next()) {
+                    p = new PersonBean();
+                    BeanUtil.populate(p, rs);
+                    contraenti.add(p);
+                }
+                // Try to engage the Garbage Collector
+                pst = null;
+                // Get Out
+                return contraenti;
+            } catch (SQLException sqle) {
+                String msg = FOR_NAME + "Problema nella query.\n";
+                LOG.severe(msg);
+                throw new WebStorageException(msg + sqle.getMessage(), sqle);
+            } catch (ClassCastException cce) {
+                String msg = FOR_NAME + "Problema in una conversione di oggetti.\n";
+                LOG.severe(msg);
+                throw new WebStorageException(msg + cce.getMessage(), cce);
+            } finally {
+                try {
+                    con.close();
+                } catch (NullPointerException npe) {
+                    String msg = FOR_NAME + "Ooops... problema nella chiusura della connessione.\n";
+                    LOG.severe(msg);
+                    throw new WebStorageException(msg + npe.getMessage());
+                } catch (SQLException sqle) {
+                    throw new WebStorageException(FOR_NAME + sqle.getMessage());
+                }
+            }
+        } catch (SQLException sqle) {
+            String msg = FOR_NAME + "Problema con la creazione della connessione.\n";
+            LOG.severe(msg);
+            throw new WebStorageException(msg + sqle.getMessage(), sqle);
+        }
+    }
 
 
     /* ********************************************************** *
