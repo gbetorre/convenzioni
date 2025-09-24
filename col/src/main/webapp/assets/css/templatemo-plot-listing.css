@@ -1223,12 +1223,20 @@ contact
   border-bottom-left-radius: 7px;
 }
 
-form#contact {
+
+
+/* 
+---------------------------------------------
+forms
+--------------------------------------------- 
+*/
+
+form .contact {
   position: relative;
   margin: 0px 60px 0px 45px;
 }
 
-form#contact input {
+form .contact input {
   width: 100%;
   height: 46px;
   border-radius: 7px;
@@ -1262,19 +1270,19 @@ form#contact input[type=checkbox] {
   cursor: pointer;
 }
 
-form#contact span {
+form .contact span {
   color: #8d99af;
   font-size: 14px;
   font-weight: 500;
   margin-left: 8px;
 }
 
-form#contact input::placeholder {
+form .contact input::placeholder {
   color: #8d99af;
   font-weight: 500;
 }
 
-form#contact textarea {
+form .contact textarea {
   margin-top: 10px;
   width: 100%;
   min-width: 100%;
@@ -1293,12 +1301,12 @@ form#contact textarea {
   margin-bottom: 30px;
 }
 
-form#contact textarea::placeholder {
+form .contact textarea::placeholder {
   color: #8d99af;
   font-weight: 500;
 }
 
-form#contact button {
+form .contact button {
   margin-bottom: -15px;
   display: inline-block;
   background-color: #8d99af;
@@ -1314,7 +1322,7 @@ form#contact button {
   transition: all .3s;
 }
 
-form#contact button i {
+form .contact button i {
   margin-right: 10px;
   width: 24px;
   height: 24px;
@@ -1327,7 +1335,7 @@ form#contact button i {
   line-height: 24px;
 }
 
-form#contact button:hover {
+form .contact button:hover {
   background-color: #2b2d42;
   color: #fff;
 }
