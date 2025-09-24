@@ -36,461 +36,405 @@
 
 package it.col.bean;
 
-import it.col.exception.AttributoNonValorizzatoException;
-
-import java.io.Serializable;
 import java.sql.Date;
 import java.util.Vector;
 
+import it.col.util.Constants;
+
 
 /**
- * <p>PersonBean &egrave; l'oggetto che rappresenta una persona fisica.</p>
+ * <p>PersonBean is the object which represents a person, 
+ * whether natural or legal.</p>
  *
  * @author <a href="mailto:gianroberto.torre@gmail.com">Giovanroberto Torre</a>
  */
-public class PersonBean implements Serializable {
-    /**
-     * La serializzazione necessita di dichiarare una costante di tipo long
-     * identificativa della versione seriale.
-     * (Se questo dato non fosse inserito, verrebbe calcolato in maniera automatica
-     * dalla JVM, e questo potrebbe portare a errori riguardo alla serializzazione).
-     */
+public class PersonBean extends CodeBean {
+    /** Serialization id (implementation of that interface by the superclass)   */
     private static final long serialVersionUID = -3415439696526030885L;
-    /**
-     *  Nome di questa classe.
-     *  Viene utilizzato per contestualizzare i messaggi di errore.
-     */
+    /** Nome of this */
     private final String FOR_NAME = "\n" + this.getClass().getName() + ": "; //$NON-NLS-1$
-    /* ************************************************************************ *
-     *                    Dati identificativi della persona                     *
-     * ************************************************************************ */
-    /** Attributo identificativo della persona */
-    protected int id;
-    /** Attributo identificativo del nome della persona */
-    private String nome;
-    /** Attributo identificativo del cognome della persona */
+    /** Last name */
     private String cognome;
-    /** Attributo che memorizza la data di nascita della persona */
+    /** Birth date */
     private Date dataNascita;
-    /** Sesso attuale della persona */
+    /** Gender */
     private String sesso;
-    /** Codice fiscale della persona */
+    /** Fiscal code */
     private String codiceFiscale;
-    /** Flag per specificare se la persona stessa debba essere visibile nel contesto della struttura/ufficio di appartenenza */
+    /** VAT number */
+    private String partitaIva;
+    /** Flag to hide */
     private boolean mostraPersona;
-    /** E&ndash;mail della persona */
+    /** E&ndash;mail */
     private String email;
-    /** Et&agrave; */
+    /** Age */
     private int eta;
-    /** Ritratto della persona */
+    /** Logo/Photograph */
     private Vector<FileDocBean> foto;
-    /** Utente loggato */
+    /** User */
     private int usrId;
-    /** Url della pagina personale in caso di necessit&agrave; di mostrare la propria persona in ulteriore contesto */
+    /** Url personal page */
     private String urlPersonalPage;
-    /** link alla pagina della persona (dipende dal contesto) */
+    /** Url official page */
     private String url;
-    /** Flag per specificare se la persona lavora in ateneo a tempo pieno o parziale */
-    private boolean tempoPieno;
     /** Note */
     private String note;
-    /** Lista di ruoli giuridici della persona */
+    /** Functional roles */
     private Vector<CodeBean> ruoli;
-    /** Campo note contenente il ruolo applicativo della persona */
+    /** Application role */
     private String ruolo;
-    /** Identificativo del dipartimento cui la persona afferisce */
+    /** Person department id */
     protected int idDipartimento;
-    /** Nome del dipartimento cui la persona afferisce */
+    /** Person department name */
     private String dipartimento;
-    /** Indirizzo web del dipartimento cui la persona afferisce */
+    /** Person department website */
     protected String urlDipartimento;
 
 
     /**
-     * <p>Costruttore: inizializza i campi a valori di default.</p>
+     * <p>Initialize the fields to defaults.</p>
      */
     public PersonBean() {
-        id = idDipartimento = CodeBean.BEAN_DEFAULT_ID;
-        nome = cognome = codiceFiscale = email = urlPersonalPage = null;
+        super();
+        idDipartimento = BEAN_DEFAULT_ID;
+        cognome = codiceFiscale = partitaIva = email = urlPersonalPage = null;
         dataNascita = new Date(0);
-        eta = CodeBean.BEAN_DEFAULT_ID;
-        mostraPersona = tempoPieno = true;
+        eta = BEAN_DEFAULT_ID;
+        mostraPersona = true;
         sesso = null;
         url = null;
         note = null;
         foto = null;
-        usrId = CodeBean.BEAN_DEFAULT_ID;
+        usrId = BEAN_DEFAULT_ID;
         ruoli = null;
         ruolo = null;
         dipartimento = urlDipartimento = null;
     }
 
 
-    //TODO COMMENTI
     /**
-     * @return
+     * Gets the last name.
+     * @return the last name (cognome)
+     */
+    public String getCognome() {
+        return cognome;
+    }
+
+    /**
+     * Sets the last name.
+     * @param cognome the last name to set
+     */
+    public void setCognome(String cognome) {
+        this.cognome = cognome;
+    }
+
+
+    /**
+     * Gets the birth date.
+     * @return the birth date (dataNascita)
+     */
+    public Date getDataNascita() {
+        return dataNascita;
+    }
+
+    /**
+     * Sets the birth date.
+     * @param dataNascita the birth date to set
+     */
+    public void setDataNascita(Date dataNascita) {
+        this.dataNascita = dataNascita;
+    }
+
+    /**
+     * @return true if the birth date is empty or if it serves no purpose
      */
     public boolean isDataNascitaEmpty() {
         return (new Date(0).equals(dataNascita) || (dataNascita == null));
     }
+    
 
     /**
-     * @return
+     * Gets the gender.
+     * @return the gender (sesso)
      */
-    public boolean isDipartimentoEmpty() {
-           return (dipartimento == null || dipartimento.equals(""));
+    public String getSesso() {
+        return sesso;
     }
 
     /**
-     * @return
-     */
-    public boolean isUrlDipartimentoEmpty() {
-           return (urlDipartimento == null || urlDipartimento.equals(""));
-    }
-
-    /**
-     * @return
-     */
-    public boolean isTempoPieno() {
-        return tempoPieno;
-    }
-
-    /**
-     * @return id
-     * @throws AttributoNonValorizzatoException
-     */
-    public int getId() throws AttributoNonValorizzatoException {
-        if (id == -2) {
-            throw new AttributoNonValorizzatoException("PersonBean: attributo id Persona non valorizzato!");
-        }
-        return this.id;
-    }
-
-    /**
-     * @return nome
-     * @throws AttributoNonValorizzatoException
-     */
-    public String getNome() throws AttributoNonValorizzatoException {
-        if (nome == null) {
-            throw new AttributoNonValorizzatoException("PersonBean: attributo nome non valorizzato!");
-        }
-        return this.nome;
-    }
-
-    /**
-     * @return cognome
-     * @throws AttributoNonValorizzatoException
-     */
-    public String getCognome() throws AttributoNonValorizzatoException {
-        if (cognome == null) {
-            throw new AttributoNonValorizzatoException("PersonBean: attributo cognome non valorizzato!");
-        }
-        return this.cognome;
-    }
-
-	/**
-     * @return dataNascita
-	 * @throws AttributoNonValorizzatoException
-     */
-    public Date getDataNascita() throws AttributoNonValorizzatoException {
-        if (new Date(0).equals(dataNascita)) {
-            throw new AttributoNonValorizzatoException(FOR_NAME + ": attributo dataNascita non valorizzato!");
-        }
-        return this.dataNascita;
-    }
-
-    /**
-     * @return codiceFiscale
-     */
-    public String getCodiceFiscale() {
-        return this.codiceFiscale;
-    }
-
-    /**
-     * @return email
-     * @throws AttributoNonValorizzatoException
-     */
-    public String getEmail() throws AttributoNonValorizzatoException {
-        if (email == null) {
-            throw new AttributoNonValorizzatoException("PersonBean: attributo email non valorizzato!");
-        }
-        return this.email;
-    }
-
-    /**
-     * @return eta
-     * @throws AttributoNonValorizzatoException
-     */
-    public int getEta() throws AttributoNonValorizzatoException {
-        if (eta == CodeBean.BEAN_DEFAULT_ID) {
-            throw new AttributoNonValorizzatoException("PersonBean: attributo eta non valorizzato!");
-        }
-        return this.eta;
-    }
-
-    /**
-     * Restituisce il ruolo applicativo dell'utente
-     * @return ruolo
-     */
-    public String getRuolo() {
-        return this.ruolo;
-    }
-
-    /**
-     * @return idDipartimento
-     * @throws AttributoNonValorizzatoException
-     */
-    public int getIdDipartimento() throws AttributoNonValorizzatoException {
-        if (idDipartimento == -2) {
-            throw new AttributoNonValorizzatoException("PersonBean: attributo idDipartimento non valorizzato!");
-        }
-        return this.idDipartimento;
-    }
-
-    /**
-     * @return dipartimento
-     * @throws AttributoNonValorizzatoException
-     */
-    public String getDipartimento() throws AttributoNonValorizzatoException {
-        if (dipartimento == null) {
-            throw new AttributoNonValorizzatoException("PersonBean: attributo dipartimento non valorizzato!");
-        }
-        return this.dipartimento;
-    }
-
-    /**
-     * @return note
-     * @throws AttributoNonValorizzatoException
-     */
-    public String getNote() throws AttributoNonValorizzatoException {
-        if (note == null) {
-            throw new AttributoNonValorizzatoException("PersonBean: attributo note non valorizzato!");
-        }
-        return this.note;
-    }
-
-    /**
-     * @return urlPersonalPage
-     * @throws AttributoNonValorizzatoException
-     */
-    public String getUrlPersonalPage() throws AttributoNonValorizzatoException {
-        if (urlPersonalPage == null) {
-            throw new AttributoNonValorizzatoException("PersonBean: attributo urlPersonalPage non valorizzato!");
-        }
-        return this.urlPersonalPage;
-    }
-
-    /**
-     * @return urlDipartimento
-     *
-     */
-    public String getUrlDipartimento() {
-        return this.urlDipartimento;
-    }
-
-    /**
-     * @param cognome
-     */
-    public void setCognome(String string) {
-        cognome = string;
-    }
-
-    /**
-     * @param dataNascita
-     */
-    public void setDataNascita(Date date) {
-        dataNascita = date;
-    }
-
-    /**
-     * @param codiceFiscale
-     */
-    public void setCodiceFiscale(String string) {
-        codiceFiscale = string;
-    }
-
-    /**
-     * @param email
-     */
-    public void setEmail(String string) {
-        email = string;
-    }
-
-    /**
-     * @param eta
-     */
-    public void setEta(int eta) {
-        this.eta = eta;
-    }
-
-    /**
-     * @param id
-     */
-    public void setId(int i) {
-        id = i;
-    }
-
-    /**
-     * @param idDipartimento
-     */
-    public void setIdDipartimento(int i) {
-        idDipartimento = i;
-    }
-
-    /**
-     * @param ruoloGiuridico
-     */
-    public void setRuolo(String string) {
-        ruolo = string;
-    }
-
-    /**
-     * @param nome
-     */
-    public void setNome(String string) {
-        nome = string;
-    }
-
-    /**
-     * @param dipartimento
-     */
-    public void setDipartimento(String string) {
-        dipartimento = string;
-    }
-
-    /**
-     * @param note
-     */
-    public void setNote(String string) {
-        note = string;
-    }
-
-    /**
-     * @param tempoPieno Valori '1' o '0'
-     */
-    public void setTempoPieno(char v) {
-        if (v == '1') {
-            this.tempoPieno = true;
-        } else {
-            this.tempoPieno = false;
-        }
-    }
-
-
-    /**
-     * @param tempoPieno.
-     */
-    public void setTempoPieno(boolean v) {
-        this.tempoPieno = v;
-    }
-
-
-    /**
-     * @param urlPersonalPage
-     */
-    public void setUrlPersonalPage(String string) {
-        urlPersonalPage = string;
-    }
-
-
-    /**
-     * @param urlDipartimento
-     *
-     */
-    public void setUrlDipartimento(java.lang.String urlDipartimento) {
-        this.urlDipartimento = urlDipartimento;
-    }
-
-
-    /**
-     * Getter for property sesso.
-     * @return Value of property sesso.
-     */
-    public String getSesso() throws AttributoNonValorizzatoException {
-        if (sesso == null) {
-            throw new AttributoNonValorizzatoException("PersonBean: attributo sesso non valorizzato!");
-        }
-        return this.sesso;
-    }
-
-    /**
-     * Setter for property sesso.
-     * @param sesso New value of property sesso.
+     * Sets the gender.
+     * @param sesso the gender to set
      */
     public void setSesso(String sesso) {
-        if (!sesso.equals("M") && !sesso.equals("F") && !sesso.equals("m") && !sesso.equals("f"))
-            this.sesso = "m";
-        else
-            this.sesso = sesso;
+        this.sesso = sesso;
+    }
+
+
+    /**
+     * Gets the fiscal code.
+     * @return the fiscal code (codiceFiscale)
+     */
+    public String getCodiceFiscale() {
+        return codiceFiscale;
     }
 
     /**
-     * @return mostraPersona
+     * Sets the fiscal code.
+     * @param codiceFiscale the fiscal code to set
+     */
+    public void setCodiceFiscale(String codiceFiscale) {
+        this.codiceFiscale = codiceFiscale;
+    }
+
+
+    /**
+     * Gets the VAT number.
+     * @return the VAT number (partitaIva)
+     */
+    public String getPartitaIva() {
+        return partitaIva;
+    }
+
+    /**
+     * Sets the VAT number.
+     * @param partitaIva the VAT number to set
+     */
+    public void setPartitaIva(String partitaIva) {
+        this.partitaIva = partitaIva;
+    }
+
+
+    /**
+     * Gets the flag to hide.
+     * @return true if the person is hidden (mostraPersona)
      */
     public boolean isMostraPersona() {
         return mostraPersona;
     }
 
     /**
-     * @param mostraPersona
+     * Sets the flag to hide.
+     * @param mostraPersona true to hide the person, false otherwise
      */
-    public void setMostraPersona(boolean b) {
-        mostraPersona = b;
+    public void setMostraPersona(boolean mostraPersona) {
+        this.mostraPersona = mostraPersona;
+    }
+
+
+    /**
+     * Gets the email.
+     * @return the email
+     */
+    public String getEmail() {
+        return email;
     }
 
     /**
-     * @param fotoFileDoc
+     * Sets the email.
+     * @param email the email to set
      */
-    public void setFoto(Vector<FileDocBean> fotoFileDoc) {
-        foto = fotoFileDoc;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
+
+    /**
+     * Gets the age.
+     * @return the age (eta)
+     */
+    public int getEta() {
+        return eta;
+    }
+
+    /**
+     * Sets the age.
+     * @param eta the age to set
+     */
+    public void setEta(int eta) {
+        this.eta = eta;
+    }
+
+
+    /**
+     * Gets the logo/photograph vector.
+     * @return the logo/photograph vector (foto)
+     */
     public Vector<FileDocBean> getFoto() {
         return foto;
     }
 
     /**
-     * @param url the url to set
+     * Sets the logo/photograph vector.
+     * @param foto the logo/photograph vector to set
+     */
+    public void setFoto(Vector<FileDocBean> foto) {
+        this.foto = foto;
+    }
+
+
+    /**
+     * Gets the user ID.
+     * @return the user id (usrId)
+     */
+    public int getUsrId() {
+        return usrId;
+    }
+
+    /**
+     * Sets the user ID.
+     * @param usrId the user id to set
+     */
+    public void setUsrId(int usrId) {
+        this.usrId = usrId;
+    }
+
+
+    /**
+     * Gets the personal page URL.
+     * @return the personal page URL (urlPersonalPage)
+     */
+    public String getUrlPersonalPage() {
+        return urlPersonalPage;
+    }
+
+    /**
+     * Sets the personal page URL.
+     * @param urlPersonalPage the personal page URL to set
+     */
+    public void setUrlPersonalPage(String urlPersonalPage) {
+        this.urlPersonalPage = urlPersonalPage;
+    }
+
+
+    /**
+     * Gets the official page URL.
+     * @return the official page URL (url)
+     */
+    public String getUrl() {
+        return url;
+    }
+
+    /**
+     * Sets the official page URL.
+     * @param url the official page URL to set
      */
     public void setUrl(String url) {
         this.url = url;
     }
 
+
     /**
-     * @return the url
+     * Gets the notes.
+     * @return the notes
      */
-    public String getUrl() {
-        return this.url;
+    public String getNote() {
+        return note;
     }
 
-	/**
-	 * @return the user id
-	 */
-	public int getUsrId() {
-		return usrId;
-	}
+    /**
+     * Sets the notes.
+     * @param note the notes to set
+     */
+    public void setNote(String note) {
+        this.note = note;
+    }
 
-	/**
-	 * @param usrId the user id to set
-	 */
-	public void setUsrId(int usrId) {
-		this.usrId = usrId;
-	}
 
     /**
-     * @return i ruoli giuridici della persona
+     * Gets the functional roles vector.
+     * @return the functional roles vector (ruoli)
      */
     public Vector<CodeBean> getRuoli() {
         return ruoli;
     }
 
     /**
-     * @param ruoli i ruoli giuridici da impostare
+     * Sets the functional roles vector.
+     * @param ruoli the functional roles vector to set
      */
     public void setRuoli(Vector<CodeBean> ruoli) {
         this.ruoli = ruoli;
     }
 
 
+    /**
+     * Gets the application role.
+     * @return the application role (ruolo)
+     */
+    public String getRuolo() {
+        return ruolo;
+    }
+
+    /**
+     * Sets the application role.
+     * @param ruolo the application role to set
+     */
+    public void setRuolo(String ruolo) {
+        this.ruolo = ruolo;
+    }
+
+
+    /**
+     * Gets the person department id.
+     * @return the person department id (idDipartimento)
+     */
+    public int getIdDipartimento() {
+        return idDipartimento;
+    }
+
+    /**
+     * Sets the person department id.
+     * @param idDipartimento the person department id to set
+     */
+    public void setIdDipartimento(int idDipartimento) {
+        this.idDipartimento = idDipartimento;
+    }
+
+    /**
+     * @return true if the department is empty or not meaningful
+     */
+    public boolean isDipartimentoEmpty() {
+           return (dipartimento == null || dipartimento.equals(Constants.VOID_STRING));
+    }
+
+    /**
+     * Gets the person department name.
+     * @return the person department name (dipartimento)
+     */
+    public String getDipartimento() {
+        return dipartimento;
+    }
+
+    /**
+     * Sets the person department name.
+     * @param dipartimento the person department name to set
+     */
+    public void setDipartimento(String dipartimento) {
+        this.dipartimento = dipartimento;
+    }
+
+
+    /**
+     * Gets the person department website URL.
+     * @return the person department website URL (urlDipartimento)
+     */
+    public String getUrlDipartimento() {
+        return urlDipartimento;
+    }
+
+    /**
+     * Sets the person department website URL.
+     * @param urlDipartimento the person department website URL to set
+     */
+    public void setUrlDipartimento(String urlDipartimento) {
+        this.urlDipartimento = urlDipartimento;
+    }
+
+    /**
+     * @return true if URL department's is pointless 
+     */
+    public boolean isUrlDipartimentoEmpty() {
+           return (urlDipartimento == null || urlDipartimento.equals(Constants.VOID_STRING));
+    }
 
 }
