@@ -51,8 +51,6 @@ import it.col.util.Constants;
 public class PersonBean extends CodeBean {
     /** Serialization id (implementation of that interface by the superclass)   */
     private static final long serialVersionUID = -3415439696526030885L;
-    /** Nome of this */
-    private final String FOR_NAME = "\n" + this.getClass().getName() + ": "; //$NON-NLS-1$
     /** Last name */
     private String cognome;
     /** Birth date */
