@@ -4,7 +4,14 @@
 <%@ page isErrorPage="true" %>
 <%@ page session="false" %>
 <c:set var="isErrorPage" value="true" scope="request" />
-<c:set var="msg" value="${requestScope.message}" scope="page" />
+<c:choose>
+  <c:when test="${fn:contains(requestScope.message, 'java.')}">
+    <c:set var="msg" value="${fn:substring(requestScope.message, 35, 150)}" scope="page" />
+  </c:when>
+  <c:otherwise>
+    <c:set var="msg" value="${requestScope.message}" scope="page" />
+  </c:otherwise>
+</c:choose>
 <!DOCTYPE html>
 <html>
   <head>
@@ -60,7 +67,7 @@
         </div>
         <div class="text">
           <article>
-            <p><c:out value="${fn:substring(pageScope.msg, 35, 150)}" /></p>
+            <p><c:out value="${pageScope.msg}" /></p>
             <!-- ${msg} -->
             <button type="button" onclick="window.location.href='/col'">home</button>
           </article>
