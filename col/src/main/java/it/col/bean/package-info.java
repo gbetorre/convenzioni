@@ -39,14 +39,17 @@
  * implementare il design pattern JavaBean (proprietà incapsulate etc.)
  * per trasportare i valori.</p> 
  * 
- * <code>Elementi del package:<ul>
+ * <code>Elementi del package:
+ * <ul>
  * <li>BeanUtil</li>
  * <li>CodeBean</li>
  * <li>CommandBean</li>
+ * <li>Convenzione</li>
+ * <li>FileDocBean</li>
  * <li>ItemBean</li>
  * <li>PersonBean</li>
- * <li>FileDocBean</li>
- * </ul></code>
+ * </ul>
+ * </code>
  * 
  * <p>Created on Thu Jul 10 02:20:17 PM CEST 2025</p>
  * 
