@@ -73,7 +73,7 @@ public class Convenzione extends CodeBean {
     /** Last modified time */
     private Time oraUltimaModifica;
     /** Last modified author */
-    private Integer idUsrUltimaModifica;
+    private int idUsrUltimaModifica;
     /** Type label */
     private String tipo;
     /** State label */
@@ -131,7 +131,7 @@ public class Convenzione extends CodeBean {
     public Convenzione(int id, 
                        String titolo, 
                        String informativa, 
-                       Integer ordinale,
+                       int ordinale,
                        Date dataApprovazione, 
                        String notaApprovazione,
                        Date dataApprovazione2, 
@@ -143,7 +143,7 @@ public class Convenzione extends CodeBean {
                        String numRepertorio, 
                        Date dataUltimaModifica,
                        Time oraUltimaModifica, 
-                       Integer idUsrUltimaModifica,
+                       int idUsrUltimaModifica,
                        String tipo, 
                        String stato) {
         setId(id);
@@ -323,12 +323,12 @@ public class Convenzione extends CodeBean {
 
     
     /** @return the last modified author */
-    public Integer getIdUsrUltimaModifica() {
+    public int getIdUsrUltimaModifica() {
         return this.idUsrUltimaModifica;
     }
 
     /** @param idUsrUltimaModifica the last modified id user to set */
-    public void setIdUsrUltimaModifica(Integer idUsrUltimaModifica) {
+    public void setIdUsrUltimaModifica(int idUsrUltimaModifica) {
         this.idUsrUltimaModifica = idUsrUltimaModifica;
     }
 
