@@ -39,6 +39,7 @@
     <!-- Footer -->
     <c:if test="${not empty sessionScope.usr}">
       <hr class="separator"> 
+      <hr class="row">
       <%@ include file="footer.jspf" %>
     </c:if>
     <script src="${initParam.urlDirFrameworks}bootstrap/js/bootstrap.bundle.min.js"></script>
