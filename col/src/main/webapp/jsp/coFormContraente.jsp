@@ -31,7 +31,7 @@
             <div class="col-5">
               <select id="leftSelect" multiple class="form-select dataTable" aria-label="Left multiple select">
               <c:forEach var="contractor" items="${contractors}">
-                <option value="${contractor.id}"><c:out value="${contractor.nome}" /></option>
+                <option value="${contractor.id}" title="${contractor.nome} [tipo: ${contractor.note}]"><c:out value="${contractor.nome}" /></option>
               </c:forEach>
               </select>
             </div>
