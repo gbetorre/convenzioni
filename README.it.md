@@ -117,6 +117,7 @@ Il software è un'applicazione Java three-tier
 # History
 
 ```
+* [0.2.0] (Sep 25, 2025) Migliorie di presentazione
 * [0.1.9] (Sep 24, 2025) Prima bozza implementazione assegnazione contraenti a una convenzione
 * [0.1.8] (Sep 23, 2025) Implementato nuovo componente dello strato controller (Command) per la gestione delle convenzioni
 * [0.1.7] (Sep 22, 2025) Bugfix
