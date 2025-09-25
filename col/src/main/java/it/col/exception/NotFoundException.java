@@ -93,7 +93,7 @@ public class NotFoundException extends WebStorageException {
      * eccezione.</p>
      * </cite>
      * 
-     * @param msg   una String che verr&agrave; aggiunta a tempo di esecuzione al nome della classe per formare il messaggio memorizzato nell'eccezione
+     * @param msg   una String che verra' aggiunta a tempo di esecuzione al nome della classe per formare il messaggio memorizzato nell'eccezione
      */
     public NotFoundException(String msg) {
         super(msg);
@@ -122,8 +122,8 @@ public class NotFoundException extends WebStorageException {
      * generico numero di riga in cui viene gestita l'eccezione nel catch) 
      * in fase di debug &egrave; impagabile.</p>
      * 
-     * @param msg   una String che verr&agrave; aggiunta a tempo di esecuzione al nome della classe per formare il messaggio memorizzato nell'eccezione
-     * @param e     l'eccezione che si &egrave; verificata per l'aggiunta al messaggio della traccia dello stack
+     * @param msg   una String che verra' aggiunta a tempo di esecuzione al nome della classe per formare il messaggio memorizzato nell'eccezione
+     * @param e     l'eccezione che si e' verificata per l'aggiunta al messaggio della traccia dello stack
      */
     public NotFoundException(String msg, Throwable e) {
         super(msg + getLocalizedMessage(e));
@@ -131,9 +131,12 @@ public class NotFoundException extends WebStorageException {
     
     
     /**
-     * Oltre ai costruttori...
-     * TODO: COMPLETA COMMENTO 
-     * @param e
+     * Oltre ai costruttori standard e al costruttore che permette di risalire 
+     * all'esatto punto del codice da cui è partita la propagazione dell'
+     * eccezione, questa classe definisce anche un costruttore analogo a
+     * quest'ultimo, ma privo del messaggio parametrico.
+     *  
+     * @param e l'eccezione che si e' verificata
      */
     public NotFoundException(Throwable e) {
         super(getLocalizedMessage(e));
