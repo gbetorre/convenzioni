@@ -83,19 +83,17 @@ public class FileDocBean implements Serializable {
     private int tipologia;
     /** Id dell'utente a cui il file set è associato. */
     private int idProprietario;
-    /**
-     * Indica se l'accesso al file è riservato. La riservatezza &egrave; 
-     * garantita offrendo il link esclusivamente a classi particolari di utenti.
-     */
+    /** Indica se l'accesso al file è riservato. */
     private boolean riservato;
 
+    
     /**
      * <p>Costruttore: inizializza i campi a valori di default.</p>
      */
     public FileDocBean() {
-        id = idProprietario = -2;
-        dimensione = -2;
-        tipologia = -2;
+        id = idProprietario = CodeBean.BEAN_DEFAULT_ID;
+        dimensione = CodeBean.BEAN_DEFAULT_ID;
+        tipologia = CodeBean.BEAN_DEFAULT_ID;
         file = autore = lingua = titolo = mime = estensione = null;
         data = new Date(0);
         riservato = false;
@@ -110,7 +108,7 @@ public class FileDocBean implements Serializable {
      * @throws AttributoNonValorizzatoException se il dato non e' valorizzato
      */
     public int getId() throws AttributoNonValorizzatoException {
-        if (id == -2) {
+        if (id == CodeBean.BEAN_DEFAULT_ID) {
             throw new AttributoNonValorizzatoException(FOR_NAME + "Attributo id non valorizzato!");
         }
         return this.id;
@@ -153,10 +151,10 @@ public class FileDocBean implements Serializable {
     }
     
     /**
-     * @param l dimensione in byte da impostare
+     * @param dimensione dimensione in byte da impostare
      */
-    public void setDimensione(long l) {
-        dimensione = l;
+    public void setDimensione(long dimensione) {
+        this.dimensione = dimensione;
     }
     
     
@@ -171,10 +169,10 @@ public class FileDocBean implements Serializable {
     }
     
     /**
-     * @param l identificativo etichetta da impostare
+     * @param tipologia identificativo etichetta da impostare
      */
-    public void setTipologia(int l) {
-        tipologia = l;
+    public void setTipologia(int tipologia) {
+        this.tipologia = tipologia;
     }
     
     
@@ -241,6 +239,7 @@ public class FileDocBean implements Serializable {
      * **************************************************** */
     /**
      * @return lingua
+     * @throws AttributoNonValorizzatoException se questo oggetto viene usato e questo campo non e' valorizzato
      */
     public String getLingua() throws AttributoNonValorizzatoException {
         if (lingua == null) {
@@ -250,10 +249,10 @@ public class FileDocBean implements Serializable {
     }
 
     /**
-     * @param lingua
+     * @param lingua la lingua del documento
      */
-    public void setLingua(String string) {
-        lingua = string;
+    public void setLingua(String lingua) {
+        this.lingua = lingua;
     }
    
    
@@ -262,6 +261,7 @@ public class FileDocBean implements Serializable {
      * **************************************************** */
     /**
      * @return titolo
+     * @throws AttributoNonValorizzatoException se questo oggetto viene usato e questo campo non e' valorizzato
      */
     public String getTitolo() throws AttributoNonValorizzatoException {
         if (isTitoloEmpty()) {
@@ -271,14 +271,14 @@ public class FileDocBean implements Serializable {
     }
    
     /**
-     * @param titolo
+     * @param titolo il titolo del documento
      */
-    public void setTitolo(String string) {
-        titolo = string;
+    public void setTitolo(String titolo) {
+        this.titolo = titolo;
     }
 
     /**
-     * @return
+     * @return true se il titolo non e' stato impostato
      */
     public boolean isTitoloEmpty() {
         return (this.titolo == null);
@@ -290,6 +290,7 @@ public class FileDocBean implements Serializable {
      * **************************************************** */
     /**
      * @return mime
+     * @throws AttributoNonValorizzatoException se questo oggetto viene usato e questo campo non e' valorizzato
      */
     public String getMime() throws AttributoNonValorizzatoException {
         if (mime == null) {
@@ -299,10 +300,10 @@ public class FileDocBean implements Serializable {
     }
 
     /**
-     * @param mime
+     * @param mime il mime type del file
      */
-    public void setMime(String string) {
-        mime = string;
+    public void setMime(String mime) {
+        this.mime = mime;
     }
    
    
@@ -333,6 +334,7 @@ public class FileDocBean implements Serializable {
      * **************************************************** */
     /**
      * @return data
+     * @throws AttributoNonValorizzatoException se questo oggetto viene usato e questo campo non e' valorizzato
      */
     public Date getData() throws AttributoNonValorizzatoException {
         if (new Date(0).equals(data)) {
@@ -342,10 +344,10 @@ public class FileDocBean implements Serializable {
     }   
 
     /**
-     * @param data
+     * @param data la data di caricamento del file
      */
-    public void setData(Date date) {
-        data = date;
+    public void setData(Date data) {
+        this.data = data;
     }
    
    
