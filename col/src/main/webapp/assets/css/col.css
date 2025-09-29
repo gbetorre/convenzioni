@@ -1,4 +1,4 @@
-/*-------------------------------- DASHED ARROW --------------------------------*/
+/*-------------------------------- COL classes ---------------------------------*/
 
 a.arrow-link {
   display: block;
@@ -22,6 +22,13 @@ a.arrow-link {
   transform: translateY(-40%);
   display: inline-block;
   margin-left: 20px;
+}
+
+.dashed-frame {
+  display: inline-block;
+  padding: 10px 20px;
+  border: 1px dashed white; /* Dashed border */
+  border-radius: 8px; /* Optional rounded corners */
 }
 
 /*------------------------------ HORIZONTAL ROWS -------------------------------*/
@@ -70,11 +77,27 @@ hr.row       {
   border-top-color: #CCC;
 }
 
-/*-------------------------------- DATATABLE -----------------------------------*/
+/*------------------------------- FONTS classes --------------------------------*/
+
+.mono-space-nice {
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  font-size: 0.75rem;  /* About 75% of default font size */
+  line-height: 1.5;
+  letter-spacing: 0.05em;
+  word-spacing: 0.1em;
+  white-space: pre; /* preserve spaces and line breaks */
+  background-color: #f8f8f8;
+  padding: 0.5em;
+  border-radius: 4px;
+  color: #333;
+}
+
+/*--------------------------- @Ovveride: DATATABLE -----------------------------*/
 
 /* Reduce overall font size */
 .dataTable {
     font-size: 0.75rem;  /* About 75% of default font size */
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; /* Make font-family compact and readable */
 }
 
 /* Reduce padding in table cells */
@@ -94,11 +117,6 @@ hr.row       {
     height: 24px; /* tighter row height */
 }
 
-/* Make font-family compact and readable */
-.dataTable {
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-}
-
 /* Wrap long text on overflow */
 .dataTable td {
     white-space: normal !important;
@@ -112,7 +130,7 @@ hr.row       {
     max-width: 100%;
 }
 
-/*------------------- startbootstrap.com/template/sb-admin ---------------------*/
+/*-------------- @Override: startbootstrap.com/template/sb-admin ---------------*/
 
 .badge {
   display: inline-block;
