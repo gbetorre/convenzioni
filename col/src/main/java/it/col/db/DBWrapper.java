@@ -170,7 +170,7 @@ public class DBWrapper extends QueryImpl {
                 try {
                     con.close();
                 } catch (NullPointerException npe) {
-                    String msg = "Connessione al database in stato inconsistente!\nAttenzione: la connessione vale " + con + "\n";
+                    String msg = "Connessione al database in stato inconsistente!\nLa connessione vale " + con + "\nIl database potrebbe essere non raggiugibile via rete.\n";
                     LOG.severe(msg);
                     throw new WebStorageException(FOR_NAME + msg + npe.getMessage(), npe);
                 } catch (SQLException sqle) {
@@ -248,37 +248,41 @@ public class DBWrapper extends QueryImpl {
      * @return <code>int</code> - un intero che rappresenta il minimo valore trovato, oppure zero se non sono stati trovati valori
      * @throws WebStorageException se si verifica un problema nella query o in qualche tipo di puntamento
      */
-    @SuppressWarnings({ "static-method", "null" })
+    @SuppressWarnings({ "static-method" })
     public int getMin(String table)
                throws WebStorageException {
-        Connection con = null;
-        PreparedStatement pst = null;
-        ResultSet rs = null;
-        try {
-            int count = 0;
-            String query = SELECT_MIN_ID + table;
-            con = col_manager.getConnection();
-            pst = con.prepareStatement(query);
-            pst.clearParameters();
-            rs = pst.executeQuery();
-            if (rs.next()) {
-                count = rs.getInt(1);
+        try (Connection con = col_manager.getConnection()) {
+            PreparedStatement pst = null;
+            ResultSet rs = null;
+            try {
+                int count = 0;
+                String query = SELECT_MIN_ID + table;
+                pst = con.prepareStatement(query);
+                pst.clearParameters();
+                rs = pst.executeQuery();
+                if (rs.next()) {
+                    count = rs.getInt(1);
+                }
+                return count;
+            }  catch (SQLException sqle) {
+                String msg = FOR_NAME + "Impossibile recuperare il max(id).\n";
+                LOG.severe(msg);
+                throw new WebStorageException(msg + sqle.getMessage(), sqle);
+            } finally {
+                try {
+                    con.close();
+                } catch (NullPointerException npe) {
+                    String msg = FOR_NAME + "Ooops... problema nella chiusura della connessione.\n";
+                    LOG.severe(msg);
+                    throw new WebStorageException(msg + npe.getMessage());
+                } catch (SQLException sqle) {
+                    throw new WebStorageException(FOR_NAME + sqle.getMessage());
+                }
             }
-            return count;
-        }  catch (SQLException sqle) {
-            String msg = FOR_NAME + "Impossibile recuperare il max(id).\n";
+        } catch (SQLException sqle) {
+            String msg = FOR_NAME + "Problema con la creazione della connessione.\n";
             LOG.severe(msg);
             throw new WebStorageException(msg + sqle.getMessage(), sqle);
-        } finally {
-            try {
-                con.close();
-            } catch (NullPointerException npe) {
-                String msg = FOR_NAME + "Ooops... problema nella chiusura della connessione.\n";
-                LOG.severe(msg);
-                throw new WebStorageException(msg + npe.getMessage());
-            } catch (SQLException sqle) {
-                throw new WebStorageException(FOR_NAME + sqle.getMessage());
-            }
         }
     }
     
