@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="activetab" value="${requestScope.tabs}" scope="page" />
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=Great+Vibes&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=Great+Vibes&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap" rel="stylesheet">
     <!-- ***** Preloader Start ***** -->
     <div id="js-preloader" class="js-preloader">
       <div class="preloader-inner">
@@ -25,7 +25,7 @@
               <!-- ***** Logo Start ***** -->
               <a href="${initParam.appName}" class="logo"></a>
               <!-- ***** Logo End ***** -->
-              <span class="welcome-message">
+              <span class="welcome-message dashed-frame">
                 Ciao, <c:out value="${sessionScope.usr.nome}" /><!-- Welcome back, Bella! -->
               </span>
               <!-- ***** Menu Start ***** -->
@@ -46,4 +46,3 @@
       </div>
     </header>
     <!-- ***** Header Area End ***** -->
-
