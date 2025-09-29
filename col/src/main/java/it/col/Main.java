@@ -50,40 +50,32 @@ import javax.servlet.http.HttpServletResponse;
 
 import it.col.command.Command;
 import it.col.exception.CommandException;
-import it.col.util.Constants;
 import it.col.util.Utils;
 
 
 /**
- * <p>Main &egrave; la classe principale della web-application
- * <code>Convenzioni On Line (COL-GeCo)</code>.</p>
+ * <p>Main is the main Servlet of the
+ * <code>Convenzioni On Line [COL-GeCo]</code>
+ * web application.</p>
  *
  * @author <a href="mailto:gianroberto.torre@gmail.com">Giovanroberto Torre</a>
  */
 public class Main extends HttpServlet {
 
     /**
-     * La serializzazione necessita della dichiarazione
-     * di una costante di tipo long identificativa della versione seriale.
-     * (Se questo dato non fosse inserito, verrebbe calcolato in maniera automatica
-     * dalla JVM, e questo potrebbe portare a errori riguardo alla serializzazione).
+     * The serialization needs a long type constant.
      */
     private static final long serialVersionUID = 1L;
     /**
-     * <p>Logger della classe per scrivere i messaggi di errore.</p>
      * <p>All logging goes through this logger.</p>
      * <p>To avoid the 'Read access to enclosing field Main.log
      * is emulated by a synthetic accessor method' warning,
      * the visibility is changed to 'friendly' (id est 'default',
      * id est 'visible from the same package').</p>
-     * <p>In altre parole:</ul>
-     * non &egrave; privata ma Default (friendly) per essere visibile
-     * negli elementi ovverride implementati da questa classe.</p>
      */
     static Logger log = Logger.getLogger(Main.class.getName());
     /**
-     *  Nome di questa classe
-     *  (utilizzato per contestualizzare i messaggi di errore)
+     *  Nome of this (for error messages)
      */
     static final String FOR_NAME = "\n" + Logger.getLogger(new Throwable().getStackTrace()[0].getClassName()) + ": ";
 
@@ -92,55 +84,52 @@ public class Main extends HttpServlet {
      * (non-Javadoc)
      * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      *
-     * @param config la configurazione usata dal servlet container per passare informazioni alla servlet durante l'inizializzazione
-     * @throws ServletException una eccezione che puo' essere sollevata quando la servlet incontra difficolta'
+     * @param config the configuration used by the servlet container to pass information to the Servlet during the initialization
+     * @throws ServletException exception that can be raised in case of trouble
      */
     @Override
     public void init(ServletConfig config) throws ServletException {
-        // Inizializzazione da superclasse
+        // Init from superclass
         super.init(config);
     }
 
 
     /**
-     * <p>Gestisce le richieste del client effettuate con il metodo GET.</p>
+     * <p>Manage the GET requests.</p>
      * <p><cite id="malacarne" data-page="99">
-     *  Il metodo <code>service</code> viene invocato dal servlet-engine 
-     *  come azione di risposta alla ricezione di una HttpRequest.
-     *  Questo metodo, nella sua implementazione originale, funziona
-     *  come dispatcher, ossia, in base al codice operazione HTTP ricevuto,
-     *  attiva il metodo disponibile pi&uacute; opportuno (...)
+     *  This method, (...) acts as a dispatcher: based on the HTTP code operation
+     *  received, it activates the more appropriate available method (...)
      * </cite></p>
      * <cite id="malacarne" data-page="100">
-     * <p>Una sottoclasse di HttpServlet dovrebbe preferenzialmente
-     *  sovrascrivere uno dei metodi precedenti<br />
-     *  (n.d.r.: <code>doGet | doPost | doOption | doPut | doTrace</code>)</p>
-     * <p>In taluni casi (...) risulta essere pi&uacute;
-     *  conveniente, <strong>ma deve essere una scelta ben ponderata</strong>,
-     *  sovrascrivere direttamente il metodo <code>service</code>.</p>
+     * <p>A subclass of HttpServlet should preferably
+     *  override one of the previous methods<br />
+     *  (editor's note: <code>doGet | doPost | doOption | doPut | doTrace</code>)</p>
+     * <p>In some cases (...) it may be more
+     *  convenient, <strong>but this must be a well-considered choice</strong>,
+     *  to directly override the <code>service</code> method.</p>
      * </cite>
      *
-     * @param req la HttpServletRequest contenente la richiesta del client
-     * @param res la HttpServletResponse contenente la risposta del server
-     * @throws ServletException eccezione che viene sollevata se si verifica un problema nell'inoltro (forward) della richiesta/risposta
-     * @throws IOException      eccezione che viene sollevata se si verifica un problema nell'inoltro (forward) della richiesta/risposta
+     * @param req HttpServletRequest containing the client request
+     * @param res HttpServletResponse containing the server response
+     * @throws ServletException exception that is raised if a problem occurs in forwarding the request/response
+     * @throws IOException      exception that is raised if a problem occurs in forwarding the request/response
      */
     @Override
     public void doGet(HttpServletRequest req,
                       HttpServletResponse res)
                throws ServletException, IOException {
-        // Variabile per individuare la Command
+        // Command
         String q = null;
-        // Variabile per identificare l'oggetto su cui si vuole agire
+        // Domain
         String o = null;
-        // Variabile per la pagina in cui riversare l'output prodotto
+        // Output page
         String fileJsp = null;
-        // Recupera il nome della pagina di errore
+        // Get the error page
         String errorJsp = ConfigManager.getErrorJsp();
-        // Cerca la Command; se la trova, ne invoca il metodo execute()
+        // Get the token associated with the wanted Command
         try {
             q = req.getParameter(ConfigManager.getEntToken());
-        } catch (NullPointerException npe) { // Potrebbe già uscire qui
+        } catch (NullPointerException npe) {
             req.setAttribute("javax.servlet.jsp.jspException", npe);
             log(FOR_NAME + "Problema di puntamento: applicazione terminata!" + npe);
             flush(req, res, errorJsp);
@@ -149,15 +138,12 @@ public class Main extends HttpServlet {
             log(FOR_NAME + "Eccezione generica: " + e);
             flush(req, res, errorJsp);
         }
+        // Get the Command and try to invoke its execute method
         try {
-            /*
-             * Cerca la command associata al parametro 'ent'
-             * e, se la trova, ne invoca il metodo execute()
-             */
             req.setAttribute("w", false);
             Command cmd = lookupCommand(q);
             cmd.execute(req);
-        } catch (CommandException ce) { // Potrebbe già uscire qui
+        } catch (CommandException ce) {
             String msg = FOR_NAME +
                          "L\'errore e\' stato generato dalla seguente chiamata: " +
                          req.getQueryString() +
@@ -178,31 +164,14 @@ public class Main extends HttpServlet {
             req.setAttribute("javax.servlet.jsp.jspException", e);
             flush(req, res, errorJsp);
         }
-        /*
-         * Mantiene tutti i parametri di navigazione
-         */
+        // Get the navigation params
         req.setAttribute("queryString", req.getQueryString());
-        /*
-         * Il template compone il risultato con vari pezzi
-         * (testata, aside, etc.) che decide lui se includere o meno
-         */
+        // Template view
         fileJsp = ConfigManager.getTemplate();
-        /*
-         * Recupero di tutte le informazioni 'fisse' da mostrare
-         * nella navigazione (info per l'header, anno corrente,
-         * baseHref, etc.)
-         */
+        // Fixed infos regarding the view layer (header, current date, baseHref and so on)
         retrieveFixedInfo(req);
         /*
-         * Costruisce qui il valore del <base href... /> piuttosto che nelle pagine
-         */
-        String baseHref = getBaseHref(req);
-        /*
-         *  Setta nella request il valore del <base href... />
-         */
-        req.setAttribute("baseHref", baseHref);
-        /*
-         * Disabilita Cache
+         * Disable the Cache
          */
         res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
         res.setHeader("Pragma", "no-cache"); // HTTP 1.0
@@ -282,14 +251,7 @@ public class Main extends HttpServlet {
             return;
         }
         retrieveFixedInfo(req);
-        /*
-         * Costruisce qui il valore del <base href... /> piuttosto che nelle pagine
-         */
-        String baseHref = getBaseHref(req);
-        /*
-         *  Setta nella request il valore del <base href... />
-         */
-        req.setAttribute("baseHref", baseHref);
+
         /*
          * Disabilita Cache
          */
