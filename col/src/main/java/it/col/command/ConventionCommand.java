@@ -185,7 +185,7 @@ public class ConventionCommand extends CommandBean implements Command, Constants
         // Retrieve, or initialize, 'id agreement'
         int idA = parser.getIntParameter("id", DEFAULT_ID);
         /* ******************************************************************** *
-         *                          Manage the db access                        *
+         *                          Build the db access                         *
          * ******************************************************************** */
         try {
             db = new DBWrapper();
@@ -256,7 +256,7 @@ public class ConventionCommand extends CommandBean implements Command, Constants
 //                    }
             /* ======================== @GetMapping ======================= */
             } else {
-                // 
+                // Which operationg has it to do?
                 switch (operation) {
                     case "ins":
                         // TODO
@@ -264,9 +264,11 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                     case "upd":
                         // Test if there is a convention id
                         if (idA > DEFAULT_ID) { 
+                            // Get the convention
                             convention = db.getConvention(user, idA);
                             // Manage the contractor(s) of the idA convention
                             if (object.equalsIgnoreCase(CONTRACTOR)) {
+                                // Get all the contractors
                                 contractors = db.getContractors(user);
                                 // Show the form to assign a consultant to a convention
                                 fileJspT = pages.get(object);
@@ -280,10 +282,14 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                     default:
                         // If there is no operation, there is a SELECT operation
                         if (idA > DEFAULT_ID) {
-                            //c = retrieveConvention(idA);
-                            //fileJspT = pages.get(operation);
+                            // Get the convention
+                            convention = db.getConvention(user, idA);
+                            // Show the details page
+                            fileJspT = pages.get(operation);
                         } else {
+                            // Get the conventions
                             conventions = db.getConventions(user);
+                            // Show the landing page
                             fileJspT = pages.get(this.getNome());
                         }
                         break; // not required here, still here for consistency
