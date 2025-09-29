@@ -42,7 +42,7 @@
  * <code>Elementi del package:<ul>
  * <li><em>Command</em></li>
  * <li>HomePageCommand</li>
- * <li>ConvenzioneCommand</li>
+ * <li>ConventionCommand</li>
  * </ul></code>
  * 
  * <p>Created on Thu Jul 10 02:23:33 PM CEST 2025</p>
