@@ -2,6 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <fmt:setLocale value="it_IT"/>
+<c:set var="types" value="${requestScope.tipi}" scope="page" />
+<c:set var="scopes" value="${requestScope.finalita}" scope="page" />
 <c:set var="cons" value="${requestScope.convenzioni}" scope="page" />
     <link rel="stylesheet" href="${initParam.urlDirFrameworks}DataTables/css/datatables.min.css" type="text/css" />
     <div class="main-banner">
@@ -25,15 +27,9 @@
                   <fieldset>
                     <select name="area" class="form-select" aria-label="Area" id="chooseCategory" onchange="this.form.click()">
                       <option selected>Tutte le tipologie</option>
-                      <option value="New Village">ACCORDO</option>
-                      <option value="Old Town">ACCORDO QUADRO</option>
-                      <option value="Modern City">ACCORDO ATTUATIVO</option>
-                      <option value="Old Town">CONVENZIONE</option>
-                      <option value="Modern City">CONVENZIONE QUADRO</option>
-                      <option value="New Village">PROTOCOLLO D`INTESA</option>
-                      <option value="Old Town">CONTO TERZI</option>
-                      <option value="Modern City">COMODATO</option>
-                      <option value="Modern City">CONTRATTO</option>
+                      <c:forEach var="type" items="${pageScope.types}">
+                      <option value="${type.id}"><c:out value="${type.nome}" /></option>
+                      </c:forEach>
                     </select>
                   </fieldset>
                 </div>
@@ -46,11 +42,9 @@
                   <fieldset>
                     <select name="price" class="form-select" aria-label="Default select example" id="chooseCategory" onchange="this.form.click()">
                       <option selected>Tutte le finalit&agrave;</option>
-                      <option value="$100 - $250">DIDATTICA</option>
-                      <option value="$250 - $500">RICERCA</option>
-                      <option value="$500 - $1000">TERZA MISSIONE</option>
-                      <option value="$1000+">TERZO SETTORE</option>
-                      <option>CENTRO INTERUNIVERSITARIO</option>
+                      <c:forEach var="scope" items="${pageScope.scopes}">
+                      <option value="${scope.id}"><c:out value="${scope.nome}" /></option>
+                      </c:forEach>
                     </select>
                   </fieldset>
                 </div>
