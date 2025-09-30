@@ -37,6 +37,7 @@
 package it.col;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
@@ -46,6 +47,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 
+import it.col.bean.CodeBean;
 import it.col.bean.CommandBean;
 import it.col.command.Command;
 import it.col.db.DBWrapper;
@@ -55,15 +57,16 @@ import it.col.exception.WebStorageException;
 /**
  * <p>ConfigManager &egrave; la classe che recupera i parametri 
  * di inizializzazione della web-application &nbsp;
- * <code>Rischi on Line (rol)</code> 
+ * <code>Convenzioni on Line (COL)</code> 
  * e li espone attraverso metodi accessori.</p>
  * <p>Per evitare riferimenti circolari, questa classe &egrave; autorizzata 
- * a chiedere cose ad altre classi, ma le classi interrogate non dovrebbero 
- * poi, a loro volta, chiedere a questa.<br>
- * Invece, le classi non interpellate da questa (sia Servlet sia Command) 
- * possono chiedere a questa classe tutti i valori delle variabili di classe, 
- * che sono esposte tramite appositi metodi accessori, e che rappresentano 
- * il motivo per cui questa classe stessa &egrave; stata creata.</p>
+ * a chiedere cose ad altre classi, ma le classi interrogate non possono 
+ * poi, a loro volta, chiedere niente a questa.<br>
+ * Invece, le classi che possono chiedere cose a questa
+ * (in particolare i valori delle sue variabili di classe esposte tramite
+ * appositi metodi accessori) sono quelle non interrogate da questa.
+ * In pratica, le comunicazioni con questa classe devono essere dei monologhi,
+ * triggerati da richieste.</p>
  *
  * @author <a href="mailto:gianroberto.torre@gmail.com">Giovanroberto Torre</a>
  */
@@ -128,19 +131,21 @@ public class ConfigManager extends HttpServlet {
      */
     static DBWrapper db = null;
     /**
-     * Struttura vettoriale contenente le command predefinite sotto forma di voci di menu
+     * Struttura vettoriale contenente le command definite per l'applicazione
      */
     private static Vector<CommandBean> classiCommand;
     /**
-     * Tabella hash (dictionary) contenente le command predefinite.
+     * Tabella hash (dictionary) contenente le Command definite per l'applicazione
      */
     private static ConcurrentHashMap<String, Command> commands;
     /**
-     * Tabella hash (dictionary) contenente etichette predefinite 
-     * in funzione del valore del parametro 'p'; queste possono essere utilizzate
-     * poi nella costruzione dei nomi dei files generati dall'applicazione
+     * Struttura vettoriale contenente i tipi di convenzioni
      */
-    private static ConcurrentHashMap<String, String> labels;
+    private static ArrayList<CodeBean> types;
+    /**
+     * Struttura vettoriale contenente le possibili finalit&agrave; di convenzioni
+     */
+    private static ArrayList<CodeBean> scopes;
     /**
      * <p>Nome del parametro di inizializzazione, valorizzato nel
      * descrittore di deploy, che identifica il nome della web application.</p>
@@ -192,11 +197,6 @@ public class ConfigManager extends HttpServlet {
      * <dd>subdir contenente documenti generati dall'applicazione stessa</dd></dl></p>
      */
     private static String dirDocuments;
-    /**
-     * <p>Nome della (sotto)directory destinata a contenere i file formato json
-     * generati dall'applicazione e utilizzati tipicamente da librerie lato client.</p>
-     */
-    private static String dirJson = "json";
 
 
     /**
@@ -316,6 +316,28 @@ public class ConfigManager extends HttpServlet {
                     throw new ServletException(error);
             }
         }
+        // Carica una lista, che esporra' staticamente, contenente tutti i tipi di convenzioni
+        types = null;
+        try {
+            types = db.getTypes();
+        }
+        catch (WebStorageException wse) {
+            throw new ServletException(FOR_NAME + "Problemi nel metodo che estrae i tipi di convenzioni.\n" + wse.getMessage(), wse);
+        }
+        catch (Exception e) {
+            throw new ServletException(FOR_NAME + "Problemi nel caricare i tipi di convenzioni.\n" + e.getMessage(), e);
+        }
+        // Carica una lista, che esporra' staticamente, contenente tutte le finalità delle convenzioni
+        scopes = null;
+        try {
+            scopes = db.getScopes();
+        }
+        catch (WebStorageException wse) {
+            throw new ServletException(FOR_NAME + "Problemi nel metodo che estrae le finalita\'.\n" + wse.getMessage(), wse);
+        }
+        catch (Exception e) {
+            throw new ServletException(FOR_NAME + "Problemi nel caricare le finalita\'.\n" + e.getMessage(), e);
+        }
     }
 
 
@@ -426,18 +448,6 @@ public class ConfigManager extends HttpServlet {
 
 
     /**
-     * <p>Restituisce il nome del parametro identificante il nome della directory dove
-     * vengono generati i files json necessari a specifiche librerie lato client.</p>
-     * <p>Metodo getter su variabili di classe concatenate.</p>
-     *
-     * @return <code>String</code> - il nome usato nell'applicazione per identificare il nome della directory dove vengono salvati i files json dall'applicazione stessa generati
-     */
-    public static String getDirJson() {
-        return new String(dirDocuments + File.separator + dirJson);
-    }
-
-
-    /**
      * <p>Restituisce una struttura di tipo vettoriale, contenente
      *  le command predefinite incapsulate dentro oggetti di tipo voce di menu.</p>
      * <p>Metodo getter sulla variabile privata di classe.</p>
@@ -462,16 +472,24 @@ public class ConfigManager extends HttpServlet {
 
     
     /**
-     * <p>Restituisce una struttura di tipo Tabella hash (dictionary),
-     * contenente alcune etichette che possono essere utili come prefissi
-     * di file di estrazione e usi simili.
-     * La chiave di ogni entry &egrave; valore del parametro p.</p>
-     * <p>Metodo getter sulla variabile privata di classe.</p>
+     * <p>Restituisce una struttura di tipo vettoriale,
+     * contenente le tipologie di convenzione.</p>
      *
-     * @return <code>ConcurrentHashMap&lt;String, String&gt;</code> - etichette associate al valore di p
+     * @return <code>ArrayList&lt;CodeBean&gt;</code> - lista tipi di convenzione
      */
-    public static ConcurrentHashMap<String, String> getLabels() {
-        return labels;
+    public static ArrayList<CodeBean> getTypes() {
+        return types;
+    }
+    
+    
+    /**
+     * <p>Restituisce una struttura di tipo vettoriale,
+     * contenente le finalit&agrave; delle convenzioni.</p>
+     *
+     * @return <code>ArrayList&lt;CodeBean&gt;</code> - lista finalita' di convenzione
+     */
+    public static ArrayList<CodeBean> getScopes() {
+        return scopes;
     }
     
 }
