@@ -1,9 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="activetab" value="${requestScope.tabs}" scope="page" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=Great+Vibes&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap" rel="stylesheet">
     <!-- ***** Preloader Start ***** -->
     <div id="js-preloader" class="js-preloader">
       <div class="preloader-inner">
@@ -33,7 +30,7 @@
                 <li><a href="index.html" class="active">Home</a></li>
                 <li><a href="category.html" class="">Categorie</a></li>
                 <li><a href="listing.html" class="">Elenchi</a></li>
-                <li><a href="${initParam.appName}/auth" class="">Logout</a></li> 
+                <li><a href="${initParam.appName}/auth" class="">Esci</a></li> 
                 <li><div class="main-white-button"><a href="#"><i class="fa fa-plus"></i> Aggiungi Convenzione</a></div></li> 
               </ul>        
               <a class='menu-trigger'>
