@@ -7,9 +7,23 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd">
   
-    <display-name>Convenzioni On Line</display-name>
+    <display-name>COL - Convenzioni On Line</display-name>
     
    <!-- Note: Servlets Configuration -->
+    
+    <servlet>
+      <description>Servlet to provide database connection</description>        
+      <servlet-name>db</servlet-name>
+      <servlet-class>it.col.db.DBManager</servlet-class>
+      <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet>
+      <description>Servlet to cache configuration variables</description>        
+      <servlet-name>config</servlet-name>
+      <servlet-class>it.col.ConfigManager</servlet-class>
+      <load-on-startup>2</load-on-startup>
+    </servlet>
     
     <servlet>
       <description>Servlet COL entrypoint</description>        
@@ -42,20 +56,6 @@
       <servlet-name>session</servlet-name>
       <url-pattern>/auth</url-pattern>
     </servlet-mapping>
-
-    <servlet>
-      <description>Servlet to cache configuration variables</description>        
-      <servlet-name>config</servlet-name>
-      <servlet-class>it.col.ConfigManager</servlet-class>
-      <load-on-startup>2</load-on-startup>
-    </servlet>
-    
-    <servlet>
-      <description>Servlet to provide database connection</description>        
-      <servlet-name>db</servlet-name>
-      <servlet-class>it.col.db.DBManager</servlet-class>
-      <load-on-startup>1</load-on-startup>
-    </servlet>
     
   <!-- Note: Raw browsing Configuration -->
     
