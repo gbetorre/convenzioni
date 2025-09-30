@@ -45,6 +45,7 @@ import javax.servlet.http.HttpSession;
 
 import com.oreilly.servlet.ParameterParser;
 
+import it.col.ConfigManager;
 import it.col.Main;
 import it.col.bean.CommandBean;
 import it.col.bean.Convenzione;
@@ -141,6 +142,8 @@ public class HomePageCommand extends CommandBean implements Command, Constants {
         String fileJspT = null;
         // Dichiara un messaggio di errore
         String error = null;
+        
+        String redirect = null;
         /* ******************************************************************** *
          *                 Recupero dei parametri di navigazione                *
          * ******************************************************************** */
@@ -162,8 +165,9 @@ public class HomePageCommand extends CommandBean implements Command, Constants {
          * ******************************************************************** */
         try {
             if (isLoggedUser(req)) {
-                conventions = db.getConventions(getLoggedUser(req));
-                fileJspT = nomeFileLanding;
+                //conventions = db.getConventions(getLoggedUser(req));
+                //fileJspT = nomeFileLanding;
+                redirect =  ConfigManager.getEntToken() + EQ + Constants.COMMAND_CONV;
             } else {
                 fileJspT = nomeFileElenco;
             }
@@ -212,6 +216,10 @@ public class HomePageCommand extends CommandBean implements Command, Constants {
         if (conventions != null) {
             req.setAttribute("convenzioni", conventions);
         }
+        // Imposta l'eventuale indirizzo a cui redirigere
+        if (redirect != null) {
+            req.setAttribute("redirect", redirect);
+        }   
         if (error != null) {
             req.setAttribute("error", true);
             req.setAttribute("msg", error);
