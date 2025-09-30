@@ -65,6 +65,7 @@ When will be ready, I will release, package or tag
 # History
 
 ```
+* [0.2.2] (Sep 30, 2025) Implemented dynamic generation of dropdown lists
 * [0.2.1] (Sep 29, 2025) Presentation improvements
 * [0.2.0] (Sep 25, 2025) Presentation improvements
 * [0.1.9] (Sep 24, 2025) First implementation assignment contractors to an agreement
