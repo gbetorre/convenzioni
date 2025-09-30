@@ -241,7 +241,7 @@ public interface Query extends Serializable {
             "   WHERE C.id = ?";
     
     /**
-     * <p>Estrae le convenzioni in stato attivo.</p>
+     * <p>Estrae i contraenti.</p>
      */
     public static final String GET_CONTRACTORS =
             "SELECT DISTINCT" +
@@ -255,6 +255,30 @@ public interface Query extends Serializable {
             "   ,   (SELECT nome FROM tipo_contraente WHERE id = P.id_tipo)    AS \"note\"" +
             "   FROM contraente P" +
             "   ORDER BY P.ordinale, P.nome";
+    
+    /**
+     * <p>Estrae le tipologie.</p>
+     */
+    public static final String GET_CONVENTION_TYPES =
+            "SELECT DISTINCT" +
+            "       T.id                    AS \"id\"" +
+            "   ,   T.nome                  AS \"nome\"" +
+            "   ,   T.informativa           AS \"informativa\"" +
+            "   ,   T.ordinale              AS \"ordinale\"" +
+            "   FROM tipo_convenzione T" +
+            "   ORDER BY T.ordinale, T.nome";
+    
+    /**
+     * <p>Estrae le finalit&agrave;.</p>
+     */
+    public static final String GET_CONVENTION_SCOPES =
+            "SELECT DISTINCT" +
+            "       F.id                    AS \"id\"" +
+            "   ,   F.nome                  AS \"nome\"" +
+            "   ,   F.informativa           AS \"informativa\"" +
+            "   ,   F.ordinale              AS \"ordinale\"" +
+            "   FROM finalita F" +
+            "   ORDER BY F.ordinale, F.nome";
     
     /* ************************************************************************ *
      *  Interfacce di metodi che costruiscono dinamicamente Query di Selezione  *
