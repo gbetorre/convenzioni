@@ -45,6 +45,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.oreilly.servlet.ParameterParser;
 
+import it.col.ConfigManager;
 import it.col.Main;
 import it.col.SessionManager;
 import it.col.bean.CodeBean;
@@ -97,7 +98,7 @@ public class ConventionCommand extends CommandBean implements Command, Constants
      *  UPDATE Convention: assign one or more contractors to a single convention
      */    
     private static final CodeBean contraenti = new CodeBean("coFormContraente.jsp", "Assegna contraente");
-
+    
 
     /** 
      * Initialize the Command
@@ -169,6 +170,10 @@ public class ConventionCommand extends CommandBean implements Command, Constants
         String redirect = null;
         // Date of the day
         java.util.Date today = Utils.convert(Utils.getCurrentDate());
+        // List of agreement types
+        final ArrayList<CodeBean> types = ConfigManager.getTypes();
+        // List of agreement scopes
+        final ArrayList<CodeBean> scopes = ConfigManager.getScopes();
         /* ******************************************************************** *
          *                  Retrieve attributes and parameters                  *
          * ******************************************************************** */
@@ -425,11 +430,11 @@ public class ConventionCommand extends CommandBean implements Command, Constants
         /* ******************************************************************** *
          *              Settaggi in request dei valori calcolati                *
          * ******************************************************************** */
-        // Imposta l'eventuale indirizzo a cui redirigere
+        // Redirect address, if it exists
         if (redirect != null) {
             req.setAttribute("redirect", redirect);
         }   
-        // Imposta struttura contenente tutti i parametri di navigazione già estratti
+        // All navigation params
         if (!params.isEmpty()) {
             req.setAttribute("params", params);
         }
@@ -445,11 +450,15 @@ public class ConventionCommand extends CommandBean implements Command, Constants
         if (contractors != null) {
             req.setAttribute("contraenti", contractors);
         }
-        // Imposta nella request data di oggi 
+        // Agreement types
+        req.setAttribute("tipi", types);
+        // Agreement scopes
+        req.setAttribute("finalita", scopes);
+        // Date of today
         req.setAttribute("now", today);
-        // Titolo pagina
+        // Page title
         req.setAttribute("tP", fileJspT.getInformativa()); 
-        // Imposta la Pagina JSP di forwarding
+        // Page JSP to forward
         req.setAttribute("fileJsp", "/jsp/" + fileJspT.getNome());
     }
     
