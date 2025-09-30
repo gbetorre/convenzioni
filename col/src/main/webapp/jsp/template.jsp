@@ -12,8 +12,10 @@
     <meta name="author" content="Giovanroberto Torre, giovanroberto.torre@univr.it">
     <link rel="author" href="gianroberto.torre@gmail.com">
     <meta http-equiv="cache-control" content="no-cache">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=Great+Vibes&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&display=swap" rel="stylesheet">
     <title><c:out value="${requestScope.tP}" escapeXml="false" /></title>
     <!-- Bootstrap core CSS -->
     <link href="${initParam.urlDirFrameworks}bootstrap/css/bootstrap.min.css" rel="stylesheet">
