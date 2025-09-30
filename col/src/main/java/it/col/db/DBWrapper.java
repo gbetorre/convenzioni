@@ -687,6 +687,114 @@ public class DBWrapper extends QueryImpl {
             throw new WebStorageException(msg + sqle.getMessage(), sqle);
         }
     }
+    
+    
+    /**
+     * <p>Restituisce le tipologie delle convenzioni.</p>
+     *
+     * @param user utente che ha effettuato la richiesta
+     * @return <code>ArrayList&lt;CodeBean&gt;</code> - lista tipologie trovate
+     * @throws it.col.exception.WebStorageException se si verifica un problema nell'esecuzione della query, nell'accesso al db o in qualche tipo di puntamento
+     */
+    @SuppressWarnings({ "static-method" })
+    public ArrayList<CodeBean> getTypes()
+                                 throws WebStorageException {
+        try (Connection con = col_manager.getConnection()) {
+            PreparedStatement pst = null;
+            ResultSet rs = null;
+            CodeBean type = null;
+            ArrayList<CodeBean> types = new ArrayList<>();
+            try {
+                // TODO: Controllare i diritti dell'utente
+                pst = con.prepareStatement(GET_CONVENTION_TYPES);
+                pst.clearParameters();
+                rs = pst.executeQuery();
+                while (rs.next()) {
+                    type = new CodeBean();
+                    BeanUtil.populate(type, rs);
+                    types.add(type);
+                }
+                // Try to engage the Garbage Collector
+                pst = null;
+                // Get Out
+                return types;
+            } catch (SQLException sqle) {
+                String msg = FOR_NAME + "Problema nella query dei tipi di convenzione.\n";
+                LOG.severe(msg);
+                throw new WebStorageException(msg + sqle.getMessage(), sqle);
+            } finally {
+                try {
+                    con.close();
+                } catch (NullPointerException npe) {
+                    String msg = FOR_NAME + "Ooops... problema nella chiusura della connessione.\n";
+                    LOG.severe(msg);
+                    throw new WebStorageException(msg + npe.getMessage());
+                } catch (SQLException sqle) {
+                    throw new WebStorageException(FOR_NAME + sqle.getMessage());
+                }
+            }
+        } catch (SQLException sqle) {
+            String msg = FOR_NAME + "Problema con la creazione della connessione.\n";
+            LOG.severe(msg);
+            throw new WebStorageException(msg + sqle.getMessage(), sqle);
+        }
+    }
+    
+    
+    /**
+     * <p>Restituisce le finalit&agrave; delle convenzioni.</p>
+     *
+     * @param user utente che ha effettuato la richiesta
+     * @return <code>ArrayList&lt;CodeBean&gt;</code> - lista tipologie trovate
+     * @throws it.col.exception.WebStorageException se si verifica un problema nell'esecuzione della query, nell'accesso al db o in qualche tipo di puntamento
+     */
+    @SuppressWarnings({ "static-method" })
+    public ArrayList<CodeBean> getScopes()
+                                  throws WebStorageException {
+        try (Connection con = col_manager.getConnection()) {
+            PreparedStatement pst = null;
+            ResultSet rs = null;
+            CodeBean scope = null;
+            ArrayList<CodeBean> scopes = new ArrayList<>();
+            try {
+                // TODO: Controllare i diritti dell'utente
+                pst = con.prepareStatement(GET_CONVENTION_SCOPES);
+                pst.clearParameters();
+                rs = pst.executeQuery();
+                while (rs.next()) {
+                    scope = new Convenzione();
+                    BeanUtil.populate(scope, rs);
+                    scopes.add(scope);
+                }
+                // Try to engage the Garbage Collector
+                pst = null;
+                // Get Out
+                return scopes;
+            } catch (SQLException sqle) {
+                String msg = FOR_NAME + "Problema nella query delle convenzioni.\n";
+                LOG.severe(msg);
+                throw new WebStorageException(msg + sqle.getMessage(), sqle);
+            } catch (ClassCastException cce) {
+                String msg = FOR_NAME + "Problema in una conversione di tipi.\n";
+                LOG.severe(msg);
+                throw new WebStorageException(msg + cce.getMessage(), cce);
+            } finally {
+                try {
+                    con.close();
+                } catch (NullPointerException npe) {
+                    String msg = FOR_NAME + "Ooops... problema nella chiusura della connessione.\n";
+                    LOG.severe(msg);
+                    throw new WebStorageException(msg + npe.getMessage());
+                } catch (SQLException sqle) {
+                    throw new WebStorageException(FOR_NAME + sqle.getMessage());
+                }
+            }
+        } catch (SQLException sqle) {
+            String msg = FOR_NAME + "Problema con la creazione della connessione.\n";
+            LOG.severe(msg);
+            throw new WebStorageException(msg + sqle.getMessage(), sqle);
+        }
+    }
 
 
     /* ********************************************************** *
