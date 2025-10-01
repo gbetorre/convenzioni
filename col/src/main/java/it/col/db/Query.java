@@ -166,6 +166,21 @@ public interface Query extends Serializable {
             "   WHERE U.login = ? ";
     
     /**
+     * <p>Estrae i gruppi di appartenenza di un utente
+     * avente id passato come parametro.</p>
+     */
+    public static final String GET_GRUPPI =
+            "SELECT DISTINCT" +
+            "       GR.id               AS \"id\"" +
+            "   ,   GR.nome             AS \"nome\"" +
+            "   ,   GR.informativa      AS \"informativa\"" +
+            "   ,   GR.ordinale         AS \"ordiale\"" +
+            "   FROM grp GR" +
+            "       INNER JOIN belongs ON belongs.id_grp = GR.id" +
+            "       INNER JOIN usr ON belongs.id_usr = usr.id" +
+            "   WHERE usr.id = ? ";
+    
+    /**
      * <p>Estrae identificativo tupla ultimo accesso, se esiste
      * per l'utente il cui username viene passato come parametro.</p>
      */
@@ -213,6 +228,7 @@ public interface Query extends Serializable {
             "   ,   (SELECT nome FROM tipo_convenzione WHERE id = C.id_tipo)    AS \"tipo\"" +
             "   FROM convenzione C" +
             "   WHERE C.id_stato = (SELECT id FROM stato_convenzione WHERE nome = 'ATTIVO')" +
+            "       AND C.id IN (SELECT CG.id_convenzione FROM convenzione_grp CG WHERE CG.id_grp = ?)" +
             "   ORDER BY C.ordinale";
     
     /**
