@@ -441,10 +441,11 @@ public class DBWrapper extends QueryImpl {
                               AttributoNonValorizzatoException {
         try (Connection con = col_manager.getConnection()) {
             PreparedStatement pst = null;
-            ResultSet rs, rs1, rs2 = null;
+            ResultSet rs, rs1, rs2, rs3 = null;
             PersonBean usr = null;
             int nextInt = NOTHING;
             Vector<CodeBean> vRuoli = new Vector<>();
+            Vector<CodeBean> vGruppi = new Vector<>();
             String ruoloApplicativo = null;
             try {
                 pst = con.prepareStatement(GET_USR);
@@ -458,7 +459,7 @@ public class DBWrapper extends QueryImpl {
                     BeanUtil.populate(usr, rs);
                     // Aggiusta i nomi (prima lettera grande, altre piccole)
                     usr.setNome(Utils.formatNames(usr.getNome()));
-                    /* Se ha trovato l'utente, ne cerca i ruoli giuridici */
+                    // Recupera i ruoli giuridici
                     pst = null;
                     pst = con.prepareStatement(GET_RUOLI);
                     pst.clearParameters();
@@ -470,7 +471,7 @@ public class DBWrapper extends QueryImpl {
                         vRuoli.add(ruolo);
                     }
                     usr.setRuoli(vRuoli);
-                    /* Se ha trovato l'utente, ne cerca il ruolo applicativo */
+                    // Recupera il ruolo applicativo
                     pst = null;
                     pst = con.prepareStatement(GET_RUOLO);
                     pst.clearParameters();
@@ -482,6 +483,18 @@ public class DBWrapper extends QueryImpl {
                         ruoloApplicativo = (ruolo.getNome() != null) ? ruolo.getNome() : ND;
                     }
                     usr.setRuolo(ruoloApplicativo);
+                    // Recupera i gruppi dell'utente
+                    pst = null;
+                    pst = con.prepareStatement(GET_GRUPPI);
+                    pst.clearParameters();
+                    pst.setInt(1, usr.getUsrId());
+                    rs3 = pst.executeQuery();
+                    while (rs3.next()) {
+                        CodeBean gruppo = new CodeBean();
+                        BeanUtil.populate(gruppo, rs3);
+                        vGruppi.add(gruppo);
+                    }
+                    usr.setGruppi(vGruppi);
                 }
                 // Try to engage the Garbage Collector
                 pst = null;
@@ -532,9 +545,10 @@ public class DBWrapper extends QueryImpl {
             Convenzione c = null;
             ArrayList<Convenzione> convenzioni = new ArrayList<>();
             try {
-                // TODO: Controllare i diritti dell'utente
                 pst = con.prepareStatement(GET_CONVENTIONS);
                 pst.clearParameters();
+                // Per il momento, assume che l'utente abbia uno e un solo gruppo
+                pst.setInt(1, user.getGruppi().get(NOTHING).getId());
                 rs = pst.executeQuery();
                 while (rs.next()) {
                     c = new Convenzione();
