@@ -1,10 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <fmt:setLocale value="it_IT"/>
 <c:set var="types" value="${requestScope.tipi}" scope="page" />
 <c:set var="scopes" value="${requestScope.finalita}" scope="page" />
 <c:set var="cons" value="${requestScope.convenzioni}" scope="page" />
+<c:set var="grp" value="${fn:toUpperCase(usr.gruppi.get(0).nome)}" />
     <link rel="stylesheet" href="${initParam.urlDirFrameworks}DataTables/css/datatables.min.css" type="text/css" />
     <div class="main-banner">
       <div class="container">
@@ -139,7 +141,8 @@
             "info": "Mostrati _START_ a _END_ di _TOTAL_",  // Info about currently shown entries
             "infoEmpty": "Mostrati 0 a 0 di 0 risultati trovati",      // When empty
             "infoFiltered": "(filtrati da _MAX_ di risultati totali)", // Filter info
-            "zeroRecords": "Nessun risultato trovato"     // When no results found
+            "zeroRecords": "Nessun risultato trovato",     // When no results found
+            "emptyTable": "Nessun dato disponibile per il gruppo '${pageScope.grp}' cui ${usr.nome} ${usr.cognome} appartiene"  // Table empty of data
           }
         });
       });
