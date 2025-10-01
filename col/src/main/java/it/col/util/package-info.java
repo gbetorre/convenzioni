@@ -35,18 +35,24 @@
  */
 
 /**
- * <p>Package contenente interfacce e classi di utilit&agrave;</li> 
+ * <p>Package contenente interfacce e classi di utilit&agrave;
+ * <ul> 
  * <li>le interfacce che dichiarano le costanti utilizzate da
  * vari oggetti dell'applicazione;</li> 
  * <li>le classi offrono metodi di utilit&agrave; per la gestione
- * delle date, per la conversione di oggetti, per il parsing
- * di valori, etc.</li></ul></p> 
+ * delle date, per l'invio delle e-mail, per il parsing
+ * di valori, etc.</li>
+ * </ul>
+ * </p> 
  * 
- * <code>elementi logicamente inclusi nel package:<ul>
+ * <code>elementi inclusi nel package:
+ * <ul>
  * <li><em>Constants</em></li>
- * <li>Utils</li>
  * <li>DataUrl</li>
- * </ul></code>
+ * <li>MailManager</li>
+ * <li>Utils</li>
+ * </ul>
+ * </code>
  * 
  * <p>Created on Wed Jul  9 09:49:19 AM CEST 2025</p>
  * 
