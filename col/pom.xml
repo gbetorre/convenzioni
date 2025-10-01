@@ -64,6 +64,18 @@
         <artifactId>standard</artifactId>
         <version>1.1.2</version>
     </dependency>
+    <!-- JavaMail API, including classes like Session, Transport, MimeMessage -->
+    <dependency>
+        <groupId>com.sun.mail</groupId>
+        <artifactId>javax.mail</artifactId>
+        <version>1.6.2</version>
+    </dependency>
+    <!-- JavaBeans Activation Framework) including DataHandler, DataSource, FileDataSource -->
+    <dependency>
+        <groupId>com.sun.activation</groupId>
+        <artifactId>javax.activation</artifactId>
+        <version>1.2.0</version>
+    </dependency>
     <!-- common-beanutils API -->
     <dependency>
         <groupId>commons-beanutils</groupId>
