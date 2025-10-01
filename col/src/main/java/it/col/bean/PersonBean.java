@@ -81,10 +81,10 @@ public class PersonBean extends CodeBean {
     private Vector<CodeBean> ruoli;
     /** Application role */
     private String ruolo;
+    /** Membership groups */
+    private Vector<CodeBean> gruppi;
     /** Person department id */
     protected int idDipartimento;
-    /** Person department name */
-    private String dipartimento;
     /** Person department website */
     protected String urlDipartimento;
 
@@ -104,9 +104,9 @@ public class PersonBean extends CodeBean {
         note = null;
         foto = null;
         usrId = BEAN_DEFAULT_ID;
-        ruoli = null;
+        gruppi = ruoli = null;
         ruolo = null;
-        dipartimento = urlDipartimento = null;
+        urlDipartimento = null;
     }
 
 
@@ -373,6 +373,23 @@ public class PersonBean extends CodeBean {
 
 
     /**
+     * Gets the membership groups.
+     * @return the membership groups vector (gruppi)
+     */
+    public Vector<CodeBean> getGruppi() {
+        return gruppi;
+    }
+
+    /**
+     * Sets the membership groups vector.
+     * @param gruppi the membership groups vector to set
+     */
+    public void setGruppi(Vector<CodeBean> gruppi) {
+        this.gruppi = gruppi;
+    }
+    
+    
+    /**
      * Gets the person department id.
      * @return the person department id (idDipartimento)
      */
@@ -386,29 +403,6 @@ public class PersonBean extends CodeBean {
      */
     public void setIdDipartimento(int idDipartimento) {
         this.idDipartimento = idDipartimento;
-    }
-
-    /**
-     * @return true if the department is empty or not meaningful
-     */
-    public boolean isDipartimentoEmpty() {
-           return (dipartimento == null || dipartimento.equals(Constants.VOID_STRING));
-    }
-
-    /**
-     * Gets the person department name.
-     * @return the person department name (dipartimento)
-     */
-    public String getDipartimento() {
-        return dipartimento;
-    }
-
-    /**
-     * Sets the person department name.
-     * @param dipartimento the person department name to set
-     */
-    public void setDipartimento(String dipartimento) {
-        this.dipartimento = dipartimento;
     }
 
 
