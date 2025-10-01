@@ -68,7 +68,7 @@
         <div class="text">
           <article>
             <p><c:out value="${pageScope.msg}" /></p>
-            <!-- ${msg} -->
+            <!-- ${requestScope.message} -->
             <button type="button" onclick="window.location.href='/col'">home</button>
           </article>
         </div>
