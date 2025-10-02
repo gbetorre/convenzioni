@@ -141,6 +141,10 @@ public interface Constants extends Serializable {
      * <p>Costante per il parametro identificante la Command delle convenzioni.</p>
      */
     public static final String COMMAND_CONV             = "co";
+    /**
+     * <p>Costante per il parametro identificante la Command dello scadenzario (scheduling).</p>
+     */
+    public static final String COMMAND_SCDL             = "sc";
     /* ************************************************************************ *
      * --------------------------    QUERYSTRINGS    -------------------------- *
      * ************************************************************************ */
@@ -164,6 +168,19 @@ public interface Constants extends Serializable {
      * sufficiente mantenere l'identificazione del chiamante (caller).</p>
      */
     public static final String REFERRAL                 = "ref";
+    /**
+     * <p>Costante per il parametro identificante una relazione.
+     * Se questo parametro è significativo, vuol dire che obj
+     * deve svolgere op non sull'entità ma sulla relazione con un'altra
+     * entità. Ad esempio:<dl>
+     * <dt>...&op=upd&obj=cont&idC=58</dt>
+     * <dd>significa che deve aggiornare (op=upd) l'entità contraente 
+     * (ogj=cont) di id 58</dd>
+     * <dt>...&op=upd&obj=cont&rel=conv&id=58</dt>
+     * <dd>significa che deve aggiornare (op=upd) la relazione (rel) tra contraente 
+     * (ogj=cont) e convenzione (rel=conv) in riferimento alla convenzione di id 58</dd></dl>
+     */
+    public static final String RELATIONSHIP             = "rel";
     /* 
      * --------------------    OPERATIONS    -------------------- 
      */
