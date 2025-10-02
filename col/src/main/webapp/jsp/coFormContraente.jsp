@@ -21,7 +21,7 @@
         <h6 class="text-white text-center">
           &nbsp;<c:out value="${convenzione.titolo}" />
         </h6>
-        <form id="contractor" method="post">
+        <form accept-charset="ISO-8859-1" id="contractor-rel" action="" method="post">
           <div class="row align-items-center contact">
             <div class="col-lg-12">
               <div class="top-text header-text">
@@ -41,7 +41,7 @@
               <button id="btnLeft" type="button" class="btn btn-warning btn-move" disabled aria-label="Move selected to left">&lt;</button>
             </div>
             <div class="col-5">
-              <select id="rightSelect" multiple class="form-select dataTable" aria-label="Right multiple select"></select>
+              <select id="rightSelect" name="co-cont" multiple class="form-select dataTable" aria-label="Right multiple select"></select>
             </div>
           </div>
           <div class="row mt-3 contact">
@@ -51,7 +51,7 @@
               </fieldset>
             </div>
           </div>
-      </form>
+        </form>
       </div>
     </div>
     <script src="${initParam.urlDirFrameworks}jquery/jquery.min.js"></script>
@@ -60,7 +60,7 @@
       const rightSelect = document.getElementById("rightSelect");
       const btnRight = document.getElementById("btnRight");
       const btnLeft = document.getElementById("btnLeft");
-      const form = document.getElementById("dualSelectForm");
+      const form = document.getElementById("contractor-rel");
   
       function updateButtons() {
         btnRight.disabled = leftSelect.selectedOptions.length === 0;
@@ -92,8 +92,9 @@
         for (const opt of rightSelect.options) {
           opt.selected = true;
         }
-        alert("Form submitted with selected options on right!");
+        //alert("Form submitted with selected options on right!");
         // Send form here if needed, e.g. form.submit();
+        form.submit();
       });
   
       updateButtons();
