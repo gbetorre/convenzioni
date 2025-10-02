@@ -53,6 +53,7 @@ import it.col.bean.CommandBean;
 import it.col.bean.Convenzione;
 import it.col.bean.PersonBean;
 import it.col.db.DBWrapper;
+import it.col.exception.AttributoNonValorizzatoException;
 import it.col.exception.CommandException;
 import it.col.exception.WebStorageException;
 import it.col.util.Constants;
@@ -211,13 +212,37 @@ public class ConventionCommand extends CommandBean implements Command, Constants
          * ******************************************************************** */
         try {
 
-
             // Creazione della tabella che conterrà i valori dei parametri passati dalle form
             params = new HashMap<>();
-            // Carica in ogni caso i parametri di navigazione
-            //loadParams(part, req, params);
             /* ======================= @PostMapping ======================= */
             if (write) {
+                // Carica i parametri di navigazione
+                loadParams(object, req, params);
+                // Which operationg has it to do?
+                switch (object) {
+                    case VOID_STRING:
+                        // TODO
+                        break;
+                    case "cont":
+                        // Test if there is a convention id
+                        if (idA > DEFAULT_ID) {
+                            // Get the convention
+                            //convention = db.getConvention(user, idA);
+                            dataUrl.put(ConfigManager.getEntToken(), COMMAND_CONV)
+                                   .put(OPERATION, UPDATE)
+                                   .put(OBJECT, CONTRACTOR)
+                                   .put("id", idA);
+                            redirect = dataUrl.getUrl();
+                        }
+
+                        break;
+                    case "del":
+                        // TODO
+                        break;
+                    default:
+                        // Other values are not admitted
+
+                }
 //                    // Controlla quale azione vuole fare l'utente
 //                    if (nomeFile.containsKey(part)) {
 //                        // Controlla quale richiesta deve gestire
@@ -472,105 +497,119 @@ public class ConventionCommand extends CommandBean implements Command, Constants
      * Valorizza per riferimento una mappa contenente tutti i valori 
      * parametrici riscontrati sulla richiesta.
      * 
-     * @param part          la sezione corrente del sito
+     * @param obj           l'oggetto di interesse
      * @param req           la HttpServletRequest contenente la richiesta del client
      * @param formParams    mappa da valorizzare per riferimento (ByRef)
      * @throws CommandException se si verifica un problema nella gestione degli oggetti data o in qualche tipo di puntamento
      * @throws AttributoNonValorizzatoException se si fa riferimento a un attributo obbligatorio di bean che non viene trovato
      */
-//    private static void loadParams(String part, 
-//                                   HttpServletRequest req,
-//                                   HashMap<String, LinkedHashMap<String, String>> formParams)
-//                            throws CommandException,
-//                                   AttributoNonValorizzatoException {
-//        LinkedHashMap<String, String> survey = new LinkedHashMap<>();
-//        LinkedHashMap<String, String> measure = new LinkedHashMap<>();
-//        LinkedHashMap<String, String> indicator = null;
-//        LinkedHashMap<String, String> measurement = null;
-//        // Parser per la gestione assistita dei parametri di input
-//        ParameterParser parser = new ParameterParser(req);
-//        /* ---------------------------------------------------- *
-//         *     Caricamento parametro di Codice Rilevazione      *
-//         * ---------------------------------------------------- */      
-//        // Recupera o inizializza 'codice rilevazione' (Survey)
-//        String codeSur = parser.getStringParameter("r", DASH);
-//        // Recupera l'oggetto rilevazione a partire dal suo codice
-//        CodeBean surveyAsBean = ConfigManager.getSurvey(codeSur);
-//        // Inserisce l'ìd della rilevazione come valore del parametro
-//        survey.put(PARAM_SURVEY, String.valueOf(surveyAsBean.getId()));
-//        // Aggiunge il tutto al dizionario dei parametri
-//        formParams.put(PARAM_SURVEY, survey);
-//        /* -------------------------------------------------------- *
-//         *  Ramo di INSERT di ulteriori informazioni da aggiungere  *
-//         *      a una misura (dettagli relativi al monitoraggio)    *
-//         * -------------------------------------------------------- */
-//        if (part.equalsIgnoreCase(PART_INSERT_MONITOR_DATA)) {
-//            GregorianCalendar date = Utils.getCurrentDate();
-//            String dateAsString = Utils.format(date, DATA_SQL_PATTERN);
-//            measure.put("code",         parser.getStringParameter("ms-code", VOID_STRING));
-//            measure.put("data",         dateAsString);            
-//            measure.put("piao",         parser.getStringParameter("ms-piao", VOID_STRING));
-//            // Fasi di attuazione (Array)
-//            String[] fasi = req.getParameterValues("ms-fasi");
-//            // Aggiunge tutte le fasi di attuazione trovate
-//            decantStructures("fase", fasi, measure);
-//            // Aggiunge i dettagli monitoraggio al dizionario dei parametri
-//            formParams.put(part, measure);
-//        }
-//        /* ---------------------------------------------------- *
-//         *       Ramo di INSERT / UPDATE di un Indicatore       *
-//         * ---------------------------------------------------- */
-//        else if (part.equalsIgnoreCase(PART_INSERT_INDICATOR) /*|| part.equalsIgnoreCase(Query.MODIFY_PART)*/ ) {
-//            indicator = new LinkedHashMap<>();            
-//            GregorianCalendar date = Utils.getUnixEpoch();
-//            String dateAsString = Utils.format(date, DATA_SQL_PATTERN);
-//            indicator.put("fase",       parser.getStringParameter("ind-fase",       VOID_STRING));
-//            indicator.put("tipo",       parser.getStringParameter("ind-tipo",       VOID_STRING));
-//            indicator.put("nome",       parser.getStringParameter("ind-nome",       VOID_STRING));
-//            indicator.put("desc",       parser.getStringParameter("ind-descr",      VOID_STRING));
-//            indicator.put("base",       parser.getStringParameter("ind-baseline",   VOID_STRING));
-//            indicator.put("database",   parser.getStringParameter("ind-database",   dateAsString));
-//            indicator.put("targ",       parser.getStringParameter("ind-target",     VOID_STRING));
-//            indicator.put("datatarg",   parser.getStringParameter("ind-datatarget", dateAsString));
-//            formParams.put(part, indicator);
-//        }
-//        /* ---------------------------------------------------- *
-//         *  Ramo di INSERT di una misurazione su un Indicatore  *
-//         * ---------------------------------------------------- */
-//        else if (part.equalsIgnoreCase(PART_INSERT_MEASUREMENT)) {
-//            measurement = new LinkedHashMap<>();
-//            GregorianCalendar date = Utils.getUnixEpoch();
-//            String dateAsString = Utils.format(date, DATA_SQL_PATTERN);
-//            measurement.put("valore",   parser.getStringParameter("mon-value", VOID_STRING));
-//            measurement.put("azioni",   parser.getStringParameter("mon-descr", VOID_STRING));
-//            measurement.put("motivi",   parser.getStringParameter("mon-infos", VOID_STRING));
-//            measurement.put("domanda1", parser.getStringParameter("mon-quest1",VOID_STRING));
-//            measurement.put("domanda2", parser.getStringParameter("mon-quest2",VOID_STRING));
-//            measurement.put("domanda3", parser.getStringParameter("mon-quest3",VOID_STRING));
-//            measurement.put("ultima",   parser.getStringParameter("mon-miles", String.valueOf(NOTHING)));
-//            measurement.put("data",     parser.getStringParameter("mon-data", dateAsString));
-//            measurement.put("ind",      parser.getStringParameter("mon-ind", VOID_STRING));
-//            formParams.put(part, measurement);
-//        }
-//
-//        /* ******************************************************** *
-//         *  Ramo di UPDATE di ulteriori informazioni da aggiungere  *
-//         *      a un Indicatore (p.es.: target rivisto, etc.)       *
-//         * ******************************************************** *
-//        else if (part.equalsIgnoreCase(Query.UPDATE_PART)) {
-//            GregorianCalendar date = Utils.getUnixEpoch();
-//            String dateAsString = Utils.format(date, Query.DATA_SQL_PATTERN);
-//            HashMap<String, String> ind = new HashMap<String, String>();
-//            ind.put("ind-id",           parser.getStringParameter("ind-id", Utils.VOID_STRING));
-//            ind.put("prj-id",           parser.getStringParameter("prj-id", Utils.VOID_STRING));
-//            ind.put("ext-target",       parser.getStringParameter("modext-target", Utils.VOID_STRING));
-//            ind.put("ext-datatarget",   parser.getStringParameter("ext-datatarget", dateAsString));
-//            ind.put("ext-annotarget",   parser.getStringParameter("ext-annotarget",  Utils.VOID_STRING));
-//            ind.put("ext-note",         parser.getStringParameter("modext-note", Utils.VOID_STRING));
-//            ind.put("modext-auto",      parser.getStringParameter("modext-auto", dateAsString));
-//            formParams.put(Query.UPDATE_PART, ind);
-//        }*/
-//    }
+    private static void loadParams(String obj, 
+                                   HttpServletRequest req,
+                                   HashMap<String, LinkedHashMap<String, String>> formParams)
+                            throws CommandException,
+                                   AttributoNonValorizzatoException {
+        LinkedHashMap<String, String> convention = new LinkedHashMap<>();
+        LinkedHashMap<String, String> contractor = new LinkedHashMap<>();
+        // Parser per la gestione assistita dei parametri di input
+        ParameterParser parser = new ParameterParser(req);
+        /* -------------------------------------------------------- *
+         *  Ramo di INSERT di ulteriori informazioni da aggiungere  *
+         *      a una misura (dettagli relativi al monitoraggio)    *
+         * -------------------------------------------------------- */
+        if (obj.equalsIgnoreCase(CONTRACTOR)) {
+            //GregorianCalendar date = Utils.getCurrentDate();
+            //String dateAsString = Utils.format(date, DATA_SQL_PATTERN);
+            contractor.put("conv-id",      req.getParameter("id"));
+            // Contraenti (Array)
+            String[] cont = req.getParameterValues("co-cont");
+            // Aggiunge tutte le fasi di attuazione trovate
+            decantStructures("cont", cont, contractor);
+            // Aggiunge i dettagli monitoraggio al dizionario dei parametri
+            formParams.put(obj, contractor);
+        }
+        /* ---------------------------------------------------- *
+         *       Ramo di INSERT / UPDATE di un Indicatore       *
+         * ---------------------------------------------------- *
+        else if (part.equalsIgnoreCase(PART_INSERT_INDICATOR)) {
+            indicator = new LinkedHashMap<>();            
+            GregorianCalendar date = Utils.getUnixEpoch();
+            String dateAsString = Utils.format(date, DATA_SQL_PATTERN);
+            indicator.put("fase",       parser.getStringParameter("ind-fase",       VOID_STRING));
+            indicator.put("tipo",       parser.getStringParameter("ind-tipo",       VOID_STRING));
+            indicator.put("nome",       parser.getStringParameter("ind-nome",       VOID_STRING));
+            indicator.put("desc",       parser.getStringParameter("ind-descr",      VOID_STRING));
+            indicator.put("base",       parser.getStringParameter("ind-baseline",   VOID_STRING));
+            indicator.put("database",   parser.getStringParameter("ind-database",   dateAsString));
+            indicator.put("targ",       parser.getStringParameter("ind-target",     VOID_STRING));
+            indicator.put("datatarg",   parser.getStringParameter("ind-datatarget", dateAsString));
+            formParams.put(part, indicator);
+        }
+        /* ---------------------------------------------------- *
+         *  Ramo di INSERT di una misurazione su un Indicatore  *
+         * ---------------------------------------------------- *
+        else if (part.equalsIgnoreCase(PART_INSERT_MEASUREMENT)) {
+            measurement = new LinkedHashMap<>();
+            GregorianCalendar date = Utils.getUnixEpoch();
+            String dateAsString = Utils.format(date, DATA_SQL_PATTERN);
+            measurement.put("valore",   parser.getStringParameter("mon-value", VOID_STRING));
+            measurement.put("azioni",   parser.getStringParameter("mon-descr", VOID_STRING));
+            measurement.put("motivi",   parser.getStringParameter("mon-infos", VOID_STRING));
+            measurement.put("domanda1", parser.getStringParameter("mon-quest1",VOID_STRING));
+            measurement.put("domanda2", parser.getStringParameter("mon-quest2",VOID_STRING));
+            measurement.put("domanda3", parser.getStringParameter("mon-quest3",VOID_STRING));
+            measurement.put("ultima",   parser.getStringParameter("mon-miles", String.valueOf(NOTHING)));
+            measurement.put("data",     parser.getStringParameter("mon-data", dateAsString));
+            measurement.put("ind",      parser.getStringParameter("mon-ind", VOID_STRING));
+            formParams.put(part, measurement);
+        }
 
+        /* ******************************************************** *
+         *  Ramo di UPDATE di ulteriori informazioni da aggiungere  *
+         *      a un Indicatore (p.es.: target rivisto, etc.)       *
+         * ******************************************************** *
+        else if (part.equalsIgnoreCase(Query.UPDATE_PART)) {
+            GregorianCalendar date = Utils.getUnixEpoch();
+            String dateAsString = Utils.format(date, Query.DATA_SQL_PATTERN);
+            HashMap<String, String> ind = new HashMap<String, String>();
+            ind.put("ind-id",           parser.getStringParameter("ind-id", Utils.VOID_STRING));
+            ind.put("prj-id",           parser.getStringParameter("prj-id", Utils.VOID_STRING));
+            ind.put("ext-target",       parser.getStringParameter("modext-target", Utils.VOID_STRING));
+            ind.put("ext-datatarget",   parser.getStringParameter("ext-datatarget", dateAsString));
+            ind.put("ext-annotarget",   parser.getStringParameter("ext-annotarget",  Utils.VOID_STRING));
+            ind.put("ext-note",         parser.getStringParameter("modext-note", Utils.VOID_STRING));
+            ind.put("modext-auto",      parser.getStringParameter("modext-auto", dateAsString));
+            formParams.put(Query.UPDATE_PART, ind);
+        }*/
+    }
+
+    
+    /**
+     * Dati in input un array di valori e un livello numerico, distribuisce
+     * tali valori in una struttura dictionary, passata come parametro, 
+     * assegnandone ciascuno a una chiave diversa, costruita
+     * in base a un progressivo ed un'etichetta passata come parametro.
+     * In pratica, questo metodo serve a trasformare una serie di valori
+     * di campi aventi nomi uguali in una form, che quindi vengono passati
+     * in un unico array avente lo stesso nome dei campi omonimi, 
+     * in una serie di parametri distinti, ciascuno avente per nome 
+     * la stessa radice ma contraddistinto da un progressivo.
+     * 
+     * @param label     etichetta per i nomi dei parametri
+     * @param values    valori dei campi selezionati
+     * @param params    mappa dei parametri della richiesta
+     */
+    public static void decantStructures(String label,
+                                        String[] values,
+                                        LinkedHashMap<String, String> params) {
+        int index = NOTHING;
+        int size = ELEMENT_LEV_1; 
+        if (values != null) { // <- Controllo sull'input
+            while (index < values.length) {
+                params.put(label + size,  values[index]);
+                size++;
+                index++;
+            }
+        }        
+    }
     
 }
