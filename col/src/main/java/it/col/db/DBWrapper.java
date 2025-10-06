@@ -41,6 +41,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -602,8 +604,9 @@ public class DBWrapper extends QueryImpl {
                                      AttributoNonValorizzatoException {
         try (Connection con = col_manager.getConnection()) {
             PreparedStatement pst = null;
-            ResultSet rs = null;
+            ResultSet rs, rs1 = null;
             Convenzione c = null;
+            ArrayList<PersonBean> contractors = new ArrayList<>();
             try {
                 // TODO: Controllare i diritti dell'utente
                 pst = con.prepareStatement(GET_CONVENTION);
@@ -613,6 +616,18 @@ public class DBWrapper extends QueryImpl {
                 if (rs.next()) {
                     c = new Convenzione();
                     BeanUtil.populate(c, rs);
+                    // Recupera i contraenti collegati alla convenzione
+                    pst = null;
+                    pst = con.prepareStatement(GET_CONTRACTORS_BY_CONVENTION);
+                    pst.clearParameters();
+                    pst.setInt(1, idConvention);
+                    rs1 = pst.executeQuery();
+                    while (rs1.next()) {
+                        PersonBean contractor = new PersonBean();
+                        BeanUtil.populate(contractor, rs1);
+                        contractors.add(contractor);
+                    }
+                    c.setContraenti(contractors);
                 }
                 // Try to engage the Garbage Collector
                 pst = null;
@@ -706,7 +721,6 @@ public class DBWrapper extends QueryImpl {
     /**
      * <p>Restituisce le tipologie delle convenzioni.</p>
      *
-     * @param user utente che ha effettuato la richiesta
      * @return <code>ArrayList&lt;CodeBean&gt;</code> - lista tipologie trovate
      * @throws it.col.exception.WebStorageException se si verifica un problema nell'esecuzione della query, nell'accesso al db o in qualche tipo di puntamento
      */
@@ -758,7 +772,6 @@ public class DBWrapper extends QueryImpl {
     /**
      * <p>Restituisce le finalit&agrave; delle convenzioni.</p>
      *
-     * @param user utente che ha effettuato la richiesta
      * @return <code>ArrayList&lt;CodeBean&gt;</code> - lista tipologie trovate
      * @throws it.col.exception.WebStorageException se si verifica un problema nell'esecuzione della query, nell'accesso al db o in qualche tipo di puntamento
      */
@@ -815,6 +828,108 @@ public class DBWrapper extends QueryImpl {
      *                    Metodi di INSERIMENTO                   *
      * ********************************************************** */
     
+    /**
+     * <p>Metodo per fare l'inserimento delle relazioni tra uno o pi&uacute; 
+     * contraenti e una e una sola convenzione.</p>
+     *  
+     * @param user      utente loggato
+     * @param params    mappa contenente i parametri di navigazione
+     * @throws WebStorageException se si verifica un problema nel cast da String a Date, nell'esecuzione della query, nell'accesso al db o in qualche puntamento
+     */
+    @SuppressWarnings("static-method")
+    public void insertConventionContractors(PersonBean user, 
+                                            HashMap<String, LinkedHashMap<String, String>> params) 
+                                     throws WebStorageException {
+        try (Connection con = col_manager.getConnection()) {
+            PreparedStatement pst = null;
+            // Dizionario dei parametri contenente l'identificativo dei contraenti da associare
+            LinkedHashMap<String, String> contractor = params.get(CONTRACTOR);
+            // Indice di parametro
+            int index = NOTHING;
+            try {
+                // Begin: ==>
+                con.setAutoCommit(false);
+                // TODO: Controllare se user è superuser
+                pst = con.prepareStatement(INSERT_CONVENTION_CONTRACTOR);
+                pst.clearParameters();
+                try {
+                    // Prepara i parametri per l'inserimento
+                    int idConv = Integer.parseInt(contractor.get("conv"));
+                    // Recupera il numero di contraenti
+                    int nContr = Integer.parseInt(contractor.get("size"));
+                    // Recupera gli id contraente
+                    while (index < nContr) {
+                        // Numero di parametro da passare alla query
+                        int nextParam = NOTHING;
+                        // Incrementa il suffisso della chiave
+                        index++;
+                        // Chiave associata a id del contraente
+                        String key = CONTRACTOR + index;
+                        // Valore id del contraente
+                        int idCont = Integer.parseInt(contractor.get(key));
+                        // Per ogni contraente trovato deve inserire 1 tupla
+                        if (idCont > NOTHING) {
+                            // === Id Convenzione === 
+                            pst.setInt(++nextParam, idConv);
+                            // === Id Contraente === 
+                            pst.setInt(++nextParam, idCont);
+                            // === Campi automatici: id utente, ora ultima modifica, data ultima modifica ===
+                            pst.setDate(++nextParam, Utils.convert(Utils.convert(Utils.getCurrentDate()))); // non accetta un GregorianCalendar né una data java.util.Date, ma java.sql.Date
+                            pst.setTime(++nextParam, Utils.getCurrentTime());   // non accetta una Stringa, ma un oggetto java.sql.Time
+                            pst.setInt(++nextParam, user.getUsrId());
+                            // CR (Carriage Return) o 0DH
+                            pst.addBatch();
+                        }
+                    }
+                    // Execute the batch updates
+                    int[] updateCounts = pst.executeBatch();
+                    LOG.info(updateCounts.length + " relazioni in transazione attiva.\n");
+                } catch (NumberFormatException nfe) {
+                    String msg = FOR_NAME + "Si e\' verificato un problema nella conversione di interi.\n" + nfe.getMessage();
+                    LOG.severe(msg);
+                    throw new WebStorageException(msg, nfe);
+                } catch (ClassCastException cce) {
+                    String msg = FOR_NAME + "Si e\' verificato un problema nella conversione di tipo.\n" + cce.getMessage();
+                    LOG.severe(msg);
+                    throw new WebStorageException(msg, cce);
+                } catch (ArrayIndexOutOfBoundsException aiobe) {
+                    String msg = FOR_NAME + "Si e\' verificato un problema nello scorrimento di liste.\n" + aiobe.getMessage();
+                    LOG.severe(msg);
+                    throw new WebStorageException(msg, aiobe);
+                } catch (NullPointerException npe) {
+                    String msg = FOR_NAME + "Si e\' verificato un problema in un puntamento a null.\n" + npe.getMessage();
+                    LOG.severe(msg);
+                    throw new WebStorageException(msg, npe);
+                } catch (Exception e) {
+                    String msg = FOR_NAME + "Si e\' verificato un problema.\n" + e.getMessage();
+                    LOG.severe(msg);
+                    throw new WebStorageException(msg, e);
+                }
+                // End: <==
+                con.commit();
+                pst.close();
+                pst = null;
+            } catch (SQLException sqle) {
+                String msg = FOR_NAME + "Problema nel codice SQL o nella chiusura dello statement.\n";
+                LOG.severe(msg); 
+                throw new WebStorageException(msg + sqle.getMessage(), sqle);
+            } finally {
+                try {
+                    con.close();
+                } catch (NullPointerException npe) {
+                    String msg = FOR_NAME + "Ooops... problema nella chiusura della connessione.\n";
+                    LOG.severe(msg); 
+                    throw new WebStorageException(msg + npe.getMessage());
+                } catch (SQLException sqle) {
+                    throw new WebStorageException(FOR_NAME + sqle.getMessage());
+                }
+            }
+        } catch (SQLException sqle) {
+            String msg = FOR_NAME + "Problema con la creazione della connessione.\n";
+            LOG.severe(msg);
+            throw new WebStorageException(msg + sqle.getMessage(), sqle);
+        }
+    }
 
     
     /* ********************************************************** *
