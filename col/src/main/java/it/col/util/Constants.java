@@ -169,7 +169,7 @@ public interface Constants extends Serializable {
      */
     public static final String REFERRAL                 = "ref";
     /**
-     * <p>Costante per il parametro identificante una relazione.
+     * Costante per il parametro identificante una relazione.
      * Se questo parametro è significativo, vuol dire che obj
      * deve svolgere op non sull'entità ma sulla relazione con un'altra
      * entità. Ad esempio:<dl>
@@ -181,6 +181,14 @@ public interface Constants extends Serializable {
      * (ogj=cont) e convenzione (rel=conv) in riferimento alla convenzione di id 58</dd></dl>
      */
     public static final String RELATIONSHIP             = "rel";
+    /**
+     * <p>Costante per il parametro identificante una entità.</p>
+     */
+    public static final String ENTITY                   = "ent";
+    /**
+     * <p>Costante per il parametro identificante una entità.</p>
+     */
+    public static final String DB_CONSTRUCT             = "data";
     /* 
      * --------------------    OPERATIONS    -------------------- 
      */
