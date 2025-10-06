@@ -16,11 +16,20 @@
         user-select: none;
       }
     </style>
-    <div class="main-banner">
+    <div class="main-banner padding-small">
       <div class="container">
         <h6 class="text-white text-center">
           &nbsp;<c:out value="${convenzione.titolo}" />
         </h6>
+        
+        <div class="col-lg-10 offset-lg-1">
+          <ul class="categories list-group list-group-horizontal align-items-start">
+          <c:forEach var="contraente" items="${convenzione.contraenti}">
+            <li><a href="category.html"><span class="icon"><img src="assets/images/listing-icon-heading.png" alt="Home"></span> <c:out value="${contraente.nome}" /></a></li>
+          </c:forEach> 
+          </ul>
+        </div>
+        
         <form accept-charset="ISO-8859-1" id="contractor-rel" action="" method="post">
           <div class="row align-items-center contact">
             <div class="col-lg-12">
