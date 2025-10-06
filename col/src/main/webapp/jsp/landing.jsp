@@ -107,7 +107,7 @@
                   </a>
                 </li>
                 <li class="list-inline-item me-0">
-                  <a href="${initParam.appName}/?q=co&op=upd&obj=cont&id=${con.id}" class="btn btn-sm btn-warning" title="Assegna Contraenti">
+                  <a href="${initParam.appName}/?q=co&op=ins&obj=cont&data=rel&id=${con.id}" class="btn btn-sm btn-warning" title="Assegna Contraenti">
                     <i class="fa fa-users" aria-hidden="true"></i> 
                   </a>
                 </li>
