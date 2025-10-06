@@ -188,6 +188,8 @@ public class ConventionCommand extends CommandBean implements Command, Constants
         String operation = parser.getStringParameter("op", SELECT);
         // Which one is involved to do what we do?
         String object = parser.getStringParameter("obj", DASH);
+        // Which database kind of object is involved?
+        String dbElement = parser.getStringParameter("data", DASH);
         // Retrieve, or initialize, 'id agreement'
         int idA = parser.getIntParameter("id", DEFAULT_ID);
         /* ******************************************************************** *
@@ -223,14 +225,16 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                     case VOID_STRING:
                         // TODO
                         break;
-                    case "cont":
-                        // Test if there is a convention id
-                        if (idA > DEFAULT_ID) {
-                            // Get the convention
-                            //convention = db.getConvention(user, idA);
+                    case CONTRACTOR:
+                        // Test if have to insert a relationship
+                        if (dbElement.equalsIgnoreCase(RELATIONSHIP)) {
+                            // Insert the relationship
+                            db.insertConventionContractors(user, params);
+                            // Prepare the redirect
                             dataUrl.put(ConfigManager.getEntToken(), COMMAND_CONV)
-                                   .put(OPERATION, UPDATE)
+                                   .put(OPERATION, INSERT)
                                    .put(OBJECT, CONTRACTOR)
+                                   .put(DB_CONSTRUCT, RELATIONSHIP)
                                    .put("id", idA);
                             redirect = dataUrl.getUrl();
                         }
@@ -289,22 +293,24 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                 // Which operationg has it to do?
                 switch (operation) {
                     case "ins":
-                        // TODO
-                        break;
-                    case "upd":
                         // Test if there is a convention id
                         if (idA > DEFAULT_ID) { 
                             // Get the convention
                             convention = db.getConvention(user, idA);
                             // Manage the contractor(s) of the idA convention
                             if (object.equalsIgnoreCase(CONTRACTOR)) {
-                                // Get all the contractors
-                                contractors = db.getContractors(user);
-                                // Show the form to assign a consultant to a convention
-                                fileJspT = pages.get(object);
+                                // Test if the INSERT is about an entity or a relationship
+                                if (dbElement.equals(RELATIONSHIP)) {
+                                    // Get all the contractors
+                                    contractors = db.getContractors(user);
+                                    // Show the form to assign a consultant to a convention
+                                    fileJspT = pages.get(object);
+                                }
                             }
-                            
                         }
+                        break;
+                    case "upd":
+                        // TODO
                         break;
                     case "del":
                         // TODO
@@ -475,6 +481,8 @@ public class ConventionCommand extends CommandBean implements Command, Constants
         if (contractors != null) {
             req.setAttribute("contraenti", contractors);
         }
+        
+        req.setAttribute("error", true);
         // Agreement types
         req.setAttribute("tipi", types);
         // Agreement scopes
@@ -517,69 +525,17 @@ public class ConventionCommand extends CommandBean implements Command, Constants
          *      a una misura (dettagli relativi al monitoraggio)    *
          * -------------------------------------------------------- */
         if (obj.equalsIgnoreCase(CONTRACTOR)) {
-            //GregorianCalendar date = Utils.getCurrentDate();
-            //String dateAsString = Utils.format(date, DATA_SQL_PATTERN);
-            contractor.put("conv-id",      req.getParameter("id"));
+            // ID Convenzione
+            contractor.put("conv",      req.getParameter("id"));
             // Contraenti (Array)
             String[] cont = req.getParameterValues("co-cont");
-            // Aggiunge tutte le fasi di attuazione trovate
-            decantStructures("cont", cont, contractor);
-            // Aggiunge i dettagli monitoraggio al dizionario dei parametri
+            // Aggiunge tutti gli id contraenti trovati
+            int nCont = decantStructures(obj, cont, contractor);
+            // Aggiunge il numero di contraenti da associare
+            contractor.put("size",      String.valueOf(nCont));
+            // Aggiunge gli estremi dei contraenti da associare all'id convenzione
             formParams.put(obj, contractor);
         }
-        /* ---------------------------------------------------- *
-         *       Ramo di INSERT / UPDATE di un Indicatore       *
-         * ---------------------------------------------------- *
-        else if (part.equalsIgnoreCase(PART_INSERT_INDICATOR)) {
-            indicator = new LinkedHashMap<>();            
-            GregorianCalendar date = Utils.getUnixEpoch();
-            String dateAsString = Utils.format(date, DATA_SQL_PATTERN);
-            indicator.put("fase",       parser.getStringParameter("ind-fase",       VOID_STRING));
-            indicator.put("tipo",       parser.getStringParameter("ind-tipo",       VOID_STRING));
-            indicator.put("nome",       parser.getStringParameter("ind-nome",       VOID_STRING));
-            indicator.put("desc",       parser.getStringParameter("ind-descr",      VOID_STRING));
-            indicator.put("base",       parser.getStringParameter("ind-baseline",   VOID_STRING));
-            indicator.put("database",   parser.getStringParameter("ind-database",   dateAsString));
-            indicator.put("targ",       parser.getStringParameter("ind-target",     VOID_STRING));
-            indicator.put("datatarg",   parser.getStringParameter("ind-datatarget", dateAsString));
-            formParams.put(part, indicator);
-        }
-        /* ---------------------------------------------------- *
-         *  Ramo di INSERT di una misurazione su un Indicatore  *
-         * ---------------------------------------------------- *
-        else if (part.equalsIgnoreCase(PART_INSERT_MEASUREMENT)) {
-            measurement = new LinkedHashMap<>();
-            GregorianCalendar date = Utils.getUnixEpoch();
-            String dateAsString = Utils.format(date, DATA_SQL_PATTERN);
-            measurement.put("valore",   parser.getStringParameter("mon-value", VOID_STRING));
-            measurement.put("azioni",   parser.getStringParameter("mon-descr", VOID_STRING));
-            measurement.put("motivi",   parser.getStringParameter("mon-infos", VOID_STRING));
-            measurement.put("domanda1", parser.getStringParameter("mon-quest1",VOID_STRING));
-            measurement.put("domanda2", parser.getStringParameter("mon-quest2",VOID_STRING));
-            measurement.put("domanda3", parser.getStringParameter("mon-quest3",VOID_STRING));
-            measurement.put("ultima",   parser.getStringParameter("mon-miles", String.valueOf(NOTHING)));
-            measurement.put("data",     parser.getStringParameter("mon-data", dateAsString));
-            measurement.put("ind",      parser.getStringParameter("mon-ind", VOID_STRING));
-            formParams.put(part, measurement);
-        }
-
-        /* ******************************************************** *
-         *  Ramo di UPDATE di ulteriori informazioni da aggiungere  *
-         *      a un Indicatore (p.es.: target rivisto, etc.)       *
-         * ******************************************************** *
-        else if (part.equalsIgnoreCase(Query.UPDATE_PART)) {
-            GregorianCalendar date = Utils.getUnixEpoch();
-            String dateAsString = Utils.format(date, Query.DATA_SQL_PATTERN);
-            HashMap<String, String> ind = new HashMap<String, String>();
-            ind.put("ind-id",           parser.getStringParameter("ind-id", Utils.VOID_STRING));
-            ind.put("prj-id",           parser.getStringParameter("prj-id", Utils.VOID_STRING));
-            ind.put("ext-target",       parser.getStringParameter("modext-target", Utils.VOID_STRING));
-            ind.put("ext-datatarget",   parser.getStringParameter("ext-datatarget", dateAsString));
-            ind.put("ext-annotarget",   parser.getStringParameter("ext-annotarget",  Utils.VOID_STRING));
-            ind.put("ext-note",         parser.getStringParameter("modext-note", Utils.VOID_STRING));
-            ind.put("modext-auto",      parser.getStringParameter("modext-auto", dateAsString));
-            formParams.put(Query.UPDATE_PART, ind);
-        }*/
     }
 
     
@@ -597,10 +553,11 @@ public class ConventionCommand extends CommandBean implements Command, Constants
      * @param label     etichetta per i nomi dei parametri
      * @param values    valori dei campi selezionati
      * @param params    mappa dei parametri della richiesta
+     * @return <code>int</code> - il numero di contraenti che l'utente vuol associare alla convenzione
      */
-    public static void decantStructures(String label,
-                                        String[] values,
-                                        LinkedHashMap<String, String> params) {
+    public static int decantStructures(String label,
+                                       String[] values,
+                                       LinkedHashMap<String, String> params) {
         int index = NOTHING;
         int size = ELEMENT_LEV_1; 
         if (values != null) { // <- Controllo sull'input
@@ -609,7 +566,8 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                 size++;
                 index++;
             }
-        }        
+        }
+        return index;
     }
     
 }
