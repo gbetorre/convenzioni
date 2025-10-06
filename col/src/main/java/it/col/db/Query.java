@@ -273,6 +273,24 @@ public interface Query extends Serializable {
             "   ORDER BY P.ordinale, P.nome";
     
     /**
+     * <p>Estrae i contraenti collegati a una data convenzione.</p>
+     */
+    public static final String GET_CONTRACTORS_BY_CONVENTION =
+            "SELECT DISTINCT" +
+            "       P.id                    AS \"id\"" +
+            "   ,   P.nome                  AS \"nome\"" +
+            "   ,   P.informativa           AS \"informativa\"" +
+            "   ,   P.ordinale              AS \"ordinale\"" +
+            "   ,   P.codice_fiscale        AS \"codiceFiscale\"" +
+            "   ,   P.partita_iva           AS \"partitaIva\"" +
+            "   ,   P.email                 AS \"email\"" +
+            "   ,   (SELECT nome FROM tipo_contraente WHERE id = P.id_tipo)    AS \"note\"" +
+            "   FROM contraente P" +
+            "       INNER JOIN contraente_convenzione CC ON CC.id_contraente = P.id" +
+            "   WHERE CC.id_convenzione = ?" +
+            "   ORDER BY P.ordinale, P.nome";
+    
+    /**
      * <p>Estrae le tipologie.</p>
      */
     public static final String GET_CONVENTION_TYPES =
@@ -319,6 +337,22 @@ public interface Query extends Serializable {
             "   ,       ? " +          // login
             "   ,       ? " +          // dataultimoaccesso
             "   ,       ?)" ;          // oraultimoaccesso
+    
+    /**
+     * <p>Query per inserimento della relazione tra convenzione e contraente.</p>
+     */
+    public static final String INSERT_CONVENTION_CONTRACTOR =
+            "INSERT INTO contraente_convenzione" +
+            "   (   id_convenzione" +
+            "   ,   id_contraente" +
+            "   ,   data_ultima_modifica" +
+            "   ,   ora_ultima_modifica" +
+            "   ,   id_usr_ultima_modifica)" +
+            "   VALUES (? " +          // id_convenzione
+            "   ,       ? " +          // id_contraente
+            "   ,       ? " +          // data_ultima_modifica
+            "   ,       ? " +          // ora_ultima_modifica
+            "   ,       ?)" ;          // id_usr_ultima_modifica
 
     /* ********************************************************************** *
      *                         Query di aggiornamento                         *
