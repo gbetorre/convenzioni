@@ -36,6 +36,7 @@
 
 package it.col.bean;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.sql.Time;
 
@@ -78,7 +79,11 @@ public class Convenzione extends CodeBean {
     private String tipo;
     /** State label */
     private String stato;
+    /** List of Contractors */
+    private ArrayList<PersonBean> contraenti;
 
+    
+    /* ======================= Constructors ======================= */
     
     /**
      * Default constructor: initializing fields to default values.
@@ -103,6 +108,7 @@ public class Convenzione extends CodeBean {
         this.idUsrUltimaModifica = BEAN_DEFAULT_ID;
         this.tipo = null;
         this.stato = null;
+        this.setContraenti(null);
     }
 
     
@@ -127,6 +133,7 @@ public class Convenzione extends CodeBean {
      * @param idUsrUltimaModifica last user which modified
      * @param tipo label for tipology 
      * @param stato label for state of agreement 
+     * @param contraenti list of contractors bound by the agreement
      */
     public Convenzione(int id, 
                        String titolo, 
@@ -145,7 +152,8 @@ public class Convenzione extends CodeBean {
                        Time oraUltimaModifica, 
                        int idUsrUltimaModifica,
                        String tipo, 
-                       String stato) {
+                       String stato,
+                       ArrayList<PersonBean> contraenti) {
         setId(id);
         setTitolo(titolo);
         setInformativa(informativa);
@@ -164,6 +172,7 @@ public class Convenzione extends CodeBean {
         setIdUsrUltimaModifica(idUsrUltimaModifica);
         setTipo(tipo);
         setStato(stato);
+        setContraenti(contraenti);
     }
 
 
@@ -189,6 +198,8 @@ public class Convenzione extends CodeBean {
         super(id, nome, informativa, ordinale);
     }
 
+    
+    /* ======================= Getters / Setters ======================= */
 
     /** @return the title of the agreement */
     public String getTitolo() {
@@ -351,6 +362,21 @@ public class Convenzione extends CodeBean {
     /** @param stato the stato to set */
     public void setStato(String stato) {
         this.stato = stato;
+    }
+
+
+    /**
+     * @return the contraenti
+     */
+    public ArrayList<PersonBean> getContraenti() {
+        return contraenti;
+    }
+
+    /**
+     * @param contraenti the contraenti to set
+     */
+    public void setContraenti(ArrayList<PersonBean> contraenti) {
+        this.contraenti = contraenti;
     }
     
 }
