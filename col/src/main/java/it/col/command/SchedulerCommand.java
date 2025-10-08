@@ -262,7 +262,7 @@ public class SchedulerCommand extends CommandBean implements Command, Constants 
                             // Manage the contractor(s) of the idA convention
                             if (object.equalsIgnoreCase(CONTRACTOR)) {
                                 // Get all the contractors
-                                contractors = db.getContractors(user);
+                                //contractors = db.getContractors(user);
                                 // Show the form to assign a consultant to a convention
                                 fileJspT = pages.get(object);
                             }
