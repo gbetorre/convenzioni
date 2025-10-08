@@ -53,6 +53,7 @@ import it.col.bean.CommandBean;
 import it.col.bean.Convenzione;
 import it.col.bean.PersonBean;
 import it.col.db.DBWrapper;
+import it.col.db.Query;
 import it.col.exception.AttributoNonValorizzatoException;
 import it.col.exception.CommandException;
 import it.col.exception.WebStorageException;
@@ -302,7 +303,7 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                                 // Test if the INSERT is about an entity or a relationship
                                 if (dbElement.equals(RELATIONSHIP)) {
                                     // Get all the contractors
-                                    contractors = db.getContractors(user);
+                                    contractors = db.getContractors(user, convention, !Query.GET_ALL);
                                     // Show the form to assign a consultant to a convention
                                     fileJspT = pages.get(object);
                                 }
