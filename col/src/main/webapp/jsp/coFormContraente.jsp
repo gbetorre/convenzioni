@@ -22,11 +22,14 @@
           &nbsp;<c:out value="${convenzione.titolo}" />
         </h6>
         
-        <div class="col-lg-10 offset-lg-1">
-          <ul class="categories list-group list-group-horizontal align-items-start">
+        <div>
+          <ul class="categories list-group list-group-horizontal d-flex justify-content-center text-center">
           <c:forEach var="contraente" items="${convenzione.contraenti}">
-            <li><a href="category.html"><span class="icon"><img src="assets/images/listing-icon-heading.png" alt="Home"></span> <c:out value="${contraente.nome}" /></a></li>
-          </c:forEach> 
+            <li><a href="category.html"><span class="icon"><img src="assets/images/search-icon-02.png" alt="Home"></span> <span class="smaller-text"><c:out value="${contraente.nome}" /></span></a></li>
+          </c:forEach>
+          <c:if test="${empty convenzione.contraenti}">
+            <li><a href="category.html"><span class="icon"><img src="assets/images/search-icon-01.png" alt="Home"></span> Nessun contraente gi&agrave; assegnato</a></li>
+          </c:if>
           </ul>
         </div>
         
