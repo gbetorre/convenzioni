@@ -69,75 +69,75 @@
 
     <error-page>
       <error-code>400</error-code>
-      <location>/web/html/badRequest.html</location>
+      <location>/html/badRequest.html</location>
     </error-page>
     <error-page>
       <error-code>401</error-code>
-      <location>/web/html/unauthorized.html</location>
+      <location>/html/unauthorized.html</location>
     </error-page>
     <error-page>
       <error-code>403</error-code>
-      <location>/web/html/forbidden.html</location>
+      <location>/html/forbidden.html</location>
     </error-page>
     <error-page>
       <error-code>404</error-code>
-      <location>/web/html/noResourceFound.html</location>
+      <location>/html/404-noResourceFound.html</location>
     </error-page>
     <error-page>
       <error-code>405</error-code>
-      <location>/web/html/methodNotAllowed.html</location>
+      <location>/html/methodNotAllowed.html</location>
     </error-page>
     <error-page>
       <error-code>406</error-code>
-      <location>/web/html/notAcceptable.html</location>
+      <location>/html/notAcceptable.html</location>
     </error-page>
     <error-page>
       <error-code>408</error-code>
-      <location>/web/html/requestTimeout.html</location>
+      <location>/html/requestTimeout.html</location>
     </error-page>
     <error-page>
       <error-code>414</error-code>
-      <location>/web/html/requestURITooLong.html</location>
+      <location>/html/requestURITooLong.html</location>
     </error-page>
     <error-page>
       <error-code>415</error-code>
-      <location>/web/html/unsupportedMediaType.html</location>
+      <location>/html/unsupportedMediaType.html</location>
     </error-page>
     <error-page>
       <error-code>422</error-code>
-      <location>/web/html/unprocessableEntity.html</location>
+      <location>/html/unprocessableEntity.html</location>
     </error-page>
     <error-page>
       <error-code>429</error-code>
-      <location>/web/html/tooManyRequests.html</location>
+      <location>/html/tooManyRequests.html</location>
     </error-page>
     <error-page>
       <error-code>500</error-code>
-      <location>/web/html/internalServerError.html</location>
+      <location>/html/500-internalServerError.html</location>
     </error-page>
     <error-page>
       <error-code>501</error-code>
-      <location>/web/html/notImplemented.html</location>
+      <location>/html/notImplemented.html</location>
     </error-page>
     <error-page>
       <error-code>502</error-code>
-      <location>/web/html/badGateway.html</location>
+      <location>/html/badGateway.html</location>
     </error-page>
     <error-page>
       <error-code>503</error-code>
-      <location>/web/html/serviceUnavailable.html</location>
+      <location>/html/serviceUnavailable.html</location>
     </error-page>
     <error-page>
       <error-code>504</error-code>
-      <location>/web/html/gatewayTimeout.html</location>
+      <location>/html/gatewayTimeout.html</location>
     </error-page>
     <error-page>
       <error-code>505</error-code>
-      <location>/web/html/HTTPVersionNotSupported.html</location>
+      <location>/html/HTTPVersionNotSupported.html</location>
     </error-page>
     <error-page>
       <error-code>509</error-code>
-      <location>/web/html/bandwidthLimitExceeded.html</location>
+      <location>/html/bandwidthLimitExceeded.html</location>
     </error-page>
 
    <!-- Note: Contex Params -->
