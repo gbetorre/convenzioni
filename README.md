@@ -65,6 +65,7 @@ When will be ready, I will release, package or tag
 # History
 
 ```
+* [0.2.6] (Oct 08, 2025) Implementation assignment contractors to an agreement: show contractors already bound
 * [0.2.5] (Oct 06, 2025) Implementation assignment contractors to an agreement: db persistence
 * [0.2.4] (Oct 02, 2025) First draft of the function for assigning contractors under agreement
 * [0.2.3] (Oct 01, 2025) Implemented dynamic subset of agreements based on user membership
