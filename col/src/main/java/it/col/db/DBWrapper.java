@@ -661,26 +661,44 @@ public class DBWrapper extends QueryImpl {
     
     
     /**
-     * <p>Restituisce la lista dei contraenti.</p>
+     * <p>Restituisce la lista completa dei contraenti oppure la lista
+     * dei contraenti meno quelli gi&agrave; associati alla convenzione
+     * passata come parametro, a seconda del valore del parametro getAll:
+     * <dl>
+     * <dt>se <code>getAll = true</code></dt>  
+     * <dd>restituisce tutti i contraenti</dd>
+     * <dt>se <code>getAll = false</code></dt> 
+     * <dd>restituisce tutti i contraenti meno quelli
+     * gi&agrave; associati alla convenzione di id conv.getId()</dd></dl></p>
      *
      * @param user utente che ha effettuato la richiesta
+     * @param conv convenzione data
+     * @param getAll se true il metodo restituisce tutti i contraenti indipendentemente da conv; se false, restituisce tutti meno quelli gia' associati a conv
      * @return <code>ArrayList&lt;PersonBean&gt;</code> - lista contraenti trovati
      * @throws it.col.exception.WebStorageException se si verifica un problema nell'esecuzione della query, nell'accesso al db o in qualche tipo di puntamento
      * @throws it.col.exception.AttributoNonValorizzatoException  eccezione che viene sollevata se questo oggetto viene usato e l'id della persona non &egrave; stato valorizzato (&egrave; un dato obbligatorio)
      */
     @SuppressWarnings({ "static-method" })
-    public ArrayList<PersonBean> getContractors(PersonBean user)
+    public ArrayList<PersonBean> getContractors(PersonBean user,
+                                                Convenzione conv,
+                                                boolean getAll)
                                          throws WebStorageException, 
                                                 AttributoNonValorizzatoException {
         try (Connection con = col_manager.getConnection()) {
             PreparedStatement pst = null;
             ResultSet rs = null;
+            int numParam = NOTHING; 
             PersonBean p = null;
             ArrayList<PersonBean> contraenti = new ArrayList<>();
             try {
                 // TODO: Controllare i diritti dell'utente
+                
+                // Converte il flag in valore intero (per chiarezza)
+                int getAllByClause = (getAll ? -1 : conv.getId());
                 pst = con.prepareStatement(GET_CONTRACTORS);
                 pst.clearParameters();
+                pst.setInt(++numParam, conv.getId());
+                pst.setInt(++numParam, getAllByClause);
                 rs = pst.executeQuery();
                 while (rs.next()) {
                     p = new PersonBean();
