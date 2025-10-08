@@ -257,7 +257,29 @@ public interface Query extends Serializable {
             "   WHERE C.id = ?";
     
     /**
-     * <p>Estrae i contraenti.</p>
+     * <p><dl>
+     * <dt>Estrae tutti i contraenti salvo quelli collegati a una data convenzione</dt>
+     * <dd>se viene passato l'id della convenzione sul primo e secondo parametro</dd>
+     * <dt>altrimenti estrae tutti i contraenti <em>tout-court</em></dt>
+     * <dd>se viene passato un valore qualunque sul primo parametro e -1 sul secondo parametro.</dd>
+     * </dl>
+     * Esempio:<br><pre>
+     * SELECT P.nome FROM contraente P 
+     * WHERE P.id NOT IN
+     *      (SELECT CC.id_contraente FROM contraente_convenzione CC WHERE CC.id_convenzione = 58)
+     * OR -1 = 58</pre>
+     * restituisce 128 contraenti mentre con:<pre>
+     * OR -1 = -1</pre> 
+     * restituisce 133 contraenti (tutti).</p>
+     * <p>Si poteva anche implementare con:<pre>
+     * SELECT P.nome FROM contraente P 
+     * WHERE P.id NOT IN
+     *      (SELECT CC.id_contraente FROM contraente_convenzione CC WHERE CC.id_convenzione = 58)
+     * OR true = false</pre>
+     * oppure (rispettivamente)<pre>
+     * OR true = true</pre>
+     * ma uso -1 = -1 per chiarezza (o, forse, per tradizione...).
+     * </p>
      */
     public static final String GET_CONTRACTORS =
             "SELECT DISTINCT" +
@@ -270,10 +292,13 @@ public interface Query extends Serializable {
             "   ,   P.email                 AS \"email\"" +
             "   ,   (SELECT nome FROM tipo_contraente WHERE id = P.id_tipo)    AS \"note\"" +
             "   FROM contraente P" +
+            "   WHERE P.id NOT IN " +
+            "        (SELECT CC.id_contraente FROM contraente_convenzione CC WHERE CC.id_convenzione = ?)" +  
+            "         OR -1 = ?" +
             "   ORDER BY P.ordinale, P.nome";
     
     /**
-     * <p>Estrae i contraenti collegati a una data convenzione.</p>
+     * <p>Estrae i contraenti collegati ad una data convenzione.</p>
      */
     public static final String GET_CONTRACTORS_BY_CONVENTION =
             "SELECT DISTINCT" +
