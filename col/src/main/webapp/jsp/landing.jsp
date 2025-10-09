@@ -88,26 +88,26 @@
           </tr>
         </thead>
         <tbody>
-        <c:forEach var="con" items="${pageScope.cons}">
+        <c:forEach var="conv" items="${pageScope.cons}">
           <tr>
-            <td><c:out value="${con.tipo}" /></td>
-            <td><c:out value="${con.titolo}" /></td>
-            <td><fmt:formatDate value="${con.dataApprovazione}" pattern="dd MMMMM yyyy" /></td>
-            <td><c:out value="${con.notaApprovazione}" /></td>
-            <td><fmt:formatDate value="${con.dataSottoscrizione}" pattern="dd MMMMM yyyy" /></td>
-            <td><c:out value="${con.notaSottoscrizione}" /></td>
-            <td><fmt:formatDate value="${con.dataScadenza}" pattern="dd MMMMM yyyy" /></td>
-            <td><c:out value="${con.notaScadenza}" /></td>
-            <td><c:out value="${con.numRepertorio}" /></td>
+            <td><c:out value="${conv.tipo}" /></td>
+            <td><c:out value="${conv.titolo}" /></td>
+            <td><fmt:formatDate value="${conv.dataApprovazione}" pattern="dd MMMMM yyyy" /></td>
+            <td><c:out value="${conv.notaApprovazione}" /></td>
+            <td><fmt:formatDate value="${conv.dataSottoscrizione}" pattern="dd MMMMM yyyy" /></td>
+            <td><c:out value="${conv.notaSottoscrizione}" /></td>
+            <td><fmt:formatDate value="${conv.dataScadenza}" pattern="dd MMMMM yyyy" /></td>
+            <td><c:out value="${conv.notaScadenza}" /></td>
+            <td><c:out value="${conv.numRepertorio}" /></td>
             <td>
               <ul class="list-inline">
                 <li class="list-inline-item me-0">
-                  <a href="${initParam.appName}/?q=pagina dei dettagli di una convenzione non ancora definita&id=${con.id}" class="btn btn-sm btn-success" title="Vedi dettagli Convenzione">
+                  <a href="${initParam.appName}/?q=co&id=${conv.id}" class="btn btn-sm btn-success" title="Vedi dettagli Convenzione">
                     <i class="fa fa-eye"></i>
                   </a>
                 </li>
                 <li class="list-inline-item me-0">
-                  <a href="${initParam.appName}/?q=co&op=ins&obj=cont&data=rel&id=${con.id}" class="btn btn-sm btn-warning" title="Assegna Contraenti">
+                  <a href="${initParam.appName}/?q=co&op=ins&obj=cont&data=rel&id=${conv.id}" class="btn btn-sm btn-warning" title="Assegna Contraenti">
                     <i class="fa fa-users" aria-hidden="true"></i> 
                   </a>
                 </li>
