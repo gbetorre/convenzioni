@@ -99,7 +99,7 @@ public class ConventionCommand extends CommandBean implements Command, Constants
     /**
      *  UPDATE Convention: assign one or more contractors to a single convention
      */    
-    private static final CodeBean contraenti = new CodeBean("coFormContraente.jsp", "Assegna contraente");
+    private static final CodeBean contraenti = new CodeBean("coFormContraenti.jsp", "Assegna contraente");
     
 
     /** 
@@ -248,47 +248,6 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                         // Other values are not admitted
 
                 }
-//                    // Controlla quale azione vuole fare l'utente
-//                    if (nomeFile.containsKey(part)) {
-//                        // Controlla quale richiesta deve gestire
-//                        if (part.equalsIgnoreCase(PART_INSERT_MONITOR_DATA)) {
-//                            /* ------------------------------------------------ *
-//                             * PROCESS Form to INSERT Measure Monitoring Details*
-//                             * ------------------------------------------------ */
-//                            db.insertMeasureDetails(user, params);
-//                            // Prepara la redirect 
-//                            redirect = ConfigManager.getEntToken() + EQ + COMMAND_INDICATOR + 
-//                                       AMPERSAND + "p" + EQ + PART_MEASURES +
-//                                       AMPERSAND + "mliv" + EQ + codeMis + 
-//                                       AMPERSAND + PARAM_SURVEY + EQ + codeSur;
-//                                       //+AMPERSAND + MESSAGE + EQ + "newMes";
-//                        } else if (part.equalsIgnoreCase(PART_INSERT_INDICATOR)) {
-//                            /* ------------------------------------------------ *
-//                             *        PROCESS Form to INSERT an Indicator       *
-//                             * ------------------------------------------------ */
-//                            db.insertIndicatorMeasure(user, params);
-//                            // Prepara la redirect 
-//                            redirect = ConfigManager.getEntToken() + EQ + COMMAND_INDICATOR + 
-//                                       AMPERSAND + "p" + EQ + PART_MEASURES +
-//                                       AMPERSAND + "mliv" + EQ + codeMis + 
-//                                       AMPERSAND + PARAM_SURVEY + EQ + codeSur;
-//                                       //+AMPERSAND + MESSAGE + EQ + "newRel#rischi-fattori-misure";
-//                        } else if (part.equalsIgnoreCase(PART_INSERT_MEASUREMENT)) {
-//                            /* ------------------------------------------------ *
-//                             * PROCESS Form to INSERT a Measurement (Monitoring)*
-//                             * ------------------------------------------------ */
-//                            db.insertMeasurement(user, params);
-//                            // Prepara la redirect 
-//                            redirect = ConfigManager.getEntToken() + EQ + COMMAND_INDICATOR + 
-//                                       AMPERSAND + "p" + EQ + PART_INDICATOR +
-//                                       AMPERSAND + "mliv" + EQ + codeMis + 
-//                                       AMPERSAND + PARAM_SURVEY + EQ + codeSur;
-//                                       //+AMPERSAND + MESSAGE + EQ + "newRel#rischi-fattori-misure";
-//                        }
-//                    } else {
-//                        // Azione di default
-//                        // do delete?
-//                    }
             /* ======================== @GetMapping ======================= */
             } else {
                 // Which operationg has it to do?
@@ -322,7 +281,7 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                             // Get the convention
                             convention = db.getConvention(user, idA);
                             // Show the details page
-                            fileJspT = pages.get(operation);
+                            fileJspT = pages.get(SELECT);
                         } else {
                             // Get the conventions
                             conventions = db.getConventions(user);
@@ -330,112 +289,7 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                             fileJspT = pages.get(this.getNome());
                         }
                         break; // not required here, still here for consistency
-                }
-//                    if (nomeFile.containsKey(part)) {
-
-//                        // Imposta il titolo pagina
-//                        tP = titleFile.get(part);
-//                        // Gestione rami
-//                        if (part.equalsIgnoreCase(PART_MEASURES)) {
-//                            // Controlla l'esistenza del codice di una misura
-//                            if (codeMis.equals(DASH)) {
-//                            /* ------------------------------------------------ *
-//                             *      Elenco Misure raggruppate per struttura     *
-//                             * ------------------------------------------------ */
-//                                structs = db.getMeasuresByStructs(user, survey);
-//                                // Aggiunge una foglia alle breadcrumbs
-//                                bC = HomePageCommand.makeBreadCrumbs(breadCrumbs, NOTHING, "Misure x Struttura");
-//                                // Imposta la pagina
-//                                fileJspT = nomeFile.get(part);
-//                            } else {
-//                            /* ------------------------------------------------ *
-//                             *             Dettagli misura monitorata           *
-//                             * ------------------------------------------------ */
-//                                // Recupera la misura di prevenzione/mitigazione
-//                                measure = MeasureCommand.retrieveMeasure(user, codeMis, survey, db);
-//                                // Recupera i rischi cui è associata
-//                                risksByMeasure = db.getRisksByMeasure(user, codeMis, survey);
-//                                // Personalizza le breadcrumbs
-//                                bC = loadBreadCrumbs(breadCrumbs, part, survey); 
-//                                // Imposta la pagina
-//                                fileJspT = nomeFileMisura;
-//                            }
-//                        } else if (part.equalsIgnoreCase(PART_INDICATOR)) {
-//                            measure = MeasureCommand.retrieveMeasure(user, codeMis, survey, db);
-//                            if (idInd > DEFAULT_ID) {
-//                            /* ------------------------------------------------ *
-//                             *       Dettagli di un indicatore di dato id       *
-//                             * ------------------------------------------------ */
-//                                // Imposta la pagina
-//                                fileJspT = nomeFileDettaglio;
-//                            } else {
-//                            /* ------------------------------------------------ *
-//                             *          Elenco indicatori di una misura         *
-//                             * ------------------------------------------------ */
-//                                // Personalizza le breadcrumbs
-//                                bC = loadBreadCrumbs(breadCrumbs, part, survey);
-//                                // Imposta la pagina
-//                                fileJspT = nomeFile.get(part);
-//                            }
-//                        } else if (part.equalsIgnoreCase(PART_MONITOR)) {
-//                            
-//                            /* ------------------------------------------------ *
-//                             *    Elenco Misurazioni di una misura monitorata   *
-//                             * ------------------------------------------------ */
-//                            measure = MeasureCommand.retrieveMeasure(user, codeMis, survey, db);
-//                            measurements = decantMeasurements(measure);
-//                            // Imposta la pagina
-//                            fileJspT = nomeFile.get(part);
-//                        } else if (part.equalsIgnoreCase(PART_INSERT_MONITOR_DATA)) {
-//                            /* ------------------------------------------------ *
-//                             * Form aggiunta dettagli monitoraggio a una misura *
-//                             * ------------------------------------------------ */
-//                            if (!codeMis.equals(DASH)) {
-//                                // Recupera la misura di prevenzione/mitigazione
-//                                measure = MeasureCommand.retrieveMeasure(user, codeMis, survey, db);
-//                                // Recupera i rischi cui è associata
-//                                risksByMeasure = db.getRisksByMeasure(user, codeMis, survey);
-//                                // Personalizza le breadcrumbs
-//                                bC = loadBreadCrumbs(breadCrumbs, part, survey); 
-//                                // Pagina
-//                                fileJspT = nomeFile.get(part);
-//                            }
-//                        } else if (part.equalsIgnoreCase(PART_SELECT_MEASUREMENT)) {
-//                            /* ------------------------------------------------ *
-//                             *        Pagina riepilogo dettagli misurazione     *
-//                             * ------------------------------------------------ */
-//                            // Recupera gli estremi della misura, della fase e dell'indicatore
-//                            measure = MeasureCommand.retrieveMeasure(user, codeMis, survey, db);
-//                            // Recupera la misurazione cercata
-//                            measurement = db.getMeasurement(user, idMon, survey);
-//                            // Pagina
-//                            fileJspT = nomeFile.get(part);
-//                        } else if (part.equalsIgnoreCase(PART_INSERT_INDICATOR)) {
-//                            /* ------------------------------------------------ *
-//                             *      Maschera inserimento nuovo Indicatore       *
-//                             * ------------------------------------------------ */
-//                            // Recupera la fase cui si vuol aggiungere l'indicatore
-//                            phase = db.getMeasureActivity(user, codeMis, idFas, survey);
-//                            // Pagina
-//                            fileJspT = nomeFile.get(part);
-//                        } else if (part.equalsIgnoreCase(PART_INSERT_MEASUREMENT)) {
-//                            /* ------------------------------------------------ *
-//                             *       Maschera inserimento nuova Misurazione     *
-//                             * ------------------------------------------------ */
-//                            // Recupera l'indicatore cui si vuol aggiungere la misurazione
-//                            measure = MeasureCommand.retrieveMeasure(user, codeMis, survey, db);
-//                            // Breadcrumbs
-//                            // Pagina
-//                            fileJspT = nomeFile.get(part);
-//                        }
-//                    } else {
-//                        /* ------------------------------------------------ *
-//                         *      Elenco sole misure monitorate (Registro)    *
-//                         * ------------------------------------------------ */
-//                        measures = MeasureCommand.filter(db.getMeasures(user, VOID_SQL_STRING, Query.GET_ALL_BY_CLAUSE, survey));
-//                        tP = titleFile.get(COMMAND_INDICATOR);
-//                        fileJspT = nomeFileElenco;
-//                    }
+                    }
                 }
 
 //        }  catch (WebStorageException wse) {
@@ -482,8 +336,6 @@ public class ConventionCommand extends CommandBean implements Command, Constants
         if (contractors != null) {
             req.setAttribute("contraenti", contractors);
         }
-        
-        req.setAttribute("error", true);
         // Agreement types
         req.setAttribute("tipi", types);
         // Agreement scopes
