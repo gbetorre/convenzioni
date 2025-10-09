@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<c:set var="convention" value="${requestScope.convenzione}" scope="page" />
+<c:set var="conv" value="${requestScope.convenzione}" scope="page" />
 <c:set var="contractors" value="${requestScope.contraenti}" scope="page" />
     <style>
       select {
@@ -19,20 +19,36 @@
     <div class="main-banner padding-small">
       <div class="container">
         <h6 class="text-white text-center">
-          &nbsp;<c:out value="${convenzione.titolo}" />
+          &nbsp;<c:out value="${conv.titolo}" />
         </h6>
-        
         <div>
           <ul class="categories list-group list-group-horizontal d-flex justify-content-center text-center">
-          <c:forEach var="contraente" items="${convenzione.contraenti}">
-            <li><a href="category.html"><span class="icon"><img src="assets/images/search-icon-02.png" alt="Home"></span> <span class="smaller-text"><c:out value="${contraente.nome}" /></span></a></li>
+          <c:forEach var="contraente" items="${conv.contraenti}">
+            <li>
+              <a href="category.html">
+                <span class="icon">
+                  <img src="${initParam.urlDirImages}search-icon-02.png" alt="Home">
+                </span> 
+                <span class="smaller-text">
+                  <c:out value="${contraente.nome}" />
+                </span>
+              </a>
+            </li>
           </c:forEach>
-          <c:if test="${empty convenzione.contraenti}">
-            <li><a href="category.html"><span class="icon"><img src="assets/images/search-icon-01.png" alt="Home"></span> Nessun contraente gi&agrave; assegnato</a></li>
+          <c:if test="${empty conv.contraenti}">
+            <li>
+              <a href="category.html">
+                <span class="icon">
+                  <img src="${initParam.urlDirImages}search-icon-01.png" alt="Home">
+                </span> 
+                <span class="smaller-text">
+                  Nessun contraente gi&agrave; assegnato
+                </span>
+              </a>
+            </li>
           </c:if>
           </ul>
         </div>
-        
         <form accept-charset="ISO-8859-1" id="contractor-rel" action="" method="post">
           <div class="row align-items-center contact">
             <div class="col-lg-12">
