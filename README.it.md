@@ -117,6 +117,7 @@ Il software è un'applicazione Java three-tier
 # History
 
 ```
+* [0.2.7] (Oct 09, 2025) Implementata pagina dettagli convenzione
 * [0.2.6] (Oct 08, 2025) Assegnazione contraenti a convenzione: visualizzati contraenti già assegnati
 * [0.2.5] (Oct 06, 2025) Continuazione funzione di assegnazione contraenti a convenzione: scrittura relazioni nel db
 * [0.2.4] (Oct 02, 2025) Prima bozza funzione di assegnazione contraenti a convenzione
