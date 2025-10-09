@@ -39,6 +39,10 @@ a.arrow-link {
   font-size: 0.8em; /* 80% of the parent font size */
 }
 
+.small-text {
+  font-size: 8pt !important; /* font size small in absolute way */
+}
+
 /*------------------------------ HORIZONTAL ROWS -------------------------------*/
 
 hr.separator {
