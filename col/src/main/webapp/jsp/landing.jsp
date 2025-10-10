@@ -75,15 +75,13 @@
       <table id="apartmentTable" class="table table-striped table-bordered datatable">
         <thead>
           <tr>
-            <th width="10%">Tipologia</th>
+            <th width="6%">Tipologia</th>
+            <th width="20%">Contraenti</th>
             <th width="*">Titolo</th>
             <th width="5%">Data approvazione</th>
-            <th width="10%">Nota approvazione</th>
             <th width="5%">Data sottoscrizione</th>
-            <th width="10%">Nota sottoscrizione</th>
-            <th width="10%">Data scadenza</th>
-            <th width="10%">Nota scadenza</th>
-            <th width="10%">Num. repertorio</th>
+            <th width="8%">Data scadenza</th>
+            <th width="12%">Num. repertorio</th>
             <th width="10%">Azioni</th>
           </tr>
         </thead>
@@ -91,27 +89,30 @@
         <c:forEach var="conv" items="${pageScope.cons}">
           <tr>
             <td><c:out value="${conv.tipo}" /></td>
+            <td>
+            <c:forEach var="cont" items="${conv.contraenti}">
+              <i class="fa fa-caret-right" aria-hidden="true" me-1></i>
+              <c:out value="${cont.nome}" /><br>
+            </c:forEach>
+            </td>
             <td><c:out value="${conv.titolo}" /></td>
             <td><fmt:formatDate value="${conv.dataApprovazione}" pattern="dd MMMMM yyyy" /></td>
-            <td><c:out value="${conv.notaApprovazione}" /></td>
             <td><fmt:formatDate value="${conv.dataSottoscrizione}" pattern="dd MMMMM yyyy" /></td>
-            <td><c:out value="${conv.notaSottoscrizione}" /></td>
             <td><fmt:formatDate value="${conv.dataScadenza}" pattern="dd MMMMM yyyy" /></td>
-            <td><c:out value="${conv.notaScadenza}" /></td>
             <td><c:out value="${conv.numRepertorio}" /></td>
             <td>
-              <ul class="list-inline">
-                <li class="list-inline-item me-0">
+              <ul class="list-inline d-flex justify-content-center">
+                <li class="list-inline-item me-1">
                   <a href="${initParam.appName}/?q=co&id=${conv.id}" class="btn btn-sm btn-success" title="Vedi dettagli Convenzione">
                     <i class="fa fa-eye"></i>
                   </a>
                 </li>
-                <li class="list-inline-item me-0">
-                  <a href="${initParam.appName}/?q=co&op=ins&obj=cont&data=rel&id=${conv.id}" class="btn btn-sm btn-warning" title="Assegna Contraenti">
+                <li class="list-inline-item me-1">
+                  <a href="${initParam.appName}/?q=co&op=ins&obj=cont&data=rel&id=${conv.id}" class="btn btn-sm btn-warning" title="Assegna Contraenti a Convenzione">
                     <i class="fa fa-users" aria-hidden="true"></i> 
                   </a>
                 </li>
-                <li class="list-inline-item me-0">
+                <li class="list-inline-item me-1">
                   <a href="#" class="btn btn-sm btn-primary" title="Modifica Convenzione">
                     <i class="fa fa-pencil"></i>
                   </a>
