@@ -31,9 +31,9 @@ remind riguardo le scadenze imminenti.
 
 ## Riguardo la modularità
 
-![Sample of main interface](col/src/main/webapp/assets/images/screenshot/landing0.13.png)
+![Sample of main interface](col/src/main/webapp/assets/images/screenshot/landing0.27.png)
 
-**_Fig.1 - Esempio di pagina di landing_**
+**_Fig.1 - Pagina di landing, versione 0.2_**
 
 Il primo dominio informativo, oggetto dello sviluppo iniziale, è relativo alle convenzioni, ma il software è concepito 
 con la mission di estendere progressivamente il dominio agli altri soggetti, di fatto e di diritto, che intraprendono 
@@ -58,6 +58,10 @@ e così via.
 ✔️ customizzabile<br>
 ✔️ compliance GDPR<br>
 ❌ non può essere applicato da utenti inesperti (è necessario un minimo di consulenza iniziale).
+
+![Sample of main interface](col/src/main/webapp/assets/images/screenshot/landing0.13.png)
+
+**_Fig.2 - Pagina di landing, versione 0.1_**
 
 # Caratteristiche
 
@@ -117,6 +121,7 @@ Il software è un'applicazione Java three-tier
 # History
 
 ```
+* [0.2.8] (Oct 10, 2025) Prima bozza implementazione scadenziario
 * [0.2.7] (Oct 09, 2025) Implementata pagina dettagli convenzione
 * [0.2.6] (Oct 08, 2025) Assegnazione contraenti a convenzione: visualizzati contraenti già assegnati
 * [0.2.5] (Oct 06, 2025) Continuazione funzione di assegnazione contraenti a convenzione: scrittura relazioni nel db
