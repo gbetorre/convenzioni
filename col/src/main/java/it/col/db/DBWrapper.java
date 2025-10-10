@@ -543,8 +543,9 @@ public class DBWrapper extends QueryImpl {
                                                  AttributoNonValorizzatoException {
         try (Connection con = col_manager.getConnection()) {
             PreparedStatement pst = null;
-            ResultSet rs = null;
+            ResultSet rs, rs1 = null;
             Convenzione c = null;
+            ArrayList<PersonBean> contraenti = null;
             ArrayList<Convenzione> convenzioni = new ArrayList<>();
             try {
                 pst = con.prepareStatement(GET_CONVENTIONS);
@@ -555,6 +556,21 @@ public class DBWrapper extends QueryImpl {
                 while (rs.next()) {
                     c = new Convenzione();
                     BeanUtil.populate(c, rs);
+                    // Recupera i contraenti collegati alla convenzione
+                    contraenti = new ArrayList<>();
+                    pst = null;
+                    pst = con.prepareStatement(GET_CONTRACTORS_BY_CONVENTION);
+                    pst.clearParameters();
+                    pst.setInt(1, c.getId());
+                    rs1 = pst.executeQuery();
+                    while (rs1.next()) {
+                        PersonBean contraente = new PersonBean();
+                        BeanUtil.populate(contraente, rs1);
+                        contraenti.add(contraente);
+                    }
+                    // Li aggiunge alla convenzione
+                    c.setContraenti(contraenti);
+                    // Aggiunge la convenzione alla lista
                     convenzioni.add(c);
                 }
                 // Try to engage the Garbage Collector
@@ -565,10 +581,6 @@ public class DBWrapper extends QueryImpl {
                 String msg = FOR_NAME + "Problema nella query delle convenzioni.\n";
                 LOG.severe(msg);
                 throw new WebStorageException(msg + sqle.getMessage(), sqle);
-            } catch (ClassCastException cce) {
-                String msg = FOR_NAME + "Problema in una conversione di tipi.\n";
-                LOG.severe(msg);
-                throw new WebStorageException(msg + cce.getMessage(), cce);
             } finally {
                 try {
                     con.close();
