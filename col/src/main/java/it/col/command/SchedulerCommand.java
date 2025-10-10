@@ -57,6 +57,7 @@ import it.col.exception.CommandException;
 import it.col.exception.WebStorageException;
 import it.col.util.Constants;
 import it.col.util.DataUrl;
+import it.col.util.MailManager;
 import it.col.util.Utils;
 
 
@@ -86,6 +87,10 @@ public class SchedulerCommand extends CommandBean implements Command, Constants 
      *  Map of pages managed by this Command
      */    
     private static final HashMap<String, CodeBean> pages = new HashMap<>();
+    /**
+     *  SELECT List page
+     */    
+    private static final CodeBean elenco = new CodeBean("scElenco.jsp", "Scadenze [COL]");
     
 
     /** 
@@ -106,10 +111,10 @@ public class SchedulerCommand extends CommandBean implements Command, Constants 
           String msg = FOR_NAME + "La command " + this.getNome() + " non ha il campo pagina. Impossibile visualizzare i risultati.\n";
           throw new CommandException(msg);
         }
-        /* Hashmap containing pages
-        pages.put(COMMAND_CONV,     elenco);
-        pages.put(SELECT,           dettagli);
-        pages.put(CONTRACTOR,       contraenti); */
+        // Hashmap containing pages
+        pages.put(COMMAND_SCDL,     elenco);
+        //pages.put(SELECT,           dettagli);
+        //pages.put(CONTRACTOR,       contraenti);
     }
     
     
@@ -271,6 +276,9 @@ public class SchedulerCommand extends CommandBean implements Command, Constants 
                         break;
                     case "del":
                         // TODO
+                        break;
+                    case "put":
+                        MailManager.sendEmail();
                         break;
                     default:
                         // If there is no operation, there is a SELECT operation
