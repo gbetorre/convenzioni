@@ -65,15 +65,6 @@ hr.short {
   margin-top: 4px;
 }
 
-hr.home {
-  height: 1px;
-  border-style: none;
-  background-color: transparent; 
-  display: block; 
-  clear: both;
-  margin-top: -10px;
-}
-
 hr.hrclear {
 	margin: 0; 
 	padding: 0; 
