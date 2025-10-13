@@ -67,6 +67,7 @@ import it.col.bean.PersonBean;
 import it.col.exception.AttributoNonValorizzatoException;
 import it.col.exception.CommandException;
 import it.col.util.Constants;
+import it.col.util.MailManager;
 import it.col.util.Utils;
 
 
@@ -213,7 +214,14 @@ public class Data extends HttpServlet implements Constants {
         AbstractMap<?,?> mappa = null;
         // Message
         log.info("===> Log su servlet Data. <===");
-
+        try {
+            MailManager.sendEmail();
+            fileJsp = "scElenco.jsp";
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        log.info("===> Email inviata. <===");
         // Forworda la richiesta, esito finale di tutto
         RequestDispatcher dispatcher = servletContext.getRequestDispatcher(fileJsp);
         dispatcher.forward(req, res);
