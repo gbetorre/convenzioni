@@ -95,7 +95,14 @@ hr.row       {
   color: #333;
 }
 
-/*--------------------------- @Ovveride: DATATABLE -----------------------------*/
+/*----------------------- @Override: bootstrap (5.3+) --------------------------*/
+
+:root {
+  --bs-info: #8d99af;
+  --bs-info-rgb: 141, 153, 175; /* RGB version of #8d99af */
+}
+
+/*--------------------------- @Override: DATATABLE -----------------------------*/
 
 /* Reduce overall font size */
 .dataTable {
