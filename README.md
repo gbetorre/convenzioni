@@ -65,6 +65,7 @@ When will be ready, I will release, package or tag
 # History
 
 ```
+* [0.2.9] (Oct 13, 2025) Bugfix
 * [0.2.8] (Oct 10, 2025) First implementation scheduler
 * [0.2.7] (Oct 09, 2025) Implementation agreement details page
 * [0.2.6] (Oct 08, 2025) Implementation assignment contractors to an agreement: show contractors already bound
