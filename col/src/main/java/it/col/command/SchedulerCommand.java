@@ -211,47 +211,7 @@ public class SchedulerCommand extends CommandBean implements Command, Constants 
             //loadParams(part, req, params);
             /* ======================= @PostMapping ======================= */
             if (write) {
-//                    // Controlla quale azione vuole fare l'utente
-//                    if (nomeFile.containsKey(part)) {
-//                        // Controlla quale richiesta deve gestire
-//                        if (part.equalsIgnoreCase(PART_INSERT_MONITOR_DATA)) {
-//                            /* ------------------------------------------------ *
-//                             * PROCESS Form to INSERT Measure Monitoring Details*
-//                             * ------------------------------------------------ */
-//                            db.insertMeasureDetails(user, params);
-//                            // Prepara la redirect 
-//                            redirect = ConfigManager.getEntToken() + EQ + COMMAND_INDICATOR + 
-//                                       AMPERSAND + "p" + EQ + PART_MEASURES +
-//                                       AMPERSAND + "mliv" + EQ + codeMis + 
-//                                       AMPERSAND + PARAM_SURVEY + EQ + codeSur;
-//                                       //+AMPERSAND + MESSAGE + EQ + "newMes";
-//                        } else if (part.equalsIgnoreCase(PART_INSERT_INDICATOR)) {
-//                            /* ------------------------------------------------ *
-//                             *        PROCESS Form to INSERT an Indicator       *
-//                             * ------------------------------------------------ */
-//                            db.insertIndicatorMeasure(user, params);
-//                            // Prepara la redirect 
-//                            redirect = ConfigManager.getEntToken() + EQ + COMMAND_INDICATOR + 
-//                                       AMPERSAND + "p" + EQ + PART_MEASURES +
-//                                       AMPERSAND + "mliv" + EQ + codeMis + 
-//                                       AMPERSAND + PARAM_SURVEY + EQ + codeSur;
-//                                       //+AMPERSAND + MESSAGE + EQ + "newRel#rischi-fattori-misure";
-//                        } else if (part.equalsIgnoreCase(PART_INSERT_MEASUREMENT)) {
-//                            /* ------------------------------------------------ *
-//                             * PROCESS Form to INSERT a Measurement (Monitoring)*
-//                             * ------------------------------------------------ */
-//                            db.insertMeasurement(user, params);
-//                            // Prepara la redirect 
-//                            redirect = ConfigManager.getEntToken() + EQ + COMMAND_INDICATOR + 
-//                                       AMPERSAND + "p" + EQ + PART_INDICATOR +
-//                                       AMPERSAND + "mliv" + EQ + codeMis + 
-//                                       AMPERSAND + PARAM_SURVEY + EQ + codeSur;
-//                                       //+AMPERSAND + MESSAGE + EQ + "newRel#rischi-fattori-misure";
-//                        }
-//                    } else {
-//                        // Azione di default
-//                        // do delete?
-//                    }
+
             /* ======================== @GetMapping ======================= */
             } else {
                 // Which operationg has it to do?
@@ -295,121 +255,9 @@ public class SchedulerCommand extends CommandBean implements Command, Constants 
                         }
                         break; // not required here, still here for consistency
                 }
-//                    if (nomeFile.containsKey(part)) {
 
-//                        // Imposta il titolo pagina
-//                        tP = titleFile.get(part);
-//                        // Gestione rami
-//                        if (part.equalsIgnoreCase(PART_MEASURES)) {
-//                            // Controlla l'esistenza del codice di una misura
-//                            if (codeMis.equals(DASH)) {
-//                            /* ------------------------------------------------ *
-//                             *      Elenco Misure raggruppate per struttura     *
-//                             * ------------------------------------------------ */
-//                                structs = db.getMeasuresByStructs(user, survey);
-//                                // Aggiunge una foglia alle breadcrumbs
-//                                bC = HomePageCommand.makeBreadCrumbs(breadCrumbs, NOTHING, "Misure x Struttura");
-//                                // Imposta la pagina
-//                                fileJspT = nomeFile.get(part);
-//                            } else {
-//                            /* ------------------------------------------------ *
-//                             *             Dettagli misura monitorata           *
-//                             * ------------------------------------------------ */
-//                                // Recupera la misura di prevenzione/mitigazione
-//                                measure = MeasureCommand.retrieveMeasure(user, codeMis, survey, db);
-//                                // Recupera i rischi cui è associata
-//                                risksByMeasure = db.getRisksByMeasure(user, codeMis, survey);
-//                                // Personalizza le breadcrumbs
-//                                bC = loadBreadCrumbs(breadCrumbs, part, survey); 
-//                                // Imposta la pagina
-//                                fileJspT = nomeFileMisura;
-//                            }
-//                        } else if (part.equalsIgnoreCase(PART_INDICATOR)) {
-//                            measure = MeasureCommand.retrieveMeasure(user, codeMis, survey, db);
-//                            if (idInd > DEFAULT_ID) {
-//                            /* ------------------------------------------------ *
-//                             *       Dettagli di un indicatore di dato id       *
-//                             * ------------------------------------------------ */
-//                                // Imposta la pagina
-//                                fileJspT = nomeFileDettaglio;
-//                            } else {
-//                            /* ------------------------------------------------ *
-//                             *          Elenco indicatori di una misura         *
-//                             * ------------------------------------------------ */
-//                                // Personalizza le breadcrumbs
-//                                bC = loadBreadCrumbs(breadCrumbs, part, survey);
-//                                // Imposta la pagina
-//                                fileJspT = nomeFile.get(part);
-//                            }
-//                        } else if (part.equalsIgnoreCase(PART_MONITOR)) {
-//                            
-//                            /* ------------------------------------------------ *
-//                             *    Elenco Misurazioni di una misura monitorata   *
-//                             * ------------------------------------------------ */
-//                            measure = MeasureCommand.retrieveMeasure(user, codeMis, survey, db);
-//                            measurements = decantMeasurements(measure);
-//                            // Imposta la pagina
-//                            fileJspT = nomeFile.get(part);
-//                        } else if (part.equalsIgnoreCase(PART_INSERT_MONITOR_DATA)) {
-//                            /* ------------------------------------------------ *
-//                             * Form aggiunta dettagli monitoraggio a una misura *
-//                             * ------------------------------------------------ */
-//                            if (!codeMis.equals(DASH)) {
-//                                // Recupera la misura di prevenzione/mitigazione
-//                                measure = MeasureCommand.retrieveMeasure(user, codeMis, survey, db);
-//                                // Recupera i rischi cui è associata
-//                                risksByMeasure = db.getRisksByMeasure(user, codeMis, survey);
-//                                // Personalizza le breadcrumbs
-//                                bC = loadBreadCrumbs(breadCrumbs, part, survey); 
-//                                // Pagina
-//                                fileJspT = nomeFile.get(part);
-//                            }
-//                        } else if (part.equalsIgnoreCase(PART_SELECT_MEASUREMENT)) {
-//                            /* ------------------------------------------------ *
-//                             *        Pagina riepilogo dettagli misurazione     *
-//                             * ------------------------------------------------ */
-//                            // Recupera gli estremi della misura, della fase e dell'indicatore
-//                            measure = MeasureCommand.retrieveMeasure(user, codeMis, survey, db);
-//                            // Recupera la misurazione cercata
-//                            measurement = db.getMeasurement(user, idMon, survey);
-//                            // Pagina
-//                            fileJspT = nomeFile.get(part);
-//                        } else if (part.equalsIgnoreCase(PART_INSERT_INDICATOR)) {
-//                            /* ------------------------------------------------ *
-//                             *      Maschera inserimento nuovo Indicatore       *
-//                             * ------------------------------------------------ */
-//                            // Recupera la fase cui si vuol aggiungere l'indicatore
-//                            phase = db.getMeasureActivity(user, codeMis, idFas, survey);
-//                            // Pagina
-//                            fileJspT = nomeFile.get(part);
-//                        } else if (part.equalsIgnoreCase(PART_INSERT_MEASUREMENT)) {
-//                            /* ------------------------------------------------ *
-//                             *       Maschera inserimento nuova Misurazione     *
-//                             * ------------------------------------------------ */
-//                            // Recupera l'indicatore cui si vuol aggiungere la misurazione
-//                            measure = MeasureCommand.retrieveMeasure(user, codeMis, survey, db);
-//                            // Breadcrumbs
-//                            // Pagina
-//                            fileJspT = nomeFile.get(part);
-//                        }
-//                    } else {
-//                        /* ------------------------------------------------ *
-//                         *      Elenco sole misure monitorate (Registro)    *
-//                         * ------------------------------------------------ */
-//                        measures = MeasureCommand.filter(db.getMeasures(user, VOID_SQL_STRING, Query.GET_ALL_BY_CLAUSE, survey));
-//                        tP = titleFile.get(COMMAND_INDICATOR);
-//                        fileJspT = nomeFileElenco;
-//                    }
-                }
+            }
 
-//        }  catch (WebStorageException wse) {
-//            String msg = FOR_NAME + "Si e\' verificato un problema nel recupero di valori dal db.\n";
-//            LOG.severe(msg);
-//            throw new CommandException(msg + wse.getMessage(), wse);
-//        } catch (CommandException ce) {
-//            String msg = FOR_NAME + "Si e\' tentato di effettuare un\'operazione non andata a buon fine.\n";
-//            LOG.severe(msg);
-//            throw new CommandException(msg + ce.getMessage(), ce);
         } catch (IllegalStateException ise) {
             String msg = FOR_NAME + "Impossibile redirigere l'output. Verificare se la risposta e\' stata gia\' committata.\n";
             LOG.severe(msg);
