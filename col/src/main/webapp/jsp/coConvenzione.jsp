@@ -6,46 +6,21 @@
     <div class="page-heading">
       <div class="container">
         <div class="row">
-          <div class="col-lg-8">
+          <div class="col-lg-12">
             <div class="top-text header-text">
-              <h6><c:out value="${conv.titolo}" /></h6>
-              <h2>Dettagli convenzione</h2>
+              <h2>Dettagli Convenzione</h2>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="category-post">
+    <div class="category-post" style="margin-bottom:20px;">
       <div class="container">
         <div class="row">
           <div class="col-lg-12">
             <div class="naccs">
               <div class="grid">
                 <div class="row">
-                  <div class="col-lg-12">
-                    <div class="menu">
-                      <div class="first-thumb active">
-                        <div class="thumb">
-                          <h4>CONTRAENTI</h4>    
-                        </div>
-                      </div>
-                    <c:forEach var="contraente" items="${conv.contraenti}" varStatus="status">
-                      <div>
-                        <div class="thumb">                 
-                          <span class="icon">
-                            <img src="${initParam.urlDirImages}search-icon-02.png" alt="">
-                          </span>
-                          <h4 class="small-text"><c:out value="${contraente.nome}" /></h4>
-                        </div>
-                      </div>
-                    </c:forEach>
-                    <c:if test="${empty conv.contraenti}">
-                      <div>                 
-                        <h4>Nessun contraente<br> gi&agrave; assegnato</h4>
-                      </div>
-                    </c:if>
-                    </div>
-                  </div>
                   <hr class="separator">
                   <div class="col-lg-12">
                     <ul class="nacc">
@@ -56,15 +31,17 @@
                               <div class="col-lg-12">
                                 <div class="row">
                                   <div class="col-lg-9">
-                                    <h4>Tipo convenzione</h4>
-                                    <p><c:out value="${conv.tipo}" /></p>
+                                    <h5><strong>Titolo</strong></h5>
+                                    <hr class="short">
+                                    <p><c:out value="${conv.titolo}" /></p>
                                   </div>
                                   <div class="col-lg-3">
                                     <div class="text-icon">
-                                      <h4>
+                                      <h5>
                                         <img src="${initParam.urlDirImages}listing-icon-heading.png" alt=""> 
-                                        N. Repertorio
-                                      </h4>
+                                        <strong>Repertorio</strong>
+                                      </h5>
+                                      <hr class="short">
                                     </div>
                                     <span class="list-item">
                                       <c:out value="${conv.numRepertorio}" />
@@ -74,41 +51,86 @@
                               </div>
                               <hr class="separator">
                               <div class="col-lg-12">
+                                <div class="row">
+                                  <h5><strong>Contraenti</strong></h5>
+                                  <dl>
+                                    <dt></dt>
+                                  <c:forEach var="contraente" items="${conv.contraenti}" varStatus="status">
+                                    <dd><c:out value="${contraente.nome}" /></dd>
+                                  </c:forEach>
+                                  <c:if test="${empty conv.contraenti}">
+                                    <span class="list-item">
+                                      <cite>Nessun contraente gi&agrave; assegnato</cite>
+                                    </span>
+                                  </c:if>
+                                  </dl>
+                                </div>
+                              </div>
+                              <hr class="separator">
+                              <div class="col-lg-12">
+                                <div class="row">
+                                  <h5><strong>Tipologia</strong></h5>
+                                  <hr class="short">
+                                  <p><c:out value="${conv.tipo}" /></p>
+                                </div>
+                              </div>
+                              <hr class="separator">
+                              <div class="col-lg-12">
                                 <div class="general-info">
                                   <div class="row">
                                     <div class="col-lg-12">
-                                      <h4>Descrizione</h4>
+                                      <h5><strong>Oggetto</strong></h5>
+                                      <hr class="short">
                                       <p><c:out value="${conv.informativa}" /></p>
                                     </div>
                                   </div>
                                   <div class="row">
                                     <div class="col-lg-12">
-                                      <h4>Data approvazione</h4>
-                                      <p><fmt:formatDate value="${conv.dataApprovazione}" pattern="dd MMMMM yyyy" /></p>
-                                      <span class="list-item"><c:out value="${conv.notaApprovazione}" /></span>
+                                      <h5><strong>Data approvazione</strong></h5>
+                                      <hr class="short">
+                                      <fmt:formatDate value="${conv.dataApprovazione}" pattern="dd MMMMM yyyy" />
+                                      <br>
+                                      <span class="list-item">
+                                        <c:out value="${conv.notaApprovazione}" />
+                                      </span>
                                     </div>
                                   </div>
                                 <c:if test="${not empty conv.dataApprovazione2}">
+                                  <hr class="separator">
                                   <div class="row">
                                     <div class="col-lg-12">
-                                      <h4>Data seconda approvazione</h4>
-                                      <p><fmt:formatDate value="${conv.dataApprovazione2}" pattern="dd MMMMM yyyy" /></p>
-                                      <span class="list-item"><c:out value="${conv.notaApprovazione2}" /></span>
+                                      <h5><strong>Data seconda approvazione</strong></h5>
+                                      <hr class="short">
+                                      <fmt:formatDate value="${conv.dataApprovazione2}" pattern="dd MMMMM yyyy" />
+                                      <br>
+                                      <span class="list-item">
+                                        <c:out value="${conv.notaApprovazione2}" />
+                                      </span>
                                     </div>
                                   </div>
                                 </c:if>
+                                  <hr class="separator">
                                   <div class="row">
                                     <div class="col-lg-12">
-                                      <h4>Data sottoscrizione</h4>
-                                      <p><fmt:formatDate value="${conv.dataSottoscrizione}" pattern="dd MMMMM yyyy" /></p>
-                                      <span class="list-item"><c:out value="${conv.notaSottoscrizione}" /></span>
+                                      <h5><strong>Data sottoscrizione</strong></h5>
+                                      <hr class="short">
+                                      <fmt:formatDate value="${conv.dataSottoscrizione}" pattern="dd MMMMM yyyy" />
+                                      <br>
+                                      <span class="list-item">
+                                        <c:out value="${conv.notaSottoscrizione}" />
+                                      </span>
                                     </div>
                                   </div>
+                                  <hr class="separator">
                                   <div class="row">
                                     <div class="col-lg-12">
-                                      <h4>Data scadenza</h4>
-                                      <p><fmt:formatDate value="${conv.dataScadenza}" pattern="dd MMMMM yyyy" /></p>
-                                      <span class="list-item"><c:out value="${conv.notaScadenza}" /></span>
+                                      <h5><strong>Data scadenza</strong></h5>
+                                      <hr class="short">
+                                      <fmt:formatDate value="${conv.dataScadenza}" pattern="dd MMMMM yyyy" />
+                                      <br>
+                                      <span class="list-item">
+                                        <c:out value="${conv.notaScadenza}" />
+                                      </span>
                                     </div>
                                   </div>
                                 </div>
@@ -117,30 +139,21 @@
                           </div>
                         </div>
                       </li>                 
-                      <li>
-                        <div>
-                          <div class="thumb">
-                            <div class="row">
-                              <div class="col-lg-12">
-                                <div class="top-content">
-                                  <div class="row">
-                                    <div class="col-lg-12 ">
-                                      <div class="main-white-button d-flex justify-content-center">
-                                        <a href="${initParam.appName}/?q=co&op=ins&obj=cont&data=rel&id=${conv.id}">
-                                          <i class="fa fa-plus"></i>Aggiungi Contraenti
-                                        </a>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>      
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
                     </ul>
-                  </div>          
-                </div>
+                  </div>
+                  <hr class="separator">
+                  <div>
+                    <div class="col-lg-12">
+                      <div class="col text-center">
+                        <div class="main-white-button">
+                          <a href="${initParam.appName}/?q=co&op=ins&obj=cont&data=rel&id=${conv.id}" class="bg-info text-white btn btn-sm btn-warning">
+                            <i class="fa fa-plus bg-warning text-grey"></i> Assegna Contraenti
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>          
               </div>
             </div>
           </div>
