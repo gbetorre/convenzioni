@@ -23,7 +23,7 @@
             </div>
           </div>
           <div class="col-lg-12">
-            <form id="search-form" name="gs" method="post" role="search" action="#">
+            <form id="search-form" name="gs" method="post" role="search" action="${initParam.appName}/?q=co&op=res">
               <div class="row">
                 <div class="col-lg-3 align-self-center">
                   <fieldset>
@@ -95,7 +95,11 @@
               <c:out value="${cont.nome}" /><br>
             </c:forEach>
             </td>
-            <td><c:out value="${conv.titolo}" /></td>
+            <td>
+              <a href="${initParam.appName}/?q=co&id=${conv.id}" class="btn-sm text-success" title="Vedi dettagli Convenzione">
+                <c:out value="${conv.titolo}" />
+              </a>
+            </td>
             <td><fmt:formatDate value="${conv.dataApprovazione}" pattern="dd MMMMM yyyy" /></td>
             <td><fmt:formatDate value="${conv.dataSottoscrizione}" pattern="dd MMMMM yyyy" /></td>
             <td><fmt:formatDate value="${conv.dataScadenza}" pattern="dd MMMMM yyyy" /></td>
