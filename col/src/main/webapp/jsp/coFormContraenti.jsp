@@ -19,7 +19,9 @@
     <div class="main-banner padding-small">
       <div class="container">
         <h6 class="text-white text-center">
-          &nbsp;<c:out value="${conv.titolo}" />
+          <a href="${initParam.appName}/?q=co&id=${conv.id}" class="text-white" title="Vedi dettagli Convenzione">
+            &nbsp;<c:out value="${conv.titolo}" />
+          </a>
         </h6>
         <div>
           <ul class="categories list-group list-group-horizontal d-flex justify-content-center text-center">
