@@ -151,7 +151,7 @@ public interface Constants extends Serializable {
     /**
      * <p>Costante per il parametro identificante il tipo di output.</p>
      */
-    public static final String PART_OUTPUT              = "out";
+    public static final String OUTPUT                   = "out";
     /**
      * <p>Costante per il parametro identificante un messaggio (conferma, codice di errore, etc.).</p>
      */
@@ -181,6 +181,10 @@ public interface Constants extends Serializable {
      * (ogj=cont) e convenzione (rel=conv) in riferimento alla convenzione di id 58</dd></dl>
      */
     public static final String RELATIONSHIP             = "rel";
+    /**
+     * <p>Costante per il parametro identificante la ricerca.</p>
+     */
+    public static final String SEARCH                   = "res";
     /**
      * <p>Costante per il parametro identificante una entità.</p>
      */
