@@ -121,6 +121,7 @@ Il software è un'applicazione Java three-tier
 # History
 
 ```
+* [0.3.0] (Oct 14, 2025) Prima bozza implementazione ricerca
 * [0.2.9] (Oct 13, 2025) Bugfix
 * [0.2.8] (Oct 10, 2025) Prima bozza implementazione scadenziario
 * [0.2.7] (Oct 09, 2025) Implementata pagina dettagli convenzione

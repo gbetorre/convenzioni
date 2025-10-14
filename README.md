@@ -65,8 +65,9 @@ When will be ready, I will release, package or tag
 # History
 
 ```
+* [0.3.0] (Oct 14, 2025) First draft search results page
 * [0.2.9] (Oct 13, 2025) Bugfix
-* [0.2.8] (Oct 10, 2025) First implementation scheduler
+* [0.2.8] (Oct 10, 2025) First implementation of the scheduler
 * [0.2.7] (Oct 09, 2025) Implementation agreement details page
 * [0.2.6] (Oct 08, 2025) Implementation assignment contractors to an agreement: show contractors already bound
 * [0.2.5] (Oct 06, 2025) Implementation assignment contractors to an agreement: db persistence
@@ -75,7 +76,7 @@ When will be ready, I will release, package or tag
 * [0.2.2] (Sep 30, 2025) Implemented dynamic generation of dropdown lists
 * [0.2.1] (Sep 29, 2025) Presentation improvements
 * [0.2.0] (Sep 25, 2025) Presentation improvements
-* [0.1.9] (Sep 24, 2025) First implementation assignment contractors to an agreement
+* [0.1.9] (Sep 24, 2025) First implementation of assignment contractors to an agreement
 * [0.1.8] (Sep 23, 2025) Delegated convention management (viewing, entering, updating and so on) to a new controller component (Command) 
 * [0.1.7] (Sep 22, 2025) Bugfix
 * [0.1.6] (Sep 18, 2025) Implemented footer
