@@ -100,6 +100,10 @@ public class ConventionCommand extends CommandBean implements Command, Constants
      *  UPDATE Convention: assign one or more contractors to a single convention
      */    
     private static final CodeBean contraenti = new CodeBean("coFormContraenti.jsp", "Assegna contraente");
+    /**
+     *  Search results
+     */    
+    private static final CodeBean ricerca = new CodeBean("coFormRicerca.jsp", "Ricerca avanzata");
     
 
     /** 
@@ -122,6 +126,7 @@ public class ConventionCommand extends CommandBean implements Command, Constants
         }
         // Hashmap containing pages
         pages.put(COMMAND_CONV,     elenco);
+        pages.put(SEARCH,           ricerca);
         pages.put(SELECT,           dettagli);
         pages.put(CONTRACTOR,       contraenti);
     }
@@ -222,27 +227,28 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                 // Carica i parametri di navigazione
                 loadParams(object, req, params);
                 // Which operationg has it to do?
-                switch (object) {
+                switch (operation) {
                     case VOID_STRING:
                         // TODO
                         break;
-                    case CONTRACTOR:
-                        // Test if have to insert a relationship
-                        if (dbElement.equalsIgnoreCase(RELATIONSHIP)) {
-                            // Insert the relationship
-                            db.insertConventionContractors(user, params);
-                            // Prepare the redirect
-                            dataUrl.put(ConfigManager.getEntToken(), COMMAND_CONV)
-                                   .put(OPERATION, INSERT)
-                                   .put(OBJECT, CONTRACTOR)
-                                   .put(DB_CONSTRUCT, RELATIONSHIP)
-                                   .put("id", idA);
-                            redirect = dataUrl.getUrl();
+                    case INSERT:
+                        if (object.equalsIgnoreCase(CONTRACTOR)) {
+                            // Test if gotta insert a relationship
+                            if (dbElement.equalsIgnoreCase(RELATIONSHIP)) {
+                                // Insert the relationship
+                                db.insertConventionContractors(user, params);
+                                // Prepare the redirect
+                                dataUrl.put(ConfigManager.getEntToken(), COMMAND_CONV)
+                                       .put(OPERATION, INSERT)
+                                       .put(OBJECT, CONTRACTOR)
+                                       .put(DB_CONSTRUCT, RELATIONSHIP)
+                                       .put("id", idA);
+                                redirect = dataUrl.getUrl();
+                            }
                         }
-
                         break;
-                    case "del":
-                        // TODO
+                    case SEARCH:
+                        fileJspT = pages.get(operation);
                         break;
                     default:
                         // Other values are not admitted
@@ -252,7 +258,7 @@ public class ConventionCommand extends CommandBean implements Command, Constants
             } else {
                 // Which operationg has it to do?
                 switch (operation) {
-                    case "ins":
+                    case INSERT:
                         // Test if there is a convention id
                         if (idA > DEFAULT_ID) { 
                             // Get the convention
