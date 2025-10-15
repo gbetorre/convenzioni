@@ -229,7 +229,8 @@ public interface Query extends Serializable {
             "   FROM convenzione C" +
             "   WHERE C.id_stato = (SELECT id FROM stato_convenzione WHERE nome = 'ATTIVO')" +
             "       AND C.id IN (SELECT CG.id_convenzione FROM convenzione_grp CG WHERE CG.id_grp = ?)" +
-            "   ORDER BY C.ordinale";
+            "       AND (C.data_scadenza > ? AND C.data_scadenza < ?)" + 
+            "   ORDER BY C.ordinale, C.data_scadenza DESC";
     
     /**
      * <p>Estrae una convenzione di dato id.</p>
