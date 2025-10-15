@@ -37,6 +37,7 @@
 package it.col.command;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.logging.Logger;
@@ -157,16 +158,16 @@ public class SchedulerCommand extends CommandBean implements Command, Constants 
         ArrayList<PersonBean> contractors = null;
         // All the params coming from forms
         HashMap<String, LinkedHashMap<String, String>> params = null;
+        // List of agreement types
+        final ArrayList<CodeBean> types = ConfigManager.getTypes();
+        // List of agreement scopes
+        final ArrayList<CodeBean> scopes = ConfigManager.getScopes();
         // Page
         CodeBean fileJspT = new CodeBean();
         // Redirect from POST call to a GET request
         String redirect = null;
         // Date of the day
         java.util.Date today = Utils.convert(Utils.getCurrentDate());
-        // List of agreement types
-        final ArrayList<CodeBean> types = ConfigManager.getTypes();
-        // List of agreement scopes
-        final ArrayList<CodeBean> scopes = ConfigManager.getScopes();
         /* ******************************************************************** *
          *                  Retrieve attributes and parameters                  *
          * ******************************************************************** */
@@ -180,6 +181,13 @@ public class SchedulerCommand extends CommandBean implements Command, Constants 
         String operation = parser.getStringParameter("op", SELECT);
         // Which one is involved to do what we do?
         String object = parser.getStringParameter("obj", DASH);
+        // From when gotta retrieve the conventions?
+        String startAsString = parser.getStringParameter("start", UNIX_EPOCH);
+        // To when gotta retrieve the conventions?
+        String endAsString = parser.getStringParameter("end", THE_END_OF_TIME);
+        // Convert string to date
+        Date start = Utils.format(startAsString);
+        Date end = Utils.format(endAsString);
         // Retrieve, or initialize, 'id agreement'
         int idA = parser.getIntParameter("id", DEFAULT_ID);
         /* ******************************************************************** *
@@ -249,7 +257,7 @@ public class SchedulerCommand extends CommandBean implements Command, Constants 
                             fileJspT = pages.get(operation);
                         } else {
                             // Get the conventions
-                            conventions = db.getConventions(user);
+                            conventions = db.getConventions(user, start, end);
                             // Show the landing page
                             fileJspT = pages.get(this.getNome());
                         }
