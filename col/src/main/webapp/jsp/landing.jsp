@@ -78,9 +78,9 @@
             <th width="6%">Tipologia</th>
             <th width="20%">Contraenti</th>
             <th width="*">Titolo</th>
-            <th width="5%">Data approvazione</th>
-            <th width="5%">Data sottoscrizione</th>
-            <th width="8%">Data scadenza</th>
+            <th width="5%" class="dt-head-left">Data approvazione</th>
+            <th width="5%" class="dt-head-left">Data sottoscrizione</th>
+            <th width="8%" class="dt-head-left">Data scadenza</th>
             <th width="12%">Num. repertorio</th>
             <th width="10%">Azioni</th>
           </tr>
@@ -100,9 +100,15 @@
                 <c:out value="${conv.titolo}" />
               </a>
             </td>
-            <td><fmt:formatDate value="${conv.dataApprovazione}" pattern="dd MMMMM yyyy" /></td>
-            <td><fmt:formatDate value="${conv.dataSottoscrizione}" pattern="dd MMMMM yyyy" /></td>
-            <td><fmt:formatDate value="${conv.dataScadenza}" pattern="dd MMMMM yyyy" /></td>
+            <td data-order="<fmt:formatDate value="${conv.dataApprovazione}" pattern="yyyy-MM-dd" />">
+              <fmt:formatDate value="${conv.dataApprovazione}" pattern="dd MMMMM yyyy" />
+            </td>
+            <td data-order="<fmt:formatDate value="${conv.dataSottoscrizione}" pattern="yyyy-MM-dd" />">
+              <fmt:formatDate value="${conv.dataSottoscrizione}" pattern="dd MMMMM yyyy" />
+            </td>
+            <td data-order="<fmt:formatDate value="${conv.dataScadenza}" pattern="yyyy-MM-dd" />">
+              <fmt:formatDate value="${conv.dataScadenza}" pattern="dd MMMMM yyyy" />
+            </td>
             <td><c:out value="${conv.numRepertorio}" /></td>
             <td>
               <ul class="list-inline d-flex justify-content-center">
@@ -132,6 +138,7 @@
     <script src="${initParam.urlDirFrameworks}DataTables/js/datatables.min.js" type="text/javascript"></script>
     <script>
       $(document).ready(function () {
+        // Set datatable for a layer of mine
         $('#apartmentTable').DataTable({
           "pageLength":   10,
           "lengthChange": true,
