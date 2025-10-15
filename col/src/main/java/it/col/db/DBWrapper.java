@@ -41,6 +41,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Vector;
@@ -538,12 +539,15 @@ public class DBWrapper extends QueryImpl {
      * @throws it.col.exception.AttributoNonValorizzatoException  eccezione che viene sollevata se questo oggetto viene usato e l'id della persona non &egrave; stato valorizzato (&egrave; un dato obbligatorio)
      */
     @SuppressWarnings({ "static-method" })
-    public ArrayList<Convenzione> getConventions(PersonBean user)
+    public ArrayList<Convenzione> getConventions(PersonBean user,
+                                                 Date start,
+                                                 Date end)
                                           throws WebStorageException, 
                                                  AttributoNonValorizzatoException {
         try (Connection con = col_manager.getConnection()) {
             PreparedStatement pst = null;
             ResultSet rs, rs1 = null;
+            int nParam = NOTHING; 
             Convenzione c = null;
             ArrayList<PersonBean> contraenti = null;
             ArrayList<Convenzione> convenzioni = new ArrayList<>();
@@ -551,7 +555,10 @@ public class DBWrapper extends QueryImpl {
                 pst = con.prepareStatement(GET_CONVENTIONS);
                 pst.clearParameters();
                 // Per il momento, assume che l'utente abbia uno e un solo gruppo
-                pst.setInt(1, user.getGruppi().get(NOTHING).getId());
+                pst.setInt(++nParam, user.getGruppi().get(NOTHING).getId());
+                // Non accetta un GregorianCalendar né una data java.util.Date, ma java.sql.Date
+                pst.setDate(++nParam, Utils.convert(Utils.convert(start))); 
+                pst.setDate(++nParam, Utils.convert(Utils.convert(end))); 
                 rs = pst.executeQuery();
                 while (rs.next()) {
                     c = new Convenzione();
