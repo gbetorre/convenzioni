@@ -38,17 +38,11 @@ package it.col;
 
 import java.awt.Color;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.Time;
 import java.util.AbstractList;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import javax.servlet.RequestDispatcher;
@@ -58,14 +52,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import com.oreilly.servlet.ParameterParser;
-
-import it.col.bean.ItemBean;
 import it.col.bean.PersonBean;
 import it.col.exception.AttributoNonValorizzatoException;
-import it.col.exception.CommandException;
 import it.col.util.Constants;
 import it.col.util.MailManager;
 import it.col.util.Utils;
@@ -162,14 +151,6 @@ public class Data extends HttpServlet implements Constants {
      * Parametro della query string per richiedere un certo formato di output.
      */
     private String format;
-    /**
-     * Pagina a cui la classe inoltra per mostrare le fasi nel contesto dei processi
-     */
-    private static final String nomeFileProcessoAjax = "/jsp/prProcessoAjax.jsp";
-    /**
-     * Pagina a cui la classe inoltra per mostrare le fasi nel contesto dei processi
-     */
-    private static final String nomeFileLog = "/jsp/diff.jsp";
 
 
     /**
