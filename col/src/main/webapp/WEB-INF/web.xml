@@ -133,7 +133,7 @@
     </error-page>
     <error-page>
       <error-code>505</error-code>
-      <location>/html/HTTPVersionNotSupported.html</location>
+      <location>/html/505-HTTPVersionNotSupported.html</location>
     </error-page>
     <error-page>
       <error-code>509</error-code>
