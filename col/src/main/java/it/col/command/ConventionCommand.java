@@ -37,6 +37,7 @@
 package it.col.command;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.logging.Logger;
@@ -171,16 +172,16 @@ public class ConventionCommand extends CommandBean implements Command, Constants
         ArrayList<PersonBean> contractors = null;
         // All the params coming from forms
         HashMap<String, LinkedHashMap<String, String>> params = null;
+        // List of agreement types
+        final ArrayList<CodeBean> types = ConfigManager.getTypes();
+        // List of agreement scopes
+        final ArrayList<CodeBean> scopes = ConfigManager.getScopes();
         // Page
         CodeBean fileJspT = new CodeBean();
         // Redirect from POST call to a GET request
         String redirect = null;
         // Date of the day
         java.util.Date today = Utils.convert(Utils.getCurrentDate());
-        // List of agreement types
-        final ArrayList<CodeBean> types = ConfigManager.getTypes();
-        // List of agreement scopes
-        final ArrayList<CodeBean> scopes = ConfigManager.getScopes();
         /* ******************************************************************** *
          *                  Retrieve attributes and parameters                  *
          * ******************************************************************** */
@@ -196,6 +197,13 @@ public class ConventionCommand extends CommandBean implements Command, Constants
         String object = parser.getStringParameter("obj", DASH);
         // Which database kind of object is involved?
         String dbElement = parser.getStringParameter("data", DASH);
+        // From when gotta retrieve the conventions?
+        String startAsString = parser.getStringParameter("start", UNIX_EPOCH);
+        // To when gotta retrieve the conventions?
+        String endAsString = parser.getStringParameter("end", THE_END_OF_TIME);
+        // Convert string to date
+        Date start = Utils.format(startAsString);
+        Date end = Utils.format(endAsString);
         // Retrieve, or initialize, 'id agreement'
         int idA = parser.getIntParameter("id", DEFAULT_ID);
         /* ******************************************************************** *
@@ -290,7 +298,7 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                             fileJspT = pages.get(SELECT);
                         } else {
                             // Get the conventions
-                            conventions = db.getConventions(user);
+                            conventions = retrieveConventions(user, start, end, db);
                             // Show the landing page
                             fileJspT = pages.get(this.getNome());
                         }
@@ -427,6 +435,47 @@ public class ConventionCommand extends CommandBean implements Command, Constants
             }
         }
         return index;
+    }
+    
+    
+    /* **************************************************************** *
+     *                  Metodi di recupero dei dati                     *                     
+     *                            (retrieve)                            *
+     * **************************************************************** */
+    
+    /**
+     * <p>Restituisce un ArrayList (albero, vista gerarchica) 
+     * di tutte le convenzioni in base a una data finestra temporale.</p>
+     *
+     * @param user  utente loggato; viene passato ai metodi del DBWrapper per controllare che abbia i diritti di fare quello che vuol fare
+     * @param start data scadenza iniziale         
+     * @param end   data scadenza finale
+     * @param db    WebStorage per l'accesso ai dati
+     * @return <code>ArrayList&lt;Convenzione&gt;</code> - lista di convenzioni recuperate
+     * @throws CommandException se si verifica un problema nell'estrazione dei dati, o in qualche tipo di puntamento
+     */
+    public static ArrayList<Convenzione> retrieveConventions(PersonBean user,
+                                                             Date start,
+                                                             Date end,
+                                                             DBWrapper db)
+                                                      throws CommandException {
+        ArrayList<Convenzione> conventions = null;
+        try {
+            conventions = db.getConventions(user, start, end);
+        } catch (WebStorageException wse) {
+            String msg = FOR_NAME + "Si e\' verificato un problema nel recupero.\n";
+            LOG.severe(msg);
+            throw new CommandException(msg + wse.getMessage(), wse);
+        } catch (NullPointerException npe) {
+            String msg = FOR_NAME + "Si e\' verificato un problema di puntamento a null.\n Attenzione: controllare di essere autenticati nell\'applicazione!\n";
+            LOG.severe(msg);
+            throw new CommandException(msg + npe.getMessage(), npe);
+        } catch (Exception e) {
+            String msg = FOR_NAME + "Si e\' verificato un problema.\n";
+            LOG.severe(msg);
+            throw new CommandException(msg + e.getMessage(), e);
+        }
+        return conventions;
     }
     
 }
