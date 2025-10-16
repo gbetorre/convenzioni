@@ -220,6 +220,10 @@ public interface Constants extends Serializable {
      * <p>Costante per il VALORE del parametro identificante la funzione di eliminazione di un elemento.</p>
      */
     public static final String DELETE                   = "del";
+    /**
+     * <p>Costante per il VALORE del parametro identificante l'operazione di scambio di messaggi.</p>
+     */
+    public static final String SEND                     = "put";
     /* 
      * --------------------    OTHER PARAMS    -------------------- 
      */
