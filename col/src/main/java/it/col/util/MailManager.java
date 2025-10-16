@@ -74,8 +74,9 @@ public class MailManager {
      */
     public static String sendEmail() throws Exception {
         //String mailTo = "albertomaria.arenaagostino@univr.it";
-        String mailTo = "giovanroberto.torre@univr.it";
-        String mailFrom = "albertomaria.arenaagostino@univr.it";
+        String mailTo = "lindamaria.frigo@univr.it, giovanni.olivieri@univr.it, elisa.puddu@univr.it, francesca.limberto@univr.it";
+        InternetAddress[] addresses = InternetAddress.parse(mailTo);
+        String mailFrom = "giovanroberto.torre@univr.it";
         String subject = "Richiesta";
         StringBuffer content = new StringBuffer("Egregio Dr. Ing., certe volte parlo con me stesso.");
         content.append("<br><br>")
@@ -99,7 +100,8 @@ public class MailManager {
         try {
             MimeMessage message = new MimeMessage(session); // Define message
             message.setFrom(new InternetAddress(mailFrom)); // Set the from address
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(mailTo));    // Set the to address
+            //message.addRecipient(Message.RecipientType.TO, new InternetAddress(mailTo));    // Set the to address
+            message.setRecipients(Message.RecipientType.TO, addresses);
             message.setSubject(subject);
             message.setContent(mailContent, "text/html");   // Set the content
             Transport.send(message);                    // Send message
