@@ -53,6 +53,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.oreilly.servlet.ParameterParser;
+
 import it.col.bean.PersonBean;
 import it.col.exception.AttributoNonValorizzatoException;
 import it.col.util.Constants;
@@ -143,14 +145,6 @@ public class Data extends HttpServlet implements Constants {
      * Serve per inizializzare i rendirizzamenti con il servletToken
      */
     private ServletContext servletContext;
-    /**
-     * Parametro della query string identificante una Command.
-     */
-    private String qToken;
-    /**
-     * Parametro della query string per richiedere un certo formato di output.
-     */
-    private String format;
 
 
     /**
@@ -181,20 +175,29 @@ public class Data extends HttpServlet implements Constants {
                     throws ServletException, IOException {
         // La pagina della servlet e' sganciata dal template, anzi ne costituisce un frammento
         String fileJsp = null;
+        // Parser of parameters
+        ParameterParser parser = new ParameterParser(req);
         // Recupera valore di ent (servito da un ConfigManager esterno alla Data)
-        qToken = req.getParameter(ConfigManager.getEntToken());
+        String qToken = parser.getStringParameter(ConfigManager.getEntToken(), VOID_STRING);
         // Recupera il formato dell'output, se specificato
-        format = req.getParameter(ConfigManager.getOutToken());
-        // Recupera o inizializza parametro per identificare la pagina
-        String part = req.getParameter("p");
+        String format = parser.getStringParameter(ConfigManager.getOutToken(), VOID_STRING);
+        // Recupera o inizializza parametri per identificare la pagina
+        String op = parser.getStringParameter(OPERATION, VOID_STRING);
+        String obj = parser.getStringParameter(OBJECT, VOID_STRING);
+        String data = parser.getStringParameter(DB_CONSTRUCT, VOID_STRING);
+        String from = parser.getStringParameter("start", VOID_STRING);
+        String to = parser.getStringParameter("end", VOID_STRING);
         // Dictonary contenente i soli valori di entToken abilitati a generare CSV
-        LinkedList<String> csvCommands = new LinkedList<>();
+        //LinkedList<String> csvCommands = new LinkedList<>();
         // Struttura da restituire in Request
-        AbstractList<?> lista = null;
+        //AbstractList<?> lista = null;
         // Mappa da restituire in Request
-        AbstractMap<?,?> mappa = null;
+        //AbstractMap<?,?> mappa = null;
         // Message
         log.info("===> Log su servlet Data. <===");
+        //if (op.equalsIgnoreCase(SEND)) {
+            
+        //}
         try {
             MailManager.sendEmail();
             fileJsp = "scElenco.jsp";
@@ -208,6 +211,20 @@ public class Data extends HttpServlet implements Constants {
         dispatcher.forward(req, res);
     }
 
+    
+    private static String getMessage(HttpServletRequest req) {
+     // Parser of parameters
+        ParameterParser parser = new ParameterParser(req);
+
+        // Recupera o inizializza parametri per identificare la pagina
+        String op = parser.getStringParameter(OPERATION, VOID_STRING);
+        String obj = parser.getStringParameter(OBJECT, VOID_STRING);
+        String data = parser.getStringParameter(DB_CONSTRUCT, VOID_STRING);
+        String from = parser.getStringParameter("start", VOID_STRING);
+        String to = parser.getStringParameter("end", VOID_STRING);
+        return VOID_STRING;
+    }
+    
     /* **************************************************************** *
      *       Metodi per generare tuple prive di presentazione (CSV)     *
      * **************************************************************** */
