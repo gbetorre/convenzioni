@@ -212,7 +212,7 @@ class NeumorphismLoginForm {
         
         try {
             // Simulate soft authentication
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            await new Promise(resolve => setTimeout(resolve, 900));
             
             // Show neumorphic success
             this.showNeumorphicSuccess();
