@@ -8,7 +8,7 @@
 
 <div align="center">
   <h3 align="center">COL-GeCo</h3>
-  <img src="https://github.com/gbetorre/convenzioni/blob/main/col/src/main/webapp/assets/images/screenshot/gecko-small.jpg" alt="Logo">
+  <img src="https://github.com/gbetorre/convenzioni/blob/main/col/src/main/webapp/assets/images/screenshot/gecko.jpg" alt="Logo">
   <p align="center">
     Web application to trace, and manage, the government conventions.
     <br><br>
@@ -29,27 +29,41 @@ to track agreements, framework agreements, investee companies, management boards
 between external parties and the public administration itself.
 
 The goal is to create an organized and constantly updated register: 
-1. to obtain a schedule for informing and notifying users about upcoming agreements that are about to expire; 
-2. to be able to provide monthly summaries and reminders about upcoming deadlines.
+1. 🗓️ to obtain a schedule for informing and notifying users about upcoming agreements that are about to expire; 
+2. ⏰ to be able to provide monthly summaries and reminders about upcoming deadlines.
 
 ## Regarding modularity
 
-![Sample of main interface](col/src/main/webapp/assets/images/screenshot/landing0.13.png)
+![Sample of main interface](col/src/main/webapp/assets/images/screenshot/landing0.27.png)
 
-**_Fig.1 - Landing page, version 0.1_**
+**_Fig.1 - Landing page, version 0.2_**
 
-The main information domain, which is the subject of the initial development, relates to conventions, but the software 
-is designed to gradually extending the domain to other entities, which deal with the public administration.
+The main information domain, which is the subject of the initial development, is related to agreements; nevertheless, 
+the software is designed to gradually extending the domain to other entities, which deal with the public administration.
 
 The software is designed in a modular way, so that it can be adapted to any administration interested in adopting an open source schedule.
 
 Moreover, the ways in which the software alerts you to deadlines and summarizes activities can be extended to several modalities:
+
+
+* ✉️ email 
+* 📆 shared calendar 
+* 💬 push notifications 
+* 📂 periodic summaries automatically uploaded in shared paths 
+* ⬇️ downloads on-demand based on user input
+
+and so on...
+
 <!--
 # In a nutshell
 
 I ment to achieve 
 -->
 ## 
+
+![Sample of main interface](col/src/main/webapp/assets/images/screenshot/landing0.13.png)
+
+**_Fig.2 - Landing page, version 0.1_**
 
 The software is not ready yet: please, let me cook.
 
