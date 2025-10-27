@@ -69,11 +69,11 @@
 
     <error-page>
       <error-code>400</error-code>
-      <location>/html/badRequest.html</location>
+      <location>/html/400-badRequest.html</location>
     </error-page>
     <error-page>
       <error-code>401</error-code>
-      <location>/html/unauthorized.html</location>
+      <location>/html/401-unauthorized.html</location>
     </error-page>
     <error-page>
       <error-code>403</error-code>
