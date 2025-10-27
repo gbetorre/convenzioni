@@ -8,7 +8,7 @@
 
 <div align="center">
   <h3 align="center">COL-GeCo</h3>
-  <img src="https://github.com/gbetorre/convenzioni/blob/main/col/src/main/webapp/assets/images/screenshot/gecko-small.jpg" alt="Logo">
+  <img src="https://github.com/gbetorre/convenzioni/blob/main/col/src/main/webapp/assets/images/screenshot/gecko.jpg" alt="Logo">
   <p align="center">
     Applicazione web per la gestione e il monitoraggio delle convenzioni della pubblica amministrazione.
     <br><br>
