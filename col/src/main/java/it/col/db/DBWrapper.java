@@ -539,9 +539,7 @@ public class DBWrapper extends QueryImpl {
      * @throws it.col.exception.AttributoNonValorizzatoException  eccezione che viene sollevata se questo oggetto viene usato e l'id della persona non &egrave; stato valorizzato (&egrave; un dato obbligatorio)
      */
     @SuppressWarnings({ "static-method" })
-    public ArrayList<Convenzione> getConventions(PersonBean user,
-                                                 Date start,
-                                                 Date end)
+    public ArrayList<Convenzione> getConventions(PersonBean user)
                                           throws WebStorageException, 
                                                  AttributoNonValorizzatoException {
         try (Connection con = col_manager.getConnection()) {
@@ -556,9 +554,85 @@ public class DBWrapper extends QueryImpl {
                 pst.clearParameters();
                 // Per il momento, assume che l'utente abbia uno e un solo gruppo
                 pst.setInt(++nParam, user.getGruppi().get(NOTHING).getId());
+                rs = pst.executeQuery();
+                while (rs.next()) {
+                    c = new Convenzione();
+                    BeanUtil.populate(c, rs);
+                    // Recupera i contraenti collegati alla convenzione
+                    contraenti = new ArrayList<>();
+                    pst = null;
+                    pst = con.prepareStatement(GET_CONTRACTORS_BY_CONVENTION);
+                    pst.clearParameters();
+                    pst.setInt(1, c.getId());
+                    rs1 = pst.executeQuery();
+                    while (rs1.next()) {
+                        PersonBean contraente = new PersonBean();
+                        BeanUtil.populate(contraente, rs1);
+                        contraenti.add(contraente);
+                    }
+                    // Li aggiunge alla convenzione
+                    c.setContraenti(contraenti);
+                    // Aggiunge la convenzione alla lista
+                    convenzioni.add(c);
+                }
+                // Try to engage the Garbage Collector
+                pst = null;
+                // Get Out
+                return convenzioni;
+            } catch (SQLException sqle) {
+                String msg = FOR_NAME + "Problema nella query delle convenzioni.\n";
+                LOG.severe(msg);
+                throw new WebStorageException(msg + sqle.getMessage(), sqle);
+            } finally {
+                try {
+                    con.close();
+                } catch (NullPointerException npe) {
+                    String msg = FOR_NAME + "Ooops... problema nella chiusura della connessione.\n";
+                    LOG.severe(msg);
+                    throw new WebStorageException(msg + npe.getMessage());
+                } catch (SQLException sqle) {
+                    throw new WebStorageException(FOR_NAME + sqle.getMessage());
+                }
+            }
+        } catch (SQLException sqle) {
+            String msg = FOR_NAME + "Problema con la creazione della connessione.\n";
+            LOG.severe(msg);
+            throw new WebStorageException(msg + sqle.getMessage(), sqle);
+        }
+    }
+    
+    
+    /**
+     * <p>Restituisce la lista delle convenzioni attive entro un intervallo considerato.</p>
+     *
+     * @param user utente che ha effettuato la richiesta
+     * @param start 
+     * @param end 
+     * @return <code>ArrayList&lt;Convenzione&gt;</code> - lista convenzioni trovate
+     * @throws it.col.exception.WebStorageException se si verifica un problema nell'esecuzione della query, nell'accesso al db o in qualche tipo di puntamento
+     * @throws it.col.exception.AttributoNonValorizzatoException  eccezione che viene sollevata se questo oggetto viene usato e l'id della persona non &egrave; stato valorizzato (&egrave; un dato obbligatorio)
+     */
+    @SuppressWarnings({ "static-method" })
+    public ArrayList<Convenzione> getConventions(PersonBean user,
+                                                 Date start,
+                                                 Date end)
+                                          throws WebStorageException, 
+                                                 AttributoNonValorizzatoException {
+        try (Connection con = col_manager.getConnection()) {
+            PreparedStatement pst = null;
+            ResultSet rs, rs1 = null;
+            int nParam = NOTHING; 
+            Convenzione c = null;
+            ArrayList<PersonBean> contraenti = null;
+            ArrayList<Convenzione> convenzioni = new ArrayList<>();
+            try {
+                pst = con.prepareStatement(GET_CONVENTIONS_BY_DATES);
+                pst.clearParameters();
+                // Per il momento, assume che l'utente abbia uno e un solo gruppo
+                pst.setInt(++nParam, user.getGruppi().get(NOTHING).getId());
                 // Non accetta un GregorianCalendar né una data java.util.Date, ma java.sql.Date
                 pst.setDate(++nParam, Utils.convert(Utils.convert(start))); 
-                pst.setDate(++nParam, Utils.convert(Utils.convert(end))); 
+                pst.setDate(++nParam, Utils.convert(Utils.convert(end)));
                 rs = pst.executeQuery();
                 while (rs.next()) {
                     c = new Convenzione();
