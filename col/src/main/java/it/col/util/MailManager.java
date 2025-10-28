@@ -74,21 +74,22 @@ public class MailManager {
      */
     public static String sendEmail() throws Exception {
         //String mailTo = "albertomaria.arenaagostino@univr.it";
-        String mailTo = "lindamaria.frigo@univr.it, giovanni.olivieri@univr.it, elisa.puddu@univr.it, francesca.limberto@univr.it";
+        //String mailTo = "lindamaria.frigo@univr.it, giovanni.olivieri@univr.it, elisa.puddu@univr.it, francesca.limberto@univr.it";
+        String mailTo = "giovanroberto.torre@univr.it";
         InternetAddress[] addresses = InternetAddress.parse(mailTo);
         String mailFrom = "giovanroberto.torre@univr.it";
         String subject = "Richiesta";
-        StringBuffer content = new StringBuffer("Egregio Dr. Ing., certe volte parlo con me stesso.");
+        StringBuffer content = new StringBuffer("TEST riepilogo scadenze");
         content.append("<br><br>")
-               .append("ma sono cos&iacute; intelligente")
+               .append("prova")
                .append("<br><br>")
-               .append("che non mi capisco")
+               .append("prova")
                .append("<br><br>")
-               .append("Oscar Wilde")
+               .append("prova")
                .append("<br><br>")
-               .append("Distinti saluti")
+               .append("prova")
                .append("<br>")
-               .append("dirgt");
+               .append("firma");
         String mailContent = new String(content); 
         Properties props = System.getProperties();  // Get system properties
         props.put("mailTo", mailTo);
@@ -118,6 +119,47 @@ public class MailManager {
         return "Email inviata";
     }
 
+    
+    /**
+
+     */
+    public static String sendEmail(String content) throws Exception {
+        //String mailTo = "albertomaria.arenaagostino@univr.it";
+        //String mailTo = "lindamaria.frigo@univr.it, giovanni.olivieri@univr.it, elisa.puddu@univr.it, francesca.limberto@univr.it";
+        String mailTo = "giovanroberto.torre@univr.it";
+        InternetAddress[] addresses = InternetAddress.parse(mailTo);
+        String mailFrom = "giovanroberto.torre@univr.it";
+        String subject = "Richiesta";
+        String mailContent = new String(content); 
+        Properties props = System.getProperties();  // Get system properties
+        props.put("mailTo", mailTo);
+        props.put("mail.smtp.host", "smtp.univr.it");
+        props.put("mail.smtp.port", "25");
+        props.put("mail.smtp.auth", "false");
+        props.put("mail.smtp.starttls.enable", "false");
+        Session session = Session.getInstance(props);   // Get session
+        try {
+            MimeMessage message = new MimeMessage(session); // Define message
+            message.setFrom(new InternetAddress(mailFrom)); // Set the from address
+            //message.addRecipient(Message.RecipientType.TO, new InternetAddress(mailTo));    // Set the to address
+            message.setRecipients(Message.RecipientType.TO, addresses);
+            message.setSubject(subject, "UTF-8");
+            //message.setContent(mailContent, "text/html");   // Set the content
+            message.setContent(mailContent, Constants.MIME_TYPE_HTML + "; charset=UTF-8");
+            Transport.send(message);                    // Send message
+        } catch (MessagingException mex) {
+            String msg = "Si e\' verificato un problema nel processamento del MimeMessage.\n" + mex.getMessage();
+            //log.warning(msg);
+            throw new Exception(msg, mex);
+        } catch (Exception ex) {
+            String msg = "Si e\' verificato un problema generico.\n" + ex.getMessage();
+            //log.warning(msg);
+            throw new Exception(msg, ex);
+        }
+
+        return "Email inviata";
+    }
+    
     
     /**
 
