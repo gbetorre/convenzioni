@@ -96,7 +96,7 @@
             </c:forEach>
             </td>
             <td>
-              <a href="${initParam.appName}/?q=co&id=${conv.id}" class="btn-sm text-success" title="Vedi dettagli Convenzione">
+              <a href="${initParam.appName}/?q=co&id=${conv.id}" class="btn-sm text-primary" title="Vedi dettagli Convenzione">
                 <c:out value="${conv.titolo}" />
               </a>
             </td>
