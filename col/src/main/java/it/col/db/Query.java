@@ -229,8 +229,35 @@ public interface Query extends Serializable {
             "   FROM convenzione C" +
             "   WHERE C.id_stato = (SELECT id FROM stato_convenzione WHERE nome = 'ATTIVO')" +
             "       AND C.id IN (SELECT CG.id_convenzione FROM convenzione_grp CG WHERE CG.id_grp = ?)" +
-            "       AND (C.data_scadenza > ? AND C.data_scadenza < ?)" + 
             "   ORDER BY C.ordinale, C.data_scadenza DESC";
+    
+    /**
+     * <p>Estrae le convenzioni in stato attivo entro un intervallo considerato.</p>
+     */
+    public static final String GET_CONVENTIONS_BY_DATES =
+            "SELECT DISTINCT" +
+            "       C.id                    AS \"id\"" +
+            "   ,   C.titolo                AS \"titolo\"" +
+            "   ,   C.informativa           AS \"informativa\"" +
+            "   ,   C.ordinale              AS \"ordinale\"" +
+            "   ,   C.data_approvazione     AS \"dataApprovazione\"" +
+            "   ,   C.nota_approvazione     AS \"notaApprovazione\"" +
+            "   ,   C.data_approvazione2    AS \"dataApprovazione2\"" +
+            "   ,   C.nota_approvazione2    AS \"notaApprovazione2\"" +
+            "   ,   C.data_sottoscrizione   AS \"dataSottoscrizione\"" +
+            "   ,   C.nota_sottoscrizione   AS \"notaSottoscrizione\"" +
+            "   ,   C.data_scadenza         AS \"dataScadenza\"" +
+            "   ,   C.nota_scadenza         AS \"notaScadenza\"" +
+            "   ,   C.num_repertorio        AS \"numRepertorio\"" +
+            "   ,   C.data_ultima_modifica  AS \"dataUltimaModifica\"" +
+            "   ,   C.ora_ultima_modifica   AS \"oraUltimaModifica\"" +
+            "   ,   C.id_usr_ultima_modifica                                    AS \"idUsrUltimaModifica\"" +
+            "   ,   (SELECT nome FROM tipo_convenzione WHERE id = C.id_tipo)    AS \"tipo\"" +
+            "   FROM convenzione C" +
+            "   WHERE C.id_stato = (SELECT id FROM stato_convenzione WHERE nome = 'ATTIVO')" +
+            "       AND C.id IN (SELECT CG.id_convenzione FROM convenzione_grp CG WHERE CG.id_grp = ?)" +
+            "       AND (C.data_scadenza > ? AND C.data_scadenza < ?)" + 
+            "   ORDER BY C.data_scadenza DESC, C.titolo";
     
     /**
      * <p>Estrae una convenzione di dato id.</p>
