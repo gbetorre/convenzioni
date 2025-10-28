@@ -36,13 +36,11 @@
 
 package it.col;
 
-import java.awt.Color;
 import java.io.IOException;
-import java.util.AbstractList;
-import java.util.AbstractMap;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.LinkedList;
+import java.util.Date;
 import java.util.logging.Logger;
 
 import javax.servlet.RequestDispatcher;
@@ -55,8 +53,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.oreilly.servlet.ParameterParser;
 
+import it.col.bean.Convenzione;
 import it.col.bean.PersonBean;
-import it.col.exception.AttributoNonValorizzatoException;
+import it.col.command.ConventionCommand;
+import it.col.db.DBWrapper;
+import it.col.exception.CommandException;
 import it.col.util.Constants;
 import it.col.util.MailManager;
 import it.col.util.Utils;
@@ -195,38 +196,68 @@ public class Data extends HttpServlet implements Constants {
         //AbstractMap<?,?> mappa = null;
         // Message
         log.info("===> Log su servlet Data. <===");
-        //if (op.equalsIgnoreCase(SEND)) {
+        if (op.equalsIgnoreCase(SEND)) {
+            try {
+                String body = getMessage(req);
+                MailManager.sendEmail(body);
+                this.makeTXT(req, res, body);
+                log.info("===> Email inviata. <===");
+                return;
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             
-        //}
-        try {
-            MailManager.sendEmail();
-            fileJsp = "scElenco.jsp";
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
-        log.info("===> Email inviata. <===");
+
         // Forworda la richiesta, esito finale di tutto
         RequestDispatcher dispatcher = servletContext.getRequestDispatcher(fileJsp);
         dispatcher.forward(req, res);
     }
 
     
-    private static String getMessage(HttpServletRequest req) {
-     // Parser of parameters
+    private static String getMessage(HttpServletRequest req) throws CommandException {
+        // Parser of parameters
         ParameterParser parser = new ParameterParser(req);
-
         // Recupera o inizializza parametri per identificare la pagina
         String op = parser.getStringParameter(OPERATION, VOID_STRING);
         String obj = parser.getStringParameter(OBJECT, VOID_STRING);
         String data = parser.getStringParameter(DB_CONSTRUCT, VOID_STRING);
-        String from = parser.getStringParameter("start", VOID_STRING);
-        String to = parser.getStringParameter("end", VOID_STRING);
-        return VOID_STRING;
+        String start = parser.getStringParameter("start", VOID_STRING);
+        String end = parser.getStringParameter("end", VOID_STRING);
+        StringBuffer message = new StringBuffer("Convenzioni in scadenza nell\'intervallo considerato:<br>");
+        
+        // Gestisce la richiesta
+        try {
+            // Here the user session must be active, otherwise something's odd
+            PersonBean user = SessionManager.checkSession(req.getSession(IF_EXISTS_DONOT_CREATE_NEW));
+            Date from = Utils.format(start);
+            Date to = Utils.format(end);
+            ArrayList<Convenzione> conventions = ConventionCommand.retrieveConventions(user, from, to);
+            for (Convenzione c : conventions) {
+                message.append("- ")
+                       .append(c.getTitolo())
+                       .append(" (")
+                       .append(c.getDataScadenza())
+                       .append(")<br>");
+            }
+        } catch (RuntimeException re) {
+            throw new CommandException(FOR_NAME + "Problema a livello dell\'autenticazione utente!\n" + re.getMessage(), re);
+        } catch (CommandException ce) {
+            String msg = FOR_NAME + "Si e\' verificato un problema. Impossibile visualizzare i risultati.\n" + ce.getLocalizedMessage();
+            log.severe(msg);
+            throw new CommandException(msg);
+        } catch (Exception e) {
+            String msg = FOR_NAME + "Si e\' verificato un problema.\n" + e.getLocalizedMessage();
+            log.severe(msg);
+            throw new CommandException(msg);
+        }
+
+        return String.valueOf(message);
     }
     
     /* **************************************************************** *
-     *       Metodi per generare tuple prive di presentazione (CSV)     *
+     *    Metodi per generare tuple prive di presentazione (TEXT, CSV)  *
      * **************************************************************** */
     
 
@@ -246,6 +277,124 @@ public class Data extends HttpServlet implements Constants {
      *   Metodi per la preparazione e la generazione dei files di dati  *
      * **************************************************************** */
 
+    /**
+     * <p>Genera un nome univoco a partire da un prefisso dato come parametro.</p>
+     *
+     * @param label il prefisso che costituira' una parte del nome del file generato
+     * @return <code>String</code> - il nome univoco generato
+     */
+    private static String makeFilename(String label) {
+        // Crea un nome univoco per il file che andrà ad essere generato
+        Calendar now = Calendar.getInstance();
+        String fileName = UNDERSCORE +
+                          new Integer(now.get(Calendar.YEAR)).toString() + HYPHEN +
+                          String.format("%02d", new Integer(now.get(Calendar.MONTH) + 1)) + HYPHEN +
+                          String.format("%02d", new Integer(now.get(Calendar.DAY_OF_MONTH))) + UNDERSCORE +
+                          String.format("%02d", new Integer(now.get(Calendar.HOUR_OF_DAY))) +
+                          String.format("%02d", new Integer(now.get(Calendar.MINUTE))) +
+                          String.format("%02d", new Integer(now.get(Calendar.SECOND)));
+        return fileName;
+    }
+    
+    
+    /**
+     * <p>Gestisce la generazione dell&apos;output in formato di uno stream TESTO 
+     * che sar&agrave; recepito come tale dal browser e trattato di conseguenza 
+     * (normalmente con il download).</p>
+     * <p>Usa altri metodi, interni, per ottenere il nome del file, che dev&apos;essere un
+     * nome univoco, e per la stampa vera e propria nel PrintWriter.</p>
+     * <p>Un&apos;avvertenza importante riguarda il formato del character encoding!
+     * Il db di processi anticorruttivi &egrave; codificato in UTF&ndash;8;
+     * pertanto nell'implementazione potrebbe sembrare ovvio che
+     * il characterEncoding migliore da impostare sia il medesimo, cosa che si fa
+     * con la seguente istruzione:
+     * <pre>res.setCharacterEncoding("UTF-8");</pre>
+     * Tuttavia, le estrazioni sono destinate ad essere visualizzate
+     * attraverso fogli di calcolo che, per impostazione predefinita,
+     * assumono che il charset dei dati sia il latin1, non UTF-8,
+     * perlomeno per la nostra utenza e per la maggior parte
+     * delle piattaforme, per cui i dati, se espressi in formato UTF-8,
+     * risultano codificati in maniera imprecisa, perch&eacute;, come al solito,
+     * quando un dato UTF-8 viene codificato in latin1
+     * (quest'ultimo anche identificato come: l1, csISOLatin1, iso-ir-100,
+     * IBM819, CP819, o &ndash; ultimo ma non ultimo &ndash; ISO-8859-1)
+     * i caratteri che escono al di fuori dei primi 128 caratteri,
+     * che sono comuni (in quanto UTF-8 usa un solo byte per
+     * codificare i primi 128 caratteri) non vengono visualizzati
+     * correttamente ma vengono espressi con caratteri che in ASCII sono
+     * non corrispondenti.</p>
+     *
+     * @param req HttpServletRequest da passare al metodo di stampa
+     * @param res HttpServletResponse per impostarvi i valori che la predispongono a servire csv anziche' html
+     * @param qToken token della commmand in base al quale bisogna preparare la lista di elementi
+     * @throws ServletException eccezione eventualmente proveniente dalla fprinf, da propagare
+     * @throws IOException  eccezione eventualmente proveniente dalla fprinf, da propagare
+     */
+    private static void makeTXT(HttpServletRequest req, HttpServletResponse res, String content)
+                         throws ServletException, IOException {
+        // Genera un nome univoco per il file che verrà servito
+        String fileName = makeFilename("email");
+        // Configura il response per il browser
+        res.setContentType(MIME_TYPE_TEXT);
+        // Configura il characterEncoding (v. commento)
+        res.setCharacterEncoding("UTF-8");
+        // Configura l'header
+        res.setHeader("Content-Disposition","attachment;filename=" + fileName + DOT + TEXT);
+        
+        req.setAttribute("body", content);
+        // Stampa il file sullo standard output
+        printf(req, res);
+    }
+    
+    
+    /**
+     * <p>Gestisce la generazione dell&apos;output in formato di uno stream CSV 
+     * che sar&agrave; recepito come tale dal browser e trattato di conseguenza 
+     * (normalmente con il download).</p>
+     * <p>Usa altri metodi, interni, per ottenere il nome del file, che dev&apos;essere un
+     * nome univoco, e per la stampa vera e propria nel PrintWriter.</p>
+     * <p>Un&apos;avvertenza importante riguarda il formato del character encoding!
+     * Il db di processi anticorruttivi &egrave; codificato in UTF&ndash;8;
+     * pertanto nell'implementazione potrebbe sembrare ovvio che
+     * il characterEncoding migliore da impostare sia il medesimo, cosa che si fa
+     * con la seguente istruzione:
+     * <pre>res.setCharacterEncoding("UTF-8");</pre>
+     * Tuttavia, le estrazioni sono destinate ad essere visualizzate
+     * attraverso fogli di calcolo che, per impostazione predefinita,
+     * assumono che il charset dei dati sia il latin1, non UTF-8,
+     * perlomeno per la nostra utenza e per la maggior parte
+     * delle piattaforme, per cui i dati, se espressi in formato UTF-8,
+     * risultano codificati in maniera imprecisa, perch&eacute;, come al solito,
+     * quando un dato UTF-8 viene codificato in latin1
+     * (quest'ultimo anche identificato come: l1, csISOLatin1, iso-ir-100,
+     * IBM819, CP819, o &ndash; ultimo ma non ultimo &ndash; ISO-8859-1)
+     * i caratteri che escono al di fuori dei primi 128 caratteri,
+     * che sono comuni (in quanto UTF-8 usa un solo byte per
+     * codificare i primi 128 caratteri) non vengono visualizzati
+     * correttamente ma vengono espressi con caratteri che in ASCII sono
+     * non corrispondenti.</p>
+     *
+     * @param req HttpServletRequest da passare al metodo di stampa
+     * @param res HttpServletResponse per impostarvi i valori che la predispongono a servire csv anziche' html
+     * @param qToken token della commmand in base al quale bisogna preparare la lista di elementi
+     * @throws ServletException eccezione eventualmente proveniente dalla fprinf, da propagare
+     * @throws IOException  eccezione eventualmente proveniente dalla fprinf, da propagare
+     */
+    private static void makeCSV(HttpServletRequest req, HttpServletResponse res, String qToken)
+                         throws ServletException, IOException {
+        // Genera un nome univoco per il file che verrà servito
+        String fileName = makeFilename(qToken);
+        // Configura il response per il browser
+        res.setContentType("text/x-comma-separated-values");
+        // Configura il characterEncoding (v. commento)
+        res.setCharacterEncoding("ISO-8859-1");
+        // Configura l'header
+        res.setHeader("Content-Disposition","attachment;filename=" + fileName + DOT + CSV);
+        // Stampa il file sullo standard output
+        printf(req, res);
+    }
+    
+    
     /**
      * <p>Gestisce la generazione dell&apos;output in formato di un log formattato 
      * che sar&agrave; recepito come tale dal browser e trattato di conseguenza.</p>
@@ -272,7 +421,7 @@ public class Data extends HttpServlet implements Constants {
         // Genera un nome univoco per il file che verrà servito
         String fileName = makeFilename(key);
         // Configura il response per il browser
-        res.setContentType("text/html");
+        res.setContentType(MIME_TYPE_HTML);
         // Configura il characterEncoding (v. commento)
         res.setCharacterEncoding("ISO-8859-1");
         // Configura l'header
@@ -285,114 +434,16 @@ public class Data extends HttpServlet implements Constants {
         req.setAttribute("now", Utils.format(Utils.convert(Utils.getCurrentDate())) );
     }
 
-
-    /**
-     * <p>Genera un nome univoco a partire da un prefisso dato come parametro.</p>
-     *
-     * @param label il prefisso che costituira' una parte del nome del file generato
-     * @return <code>String</code> - il nome univoco generato
-     */
-    private static String makeFilename(String label) {
-        // Crea un nome univoco per il file che andrà ad essere generato
+    
+    private static int printf(HttpServletRequest req, HttpServletResponse res)
+            throws ServletException, IOException {
+        // Genera l'oggetto per lo standard output
+        PrintWriter out = res.getWriter();
         Calendar now = Calendar.getInstance();
-        String fileName = UNDERSCORE +
-                          new Integer(now.get(Calendar.YEAR)).toString() + HYPHEN +
-                          String.format("%02d", new Integer(now.get(Calendar.MONTH) + 1)) + HYPHEN +
-                          String.format("%02d", new Integer(now.get(Calendar.DAY_OF_MONTH))) + UNDERSCORE +
-                          String.format("%02d", new Integer(now.get(Calendar.HOUR_OF_DAY))) +
-                          String.format("%02d", new Integer(now.get(Calendar.MINUTE))) +
-                          String.format("%02d", new Integer(now.get(Calendar.SECOND)));
-        return fileName;
-    }
-    
-    
-    /**
-     * <p>Genera il nodo JSON</p>
-     *
-     * @param tipo          valore che serve a differenziare tra tipi diversi di nodi per poter applicare formattazioni o attributi diversi
-     * @param codice        codice del nodo corrente
-     * @param codicePadre   codice del nodo padre del nodo corrente
-     * @param nome          etichetta del nodo
-     * @param descr         descrizione del nodo
-     * @param lbl1          label aggiuntiva
-     * @param txt1          testo relativo alla label
-     * @param lbl2          label aggiuntiva
-     * @param txt2          testo relativo alla label
-     * @param bgColor       parametro opzionale specificante il colore dei box/nodi in formato esadecimale
-     * @param icona         parametro opzionale specificante il nome del file da mostrare come stereotipo
-     * @param livello       livello gerarchico del nodo
-     * @return <code>String</code> - il nodo in formato String
-     */
-    public static String getStructureJsonNode(String tipo,
-                                              String codice,
-                                              String codicePadre,
-                                              String nome,
-                                              String descr,
-                                              String lbl1,
-                                              String txt1,
-                                              String lbl2,
-                                              String txt2,
-                                              String bgColor,
-                                              String icona,
-                                              int livello) {
-        /* ------------------------ *
-         *   Controlli sull'input   *
-         * ------------------------ */
-        String codiceGest = (codicePadre == null ? "null" : "\"" + codicePadre + "\"");
-        String nodeImage = (icona == null ? "logo2.gif" : icona + livello + ".png");
-        String height =  (descr.length() > 100) ? String.valueOf(descr.length()) : String.valueOf(146);
-        Color backgroundColor = null;
-        if (bgColor != null && !bgColor.equals(VOID_STRING)) {
-            backgroundColor = Color.decode(bgColor);
-        } else {
-            backgroundColor = new Color(51,182,208);
-        }
-        /* ------------------------ */
-        // Generazione nodo
-        return "{\"nodeId\":\"" + codice + "\"," +
-                "  \"parentNodeId\":" + codiceGest + "," +
-                "  \"width\":342," +
-                "  \"height\":" + height +"," +
-                "  \"borderWidth\":1," +
-                "  \"borderRadius\":5," +
-                "  \"borderColor\":{\"red\":15,\"green\":140,\"blue\":121,\"alpha\":1}," +
-                "  \"backgroundColor\":{\"red\":" + backgroundColor.getRed() + ",\"green\":" + backgroundColor.getGreen() + ",\"blue\":" + backgroundColor.getBlue() + ",\"alpha\":1}," +
-                "  \"nodeImage\":{\"url\":\"web/img/" + nodeImage + "\",\"width\":50,\"height\":50,\"centerTopDistance\":0,\"centerLeftDistance\":0,\"cornerShape\":\"CIRCLE\",\"shadow\":false,\"borderWidth\":0,\"borderColor\":{\"red\":19,\"green\":123,\"blue\":128,\"alpha\":1}}," +
-                "  \"nodeIcon\":{\"icon\":\"\",\"size\":30}," +
-                "  \"template\":\"<div>\\n <div style=\\\"margin-left:15px;\\n margin-right:15px;\\n text-align: center;\\n margin-top:10px;\\n font-size:20px;\\n font-weight:bold;\\n \\\">" + nome + "</div>\\n <div style=\\\"margin-left:80px;\\n margin-right:15px;\\n margin-top:3px;\\n font-size:16px;\\n \\\">" + descr + "</div>\\n\\n <div style=\\\"margin-left:270px;\\n  margin-top:15px;\\n  font-size:13px;\\n  position:absolute;\\n  bottom:5px;\\n \\\">\\n<div>" + lbl1 + " " + txt1 +"</div>\\n<div style=\\\"margin-top:5px\\\">" + lbl2 + " " + txt2 + "</div>\\n</div>     </div>\"," +
-                "  \"connectorLineColor\":{\"red\":220,\"green\":189,\"blue\":207,\"alpha\":1}," +
-                "  \"connectorLineWidth\":5," +
-              //"  \"dashArray\":\"\"," +
-                "  \"expanded\":false }";
-    }
-    
-    
-    /**
-     * <p>Genera la descrizione del nodo JSON</p>
-     *
-     * @param list          struttura vettoriale contenente informazioni
-     * @param livello       livello gerarchico del nodo
-     * @return <code>String</code> - il nodo in formato String
-     * @throws AttributoNonValorizzatoException eccezione che viene propagata se si tenta di accedere a un dato obbligatorio non valorizzato del bean
-     */
-    public static String makeDescrJsonNode(ArrayList<?> list,
-                                           int livello) 
-                                    throws AttributoNonValorizzatoException {
-        StringBuffer descr = new StringBuffer();
-        descr.append("<ul>");
-        for (int i = 0; i < list.size(); i++) {
-            PersonBean p = (PersonBean) list.get(i);
-            descr.append("<li>");
-            descr.append(p.getNome());
-            descr.append(BLANK_SPACE);
-            descr.append(p.getCognome());
-            descr.append(BLANK_SPACE + DASH + BLANK_SPACE);
-            descr.append(p.getNote());
-            descr.append("</li>");
-        }
-        descr.append("</ul>");
-        // Generazione descr
-        return descr.toString();
+        String header = "Email inviata alle " + now.get(Calendar.HOUR_OF_DAY) + ":" + now.get(Calendar.MINUTE) + " " + now.get(Calendar.SECOND) + "\"";
+        String content = header + req.getAttribute("body");
+        out.println(content);
+        return DEFAULT_ID;
     }
 
 }
