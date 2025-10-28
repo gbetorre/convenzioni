@@ -298,7 +298,7 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                             fileJspT = pages.get(SELECT);
                         } else {
                             // Get the conventions
-                            conventions = retrieveConventions(user, start, end, db);
+                            conventions = db.getConventions(user);
                             // Show the landing page
                             fileJspT = pages.get(this.getNome());
                         }
@@ -442,6 +442,30 @@ public class ConventionCommand extends CommandBean implements Command, Constants
      *                  Metodi di recupero dei dati                     *                     
      *                            (retrieve)                            *
      * **************************************************************** */
+    
+    /**
+     * <p>Façade di retrieveConventions.</p>
+     *
+     * @param user  utente loggato; viene passato ai metodi del DBWrapper per controllare che abbia i diritti di fare quello che vuol fare
+     * @param start data scadenza iniziale         
+     * @param end   data scadenza finale
+     * @return <code>ArrayList&lt;Convenzione&gt;</code> - lista di convenzioni recuperate
+     * @throws CommandException se si verifica un problema nell'estrazione dei dati, o in qualche tipo di puntamento
+     */
+    public static ArrayList<Convenzione> retrieveConventions(PersonBean user,
+                                                             Date start,
+                                                             Date end)
+                                                      throws CommandException {
+        try {
+            DBWrapper db = new DBWrapper();
+            return retrieveConventions(user, start, end, db);
+        } catch (WebStorageException wse) {
+            String msg = FOR_NAME + "Si e\' verificato un problema nella creazione del databound.\n";
+            LOG.severe(msg);
+            throw new CommandException(msg + wse.getMessage(), wse);
+        }
+    }
+    
     
     /**
      * <p>Restituisce un ArrayList (albero, vista gerarchica) 
