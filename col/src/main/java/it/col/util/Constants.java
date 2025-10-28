@@ -372,6 +372,10 @@ public interface Constants extends Serializable {
      */
     public static final String MIME_TYPE_HTML = "text/html";
     /**
+     * Costante per il formato di file plain text
+     */
+    public static final String TEXT = "txt";
+    /**
      * Costante per il formato di file "Hyper Text Markup Language"
      */
     public static final String HTML = "html";
