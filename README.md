@@ -79,6 +79,7 @@ When will be ready, I will release, package or tag
 # History
 
 ```
+* [0.3.2] (Oct 28, 2025) First implementation messaging feature
 * [0.3.1] (Oct 15, 2025) Implementation agreements time range extraction
 * [0.3.0] (Oct 14, 2025) First draft search results page
 * [0.2.9] (Oct 13, 2025) Bugfix
