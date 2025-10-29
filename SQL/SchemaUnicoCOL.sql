@@ -8,6 +8,7 @@
 --  Pertanto la sintassi dell'SQL rispetta questo vincolo: ogni istruzione è condizionata
 --  all'esistenza dell'entità o della relazione interessata dall'istruzione stessa
 --  Torre, Tue Jul  1 03:33:06 PM CEST 2025
+--  Torre, Wed Oct 29 10:49:48 CET 2025: aggiunta di un campo note, facoltativo, alla convenzione
 
 ------------------------------------------
 --          ENUMERATIVI DINAMICI        --
@@ -177,6 +178,7 @@ CREATE TABLE IF NOT EXISTS convenzione
     id                      SERIAL PRIMARY KEY  ,
     titolo                  VARCHAR(1024)       NOT NULL,
     informativa             TEXT                ,
+    note                    TEXT                ,
     ordinale                INT     DEFAULT 10  NOT NULL,
     data_approvazione       DATE                NOT NULL,
     nota_approvazione       TEXT                ,
