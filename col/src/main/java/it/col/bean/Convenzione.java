@@ -51,6 +51,8 @@ public class Convenzione extends CodeBean {
     private static final long serialVersionUID = 7412922227541757849L;
     /** Title of the agreement */
     private String titolo;
+    /** Furter information about the agreement */
+    private String note;
     /** Approval date */
     private Date dataApprovazione;
     /** Notes about approval */
@@ -94,6 +96,7 @@ public class Convenzione extends CodeBean {
     public Convenzione() {
         super();
         this.titolo = null;
+        this.note = null;
         this.dataApprovazione = null;
         this.notaApprovazione = null;
         this.dataApprovazione2 = null;
@@ -119,6 +122,7 @@ public class Convenzione extends CodeBean {
      * @param titolo agreement title
      * @param informativa agreement description
      * @param ordinale agreement ordering number
+     * @param note further information
      * @param dataApprovazione date of approval
      * @param notaApprovazione notes about approval
      * @param dataApprovazione2 2nd date of approval
@@ -139,6 +143,7 @@ public class Convenzione extends CodeBean {
                        String titolo, 
                        String informativa, 
                        int ordinale,
+                       String note,
                        Date dataApprovazione, 
                        String notaApprovazione,
                        Date dataApprovazione2, 
@@ -158,6 +163,7 @@ public class Convenzione extends CodeBean {
         setTitolo(titolo);
         setInformativa(informativa);
         setOrdinale(ordinale);
+        setNote(note);
         setDataApprovazione(dataApprovazione);
         setNotaApprovazione(notaApprovazione);
         setDataApprovazione2(dataApprovazione2);
@@ -209,6 +215,17 @@ public class Convenzione extends CodeBean {
     /** @param titolo the title to set */
     public void setTitolo(String titolo) {
         this.titolo = titolo;
+    }
+    
+    
+    /** @return further information about the agreement */
+    public String getNote() {
+        return this.note;
+    }
+
+    /** @param note the information to set */
+    public void setNote(String note) {
+        this.note = note;
     }
     
 
