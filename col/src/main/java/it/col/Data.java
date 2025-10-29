@@ -225,7 +225,7 @@ public class Data extends HttpServlet implements Constants {
         String data = parser.getStringParameter(DB_CONSTRUCT, VOID_STRING);
         String start = parser.getStringParameter("start", VOID_STRING);
         String end = parser.getStringParameter("end", VOID_STRING);
-        StringBuffer message = new StringBuffer("Convenzioni in scadenza nell\'intervallo considerato:<br>");
+        StringBuffer message = new StringBuffer("<p>Convenzioni in scadenza nell\'intervallo considerato: ");
         
         // Gestisce la richiesta
         try {
@@ -233,13 +233,18 @@ public class Data extends HttpServlet implements Constants {
             PersonBean user = SessionManager.checkSession(req.getSession(IF_EXISTS_DONOT_CREATE_NEW));
             Date from = Utils.format(start);
             Date to = Utils.format(end);
+            message.append("da ")
+                   .append(Utils.format(from))
+                   .append(" a ")
+                   .append(Utils.format(to))
+                   .append("</p><hr>");
             ArrayList<Convenzione> conventions = ConventionCommand.retrieveConventions(user, from, to);
             for (Convenzione c : conventions) {
                 message.append("- ")
                        .append(c.getTitolo())
-                       .append(" (")
-                       .append(c.getDataScadenza())
-                       .append(")<br>");
+                       .append(" (<strong>scade il: ")
+                       .append(Utils.format(c.getDataScadenza()))
+                       .append("</strong>)<br>");
             }
         } catch (RuntimeException re) {
             throw new CommandException(FOR_NAME + "Problema a livello dell\'autenticazione utente!\n" + re.getMessage(), re);
