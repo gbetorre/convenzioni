@@ -27,9 +27,9 @@
               </span>
               <!-- ***** Menu Start ***** -->
               <ul class="nav">
-                <li><a href="index.html" class="active">Home</a></li>
-                <li><a href="${initParam.appName}/?q=sc" class="">Scadenze</a></li>
-                <li><a href="${initParam.appName}/auth" class="">Esci</a></li> 
+                <li><a href="index.html" class="active" title="Homepage">Home</a></li>
+                <li><a href="${initParam.appName}/?q=sc" class="" title="Prossime scadenze">Scadenze</a></li>
+                <li><a href="${initParam.appName}/auth" class="" title="Logout">Esci</a></li> 
                 <li><div class="main-white-button"><a href="#"><i class="fa fa-plus"></i> Aggiungi Convenzione</a></div></li> 
               </ul>        
               <a class='menu-trigger'>
