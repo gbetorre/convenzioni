@@ -125,8 +125,8 @@ public class MailManager {
      */
     public static String sendEmail(String content) throws Exception {
         //String mailTo = "albertomaria.arenaagostino@univr.it";
-        //String mailTo = "lindamaria.frigo@univr.it, giovanni.olivieri@univr.it, elisa.puddu@univr.it, francesca.limberto@univr.it";
-        String mailTo = "giovanroberto.torre@univr.it";
+        String mailTo = "lindamaria.frigo@univr.it, giovanni.olivieri@univr.it, elisa.puddu@univr.it, francesca.limberto@univr.it, giovanroberto.torre@univr.it";
+        //String mailTo = "giovanroberto.torre@univr.it";
         InternetAddress[] addresses = InternetAddress.parse(mailTo);
         String mailFrom = "giovanroberto.torre@univr.it";
         String subject = "Richiesta";
