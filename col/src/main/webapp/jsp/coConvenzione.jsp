@@ -133,6 +133,16 @@
                                       </span>
                                     </div>
                                   </div>
+                                <c:if test="${not empty conv.note}">
+                                  <hr class="separator">
+                                  <div class="row">
+                                    <div class="col-lg-12">
+                                      <h5><strong>Note</strong></h5>
+                                      <hr class="short">
+                                      <p><c:out value="${conv.note}" /></p>
+                                    </div>
+                                  </div>
+                                </c:if>
                                 </div>
                               </div>
                             </div>
