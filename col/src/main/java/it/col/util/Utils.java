@@ -602,7 +602,7 @@ public class Utils implements Constants {
      * @return <code>String</code> - una rappresentazione String della data originale
      */
     public static String format(java.util.Date date) {
-        SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat fmt = new SimpleDateFormat(DATA_ITALIAN_PATTERN);
         String dateFormatted = fmt.format(date.getTime());
         return dateFormatted;
     }
@@ -705,12 +705,16 @@ public class Utils implements Constants {
      * basandosi su un formato default come formato di partenza
      * e su un formato di default per un oggetto di tipo 
      * <code>java.util.Date</code>
-     * restituito come tipo di ritorno.</p>
+     * restituito come tipo di ritorno.<br>
+     * Il formato di default predefinito &egrave; il formato delle date SQL.</p>
+     * <p>Esempio:<dl>
+     * <dt>"1970-01-01"</dt><dd>(formato java.lang.String: input)</dd>
+     * <dt>1970-01-01</dt><dd>(formato java.util.Date: output)</dd>
+     * </dl></p>
      *
-     * @param date una data sotto forma di String che deve essere convertita
-     * @return <code>java.util.Date</code> - un oggetto Date costruito a partire dalla String ricevuta e formattato secondo un formato predefinito
+     * @param date una data in formato SQL sotto forma di String che deve essere convertita
+     * @return <code>java.util.Date</code> - un oggetto Date costruito a partire dalla String ricevuta e formattato secondo un formato predefinito (il formato SQL: yyyy-MM-dd)
      * @throws CommandException se si verifica un problema nella conversione di tipo o in qualche tipo di puntamento
-     *
      */
     public static Date format(String date)
                        throws CommandException {
