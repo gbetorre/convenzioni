@@ -403,6 +403,10 @@ public interface Constants extends Serializable {
      */
     public static final String DATA_SQL_PATTERN = "yyyy-MM-dd";
     /**
+     * <p>Pattern che deve avere una data (oggetto java.util.Date o GregorianCalendar) per essere conforme al fornato di data italiano.</p>
+     */
+    public static final String DATA_ITALIAN_PATTERN = "dd/MM/yyyy";
+    /**
      * <p>Pattern che specifica il formato di una String che rappresenta una data
      * esprimendola relativamente per esteso; esempio: "Tue Jul 07 00:00:00 CEST 2020".</p>
      */
