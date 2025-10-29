@@ -121,6 +121,7 @@ Il software è un'applicazione Java three-tier
 # History
 
 ```
+* [0.3.3] (Oct 29, 2025) Migliorie di presentazione
 * [0.3.2] (Oct 28, 2025) Prima bozza implementazione e-mail riepilogativa delle scadenze
 * [0.3.1] (Oct 15, 2025) Implementato range temporale nell'estrazione convenzioni
 * [0.3.0] (Oct 14, 2025) Prima bozza implementazione ricerca

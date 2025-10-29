@@ -1,4 +1,4 @@
-### Lingue
+### Languages
 [![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/gbetorre/convenzioni/blob/master/README.md)
 [![it](https://img.shields.io/badge/lang-it-yellow.svg)](https://github.com/gbetorre/convenzioni/blob/master/README.it.md)
 
@@ -79,6 +79,7 @@ When will be ready, I will release, package or tag
 # History
 
 ```
+* [0.3.3] (Oct 29, 2025) Presentation improvements
 * [0.3.2] (Oct 28, 2025) First implementation messaging feature
 * [0.3.1] (Oct 15, 2025) Implementation agreements time range extraction
 * [0.3.0] (Oct 14, 2025) First draft search results page
