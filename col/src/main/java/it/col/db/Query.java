@@ -213,6 +213,7 @@ public interface Query extends Serializable {
             "   ,   C.titolo                AS \"titolo\"" +
             "   ,   C.informativa           AS \"informativa\"" +
             "   ,   C.ordinale              AS \"ordinale\"" +
+            "   ,   C.note                  AS \"note\"" +
             "   ,   C.data_approvazione     AS \"dataApprovazione\"" +
             "   ,   C.nota_approvazione     AS \"notaApprovazione\"" +
             "   ,   C.data_approvazione2    AS \"dataApprovazione2\"" +
@@ -240,6 +241,7 @@ public interface Query extends Serializable {
             "   ,   C.titolo                AS \"titolo\"" +
             "   ,   C.informativa           AS \"informativa\"" +
             "   ,   C.ordinale              AS \"ordinale\"" +
+            "   ,   C.note                  AS \"note\"" +
             "   ,   C.data_approvazione     AS \"dataApprovazione\"" +
             "   ,   C.nota_approvazione     AS \"notaApprovazione\"" +
             "   ,   C.data_approvazione2    AS \"dataApprovazione2\"" +
@@ -257,7 +259,7 @@ public interface Query extends Serializable {
             "   WHERE C.id_stato = (SELECT id FROM stato_convenzione WHERE nome = 'ATTIVO')" +
             "       AND C.id IN (SELECT CG.id_convenzione FROM convenzione_grp CG WHERE CG.id_grp = ?)" +
             "       AND (C.data_scadenza > ? AND C.data_scadenza < ?)" + 
-            "   ORDER BY C.data_scadenza DESC, C.titolo";
+            "   ORDER BY C.data_scadenza, C.titolo";
     
     /**
      * <p>Estrae una convenzione di dato id.</p>
@@ -268,6 +270,7 @@ public interface Query extends Serializable {
             "   ,   C.titolo                AS \"titolo\"" +
             "   ,   C.informativa           AS \"informativa\"" +
             "   ,   C.ordinale              AS \"ordinale\"" +
+            "   ,   C.note                  AS \"note\"" +
             "   ,   C.data_approvazione     AS \"dataApprovazione\"" +
             "   ,   C.nota_approvazione     AS \"notaApprovazione\"" +
             "   ,   C.data_approvazione2    AS \"dataApprovazione2\"" +
