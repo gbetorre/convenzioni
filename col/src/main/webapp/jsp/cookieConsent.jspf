@@ -1,0 +1,72 @@
+    <style>
+    /* Basic styles for the cookie consent banner */
+    #cookieConsent {
+      position: fixed;
+      bottom: 0;
+      left: 0; right: 0;
+      background: #222;
+      color: white;
+      padding: 15px;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      z-index: 9999;
+      display: none;
+    }
+    #cookieConsent button {
+      margin-left: 15px;
+      padding: 8px 15px;
+      border: none;
+      background-color: #f1d600;
+      color: #222;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #cookieConsent a {
+      color: #f1d600;
+      text-decoration: underline;
+    }
+    </style>
+    <!-- Cookie Consent Banner -->
+    <div id="cookieConsent">
+      Questo sito web utilizza i cookies per l'autenticazione utente e memorizza l'ultimo accesso effettuato.
+      Continuando la navigazione, accetti queste condizioni. 
+      <a href="https://www.univr.it/it/privacy">Privacy Policy</a>.
+      <button id="acceptCookies">Non mostrare pi&uacute;</button>
+    </div>
+    <script>
+    (function() {
+      // Utility to get cookie by name
+      function getCookie(name) {
+        const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        return match ? decodeURIComponent(match[2]) : null;
+      }
+  
+      // Utility to set cookie
+      function setCookie(name, value, days) {
+        const expires = new Date(Date.now() + days*864e5).toUTCString();
+        document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/';
+      }
+  
+      const consentName = 'cookieConsent';
+  
+      function showBanner() {
+        document.getElementById('cookieConsent').style.display = 'block';
+      }
+      function hideBanner() {
+        document.getElementById('cookieConsent').style.display = 'none';
+      }
+  
+      // Check if consent already given
+      if (getCookie(consentName) !== 'accepted') {
+        showBanner();
+      }
+  
+      document.getElementById('acceptCookies').addEventListener('click', function() {
+        setCookie(consentName, 'accepted', 365); // 1 year expiration
+        hideBanner();
+  
+        // Custom callback can go here, e.g. enabling analytics scripts
+        console.log('User accepted cookies');
+      });
+    })();
+    </script>
