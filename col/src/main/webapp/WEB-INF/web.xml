@@ -77,7 +77,7 @@
     </error-page>
     <error-page>
       <error-code>403</error-code>
-      <location>/html/forbidden.html</location>
+      <location>/html/403-forbidden.html</location>
     </error-page>
     <error-page>
       <error-code>404</error-code>
