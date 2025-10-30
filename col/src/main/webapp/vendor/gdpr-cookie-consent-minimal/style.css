@@ -1,0 +1,162 @@
+/* CONTENT STYLE */
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ROUND SWITCH CHECKBOX */
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.checkboxSlider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.checkboxSlider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+input:checked + .checkboxSlider {
+  background-color: #64c633;
+}
+
+input:focus + .checkboxSlider {
+  box-shadow: 0 0 1px #64c633;
+}
+
+input:checked + .checkboxSlider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* round sliders */
+.checkboxSlider.round {
+  border-radius: 34px;
+}
+
+.checkboxSlider.round:before {
+  border-radius: 50%;
+}
+
+
+/* COOKIE PAGE */
+
+.cookieClose {
+  text-decoration: none;
+  float: right;
+}
+
+.cookieDialog {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 1010;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+
+.cookieOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1009;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  display: none;
+}
+
+.cookieIn {
+  width: 100%;
+  height: 100%;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.cookieBox h2 {
+  margin: 10px 40px 15px 0;
+}
+
+.cookieBox {
+  background: #fff;
+  border-radius: 10px;
+  margin: 30px;
+  padding: 30px;
+  margin: 0 auto;
+  max-width: 700px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  text-align: left;
+  position: relative;
+}
+
+.cookieDialog td {
+  padding-right: 20px;
+}
+
+.cookieOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1009;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  display: none;
+}
+
+/* cookie page - buttons */
+
+.cookieNoticeButton.gray {
+  color: #000;
+  background: #fff;
+}
+
+.cookieNoticeButton.gray:hover {
+  color: #000;
+  background: #f0f0f0;
+}
+
+.cookieNoticeButton.green {
+  color: #fff;
+  background: #64c633;
+}
+
+.cookieNoticeButton.green:hover {
+  background: #6fe434;
+}
