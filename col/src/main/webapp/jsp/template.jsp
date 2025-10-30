@@ -28,6 +28,8 @@
     <link rel="stylesheet" href="${initParam.urlDirStyles}col.css">
   <body class="${pageScope.bgbody}">
   <c:catch var="exception">
+    <!-- Cookie consent -->
+    <%@ include file="cookieConsent.jspf" %>
     <!-- Header -->
     <c:if test="${not empty sessionScope.usr}">
     <div id="idHeader">
