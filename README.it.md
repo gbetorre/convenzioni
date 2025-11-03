@@ -116,7 +116,13 @@ Il software è un'applicazione Java three-tier
 
 ![Entity-Relationships diagram](SQL/SchemaER.png)
 
-**_Fig.2 - Diagramma Entit&agrave;-Relazione_**
+**_Fig.3 - Diagramma Entit&agrave;-Relazione_**
+
+## Progettazione fisica
+
+![Modello fisico](SQL/ModelloFisico.png)
+
+**_Fig.4 - Modello fisico_**
 
 # History
 

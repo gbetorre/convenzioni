@@ -76,6 +76,12 @@ When will be ready, I will release, package or tag
 
 **_Fig.3 - Entity-Relationships diagram_**
 
+## Physical design
+
+![Physical design](SQL/ModelloFisico.png)
+
+**_Fig.4 - Physical model**
+
 # History
 
 ```
