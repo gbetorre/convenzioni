@@ -233,7 +233,7 @@ public class ConventionCommand extends CommandBean implements Command, Constants
             /* ======================= @PostMapping ======================= */
             if (write) {
                 // Carica i parametri di navigazione
-                loadParams(object, req, params);
+                loadParams(operation, object, req, params);
                 // Which operationg has it to do?
                 switch (operation) {
                     case VOID_STRING:
@@ -283,10 +283,10 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                             }
                         }
                         break;
-                    case "upd":
+                    case UPDATE:
                         // TODO
                         break;
-                    case "del":
+                    case DELETE:
                         // TODO
                         break;
                     default:
@@ -372,13 +372,15 @@ public class ConventionCommand extends CommandBean implements Command, Constants
      * Valorizza per riferimento una mappa contenente tutti i valori 
      * parametrici riscontrati sulla richiesta.
      * 
-     * @param obj           l'oggetto di interesse
+     * @param operation     l'operazione da eseguire
+     * @param obj           l'oggetto su cui eseguire l'operazione
      * @param req           la HttpServletRequest contenente la richiesta del client
      * @param formParams    mappa da valorizzare per riferimento (ByRef)
      * @throws CommandException se si verifica un problema nella gestione degli oggetti data o in qualche tipo di puntamento
      * @throws AttributoNonValorizzatoException se si fa riferimento a un attributo obbligatorio di bean che non viene trovato
      */
-    private static void loadParams(String obj, 
+    private static void loadParams(String operation,
+                                   String obj, 
                                    HttpServletRequest req,
                                    HashMap<String, LinkedHashMap<String, String>> formParams)
                             throws CommandException,
@@ -387,22 +389,47 @@ public class ConventionCommand extends CommandBean implements Command, Constants
         LinkedHashMap<String, String> contractor = new LinkedHashMap<>();
         // Parser per la gestione assistita dei parametri di input
         ParameterParser parser = new ParameterParser(req);
-        /* -------------------------------------------------------- *
-         *  Ramo di INSERT di ulteriori informazioni da aggiungere  *
-         *      a una misura (dettagli relativi al monitoraggio)    *
-         * -------------------------------------------------------- */
-        if (obj.equalsIgnoreCase(CONTRACTOR)) {
-            // ID Convenzione
-            contractor.put("conv",      req.getParameter("id"));
-            // Contraenti (Array)
-            String[] cont = req.getParameterValues("co-cont");
-            // Aggiunge tutti gli id contraenti trovati
-            int nCont = decantStructures(obj, cont, contractor);
-            // Aggiunge il numero di contraenti da associare
-            contractor.put("size",      String.valueOf(nCont));
-            // Aggiunge gli estremi dei contraenti da associare all'id convenzione
-            formParams.put(obj, contractor);
-        }
+        switch (operation) {
+            case INSERT:
+                /* -------------------------------------------------------- *
+                 *      Ramo di INSERT relazione convenzione-contraenti     *
+                 * -------------------------------------------------------- */
+                if (obj.equalsIgnoreCase(CONTRACTOR)) {
+                    // ID Convenzione
+                    contractor.put("conv",  req.getParameter("id"));
+                    // Contraenti (Array)
+                    String[] cont = req.getParameterValues("co-cont");
+                    // Aggiunge tutti gli id contraenti trovati
+                    int nCont = decantStructures(obj, cont, contractor);
+                    // Aggiunge il numero di contraenti da associare
+                    contractor.put("size",      String.valueOf(nCont));
+                    // Aggiunge gli estremi dei contraenti da associare all'id convenzione
+                    formParams.put(obj, contractor);
+                }
+                break;
+            case UPDATE:
+                // TODO
+                break;
+            case DELETE:
+                // TODO
+                break;
+            case SEARCH:
+                // Se non è specificato oggetto, assume oggetto = convenzione
+                if (obj.equalsIgnoreCase(DASH)) {
+                    // Tipo Convenzione
+                    convention.put("type",  req.getParameter("co-tipo"));
+                    // Finalità
+                    convention.put("scop",  req.getParameter("co-fine"));
+                    // Chiave di ricerca
+                    convention.put("name",  req.getParameter("co-nome"));
+                }
+                break;
+            default:
+                // If there is no operation, there is a SELECT operation
+                break; // not required here, still here for consistency
+            }
+
+
     }
 
     
