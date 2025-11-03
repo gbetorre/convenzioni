@@ -27,8 +27,8 @@
               <div class="row">
                 <div class="col-lg-3 align-self-center">
                   <fieldset>
-                    <select name="area" class="form-select" aria-label="Area" id="chooseCategory" onchange="this.form.click()">
-                      <option selected>Tutte le tipologie</option>
+                    <select id="chooseCategory" name="co-tipo" class="form-select" aria-label="Tipo">
+                      <option value="0" selected>Tutte le tipologie</option>
                       <c:forEach var="type" items="${pageScope.types}">
                       <option value="${type.id}"><c:out value="${type.nome}" /></option>
                       </c:forEach>
@@ -37,13 +37,13 @@
                 </div>
                 <div class="col-lg-3 align-self-center">
                   <fieldset>
-                    <input type="text" name="address" class="searchText" placeholder="Chiave di ricerca" autocomplete="on" required>
+                    <input type="text" name="co-nome" class="searchText" placeholder="Chiave di ricerca" autocomplete="on" required>
                   </fieldset>
                 </div>
                 <div class="col-lg-3 align-self-center">
                   <fieldset>
-                    <select name="price" class="form-select" aria-label="Default select example" id="chooseCategory" onchange="this.form.click()">
-                      <option selected>Tutte le finalit&agrave;</option>
+                    <select id="chooseCategory" name="co-fine" class="form-select" aria-label="Finalita">
+                      <option value="0" selected>Tutte le finalit&agrave;</option>
                       <c:forEach var="scope" items="${pageScope.scopes}">
                       <option value="${scope.id}"><c:out value="${scope.nome}" /></option>
                       </c:forEach>
