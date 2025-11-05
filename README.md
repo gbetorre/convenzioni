@@ -85,6 +85,7 @@ When will be ready, I will release, package or tag
 # History
 
 ```
+* [0.3.5] (Nov 05, 2025) Implemented dynamic subset of agreements considering all user's memberships
 * [0.3.4] (Oct 30, 2025) Cookie banner added
 * [0.3.3] (Oct 29, 2025) Presentation improvements
 * [0.3.2] (Oct 28, 2025) First implementation messaging feature
