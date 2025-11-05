@@ -36,6 +36,7 @@
 
 package it.col.db;
 
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -44,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -550,10 +552,21 @@ public class DBWrapper extends QueryImpl {
             ArrayList<PersonBean> contraenti = null;
             ArrayList<Convenzione> convenzioni = new ArrayList<>();
             try {
+                Vector<CodeBean> groups = user.getGruppi();
+                List<Integer> ids = new ArrayList<>();
+                for (CodeBean g : groups) {
+                    ids.add(g.getId());
+                }
+                // Convert List<Integer> to Integer[] array
+                Integer[] groupIds = ids.toArray(new Integer[NOTHING]);  //OR with the functional expression: Integer[] groupIds = groups.stream().map(CodeBean::getId).toArray(Integer[]::new);
+                // Then create SQL array and bind as before
+                Array sqlArray = con.createArrayOf("integer", groupIds);
+                // Prepare the statement
                 pst = con.prepareStatement(GET_CONVENTIONS);
                 pst.clearParameters();
-                // Per il momento, assume che l'utente abbia uno e un solo gruppo
-                pst.setInt(++nParam, user.getGruppi().get(NOTHING).getId());
+                /* Per il momento, assume che l'utente abbia uno e un solo gruppo
+                pst.setInt(++nParam, user.getGruppi().get(NOTHING).getId()); */
+                pst.setArray(++nParam, sqlArray);
                 rs = pst.executeQuery();
                 while (rs.next()) {
                     c = new Convenzione();
@@ -579,6 +592,10 @@ public class DBWrapper extends QueryImpl {
                 pst = null;
                 // Get Out
                 return convenzioni;
+            } catch (AttributoNonValorizzatoException anve) {
+                String msg = FOR_NAME + "Impossibile recuperare l'id del gruppo di appartenenza.\n";
+                LOG.severe(msg);
+                throw new WebStorageException(msg + anve.getMessage(), anve);
             } catch (SQLException sqle) {
                 String msg = FOR_NAME + "Problema nella query delle convenzioni.\n";
                 LOG.severe(msg);
@@ -730,10 +747,6 @@ public class DBWrapper extends QueryImpl {
                 String msg = FOR_NAME + "Problema nella query della convenzione.\n";
                 LOG.severe(msg);
                 throw new WebStorageException(msg + sqle.getMessage(), sqle);
-            } catch (ClassCastException cce) {
-                String msg = FOR_NAME + "Problema in una conversione di tipi.\n";
-                LOG.severe(msg);
-                throw new WebStorageException(msg + cce.getMessage(), cce);
             } finally {
                 try {
                     con.close();
