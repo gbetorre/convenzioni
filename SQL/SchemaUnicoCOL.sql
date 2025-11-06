@@ -190,6 +190,8 @@ CREATE TABLE IF NOT EXISTS convenzione
     nota_scadenza           TEXT                ,
     num_repertorio          VARCHAR(1024)       NOT NULL,
     link                    VARCHAR(1024)       ,
+    carico_bollo            SMALLINT            ,
+    bollo_pagato            BOOLEAN             ,
     data_ultima_modifica    DATE                NOT NULL,
     ora_ultima_modifica     TIME                NOT NULL,
     id_usr_ultima_modifica  INT                 NOT NULL    REFERENCES usr (id),
