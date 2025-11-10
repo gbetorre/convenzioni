@@ -37,10 +37,12 @@
 package it.col;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 import javax.servlet.RequestDispatcher;
@@ -56,6 +58,7 @@ import com.oreilly.servlet.ParameterParser;
 import it.col.bean.Convenzione;
 import it.col.bean.PersonBean;
 import it.col.command.ConventionCommand;
+import it.col.db.DBManager;
 import it.col.db.DBWrapper;
 import it.col.exception.CommandException;
 import it.col.util.Constants;
@@ -174,53 +177,81 @@ public class Data extends HttpServlet implements Constants {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse res)
                     throws ServletException, IOException {
-        // La pagina della servlet e' sganciata dal template, anzi ne costituisce un frammento
         String fileJsp = null;
         // Parser of parameters
         ParameterParser parser = new ParameterParser(req);
-        // Recupera valore di ent (servito da un ConfigManager esterno alla Data)
-        String qToken = parser.getStringParameter(ConfigManager.getEntToken(), VOID_STRING);
-        // Recupera il formato dell'output, se specificato
-        String format = parser.getStringParameter(ConfigManager.getOutToken(), VOID_STRING);
         // Recupera o inizializza parametri per identificare la pagina
-        String op = parser.getStringParameter(OPERATION, VOID_STRING);
-        String obj = parser.getStringParameter(OBJECT, VOID_STRING);
-        String data = parser.getStringParameter(DB_CONSTRUCT, VOID_STRING);
-        String from = parser.getStringParameter("start", VOID_STRING);
-        String to = parser.getStringParameter("end", VOID_STRING);
-        // Dictonary contenente i soli valori di entToken abilitati a generare CSV
-        //LinkedList<String> csvCommands = new LinkedList<>();
-        // Struttura da restituire in Request
-        //AbstractList<?> lista = null;
-        // Mappa da restituire in Request
-        //AbstractMap<?,?> mappa = null;
-        // Message
+        String operation = parser.getStringParameter(OPERATION, VOID_STRING);
         log.info("===> Log su servlet Data. <===");
-        if (op.equalsIgnoreCase(SEND)) {
-            try {
-                String body = getMessage(req);
-                MailManager.sendEmail(body);
-                this.makeTXT(req, res, body);
-                log.info("===> Email inviata. <===");
-                return;
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            
+        // Message
+        switch (operation) {
+            case INSERT:
+                // TODO
+                break;
+            case UPDATE:
+                // TODO
+                break;
+            case DELETE:
+                // TODO
+                break;
+            case SEND:
+                try {
+                    String body = getMessage(req);
+                    // Development environment
+                    if (DBManager.getDbName().endsWith("dev")) {
+                        Properties credentials = this.getCredentials();
+                        final String username = credentials.getProperty("username"); // your SMTP2GO username
+                        final String password = credentials.getProperty("password"); // your SMTP2GO password or API key
+                        MailManager.sendEmail(body, username, password);
+                    } else {    // Production environment
+                        MailManager.sendEmail(body);
+                    }
+                    makeTXT(req, res, body + DBManager.getDbName());
+                    log.info("===> Email inviata. <===");
+                    return;
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                break;
+            default:
+                break; // Not required here, still here for consistency
         }
-
-        // Forworda la richiesta, esito finale di tutto
+        // Forward
         RequestDispatcher dispatcher = servletContext.getRequestDispatcher(fileJsp);
         dispatcher.forward(req, res);
     }
 
+
     
-    private static String getMessage(HttpServletRequest req) throws CommandException {
+    /* **************************************************************** *
+     *    Metodi per generare tuple prive di presentazione (TEXT, CSV)  *
+     * **************************************************************** */
+    
+
+    
+    /* **************************************************************** *
+     *  Metodi per generare tuple con qualche presentazione (RTF, HTML) *
+     * **************************************************************** */
+    
+    /**
+     * Extracts parameters from the given HttpServletRequest and 
+     * returns a message string to send about the data selected via
+     * those parameters.
+     * This method reads data from the HTTP request (such as parameters),
+     * processes it, and returns a message string. 
+     * It throws CommandException on failure
+     * to signal problems during message composition or parameters processing.
+     *
+     * @param req the HttpServletRequest object containing the client request data
+     * @return the generated message as a String
+     * @throws CommandException if there is an error processing the request or componing the message
+     */
+    private static String getMessage(HttpServletRequest req) 
+                              throws CommandException {
         // Parser of parameters
         ParameterParser parser = new ParameterParser(req);
         // Recupera o inizializza parametri per identificare la pagina
-        String op = parser.getStringParameter(OPERATION, VOID_STRING);
         String obj = parser.getStringParameter(OBJECT, VOID_STRING);
         String data = parser.getStringParameter(DB_CONSTRUCT, VOID_STRING);
         String start = parser.getStringParameter("start", VOID_STRING);
@@ -233,19 +264,22 @@ public class Data extends HttpServlet implements Constants {
             PersonBean user = SessionManager.checkSession(req.getSession(IF_EXISTS_DONOT_CREATE_NEW));
             Date from = Utils.format(start);
             Date to = Utils.format(end);
-            message.append("da ")
+            message.append("<strong>da ")
                    .append(Utils.format(from))
                    .append(" a ")
                    .append(Utils.format(to))
-                   .append("</p><hr>");
+                   .append("</strong></p><hr><ul>");
             ArrayList<Convenzione> conventions = ConventionCommand.retrieveConventions(user, from, to);
             for (Convenzione c : conventions) {
-                message.append("- ")
+                message.append("<li> <a href='https://at.univr.it/col/?q=co&id=")
+                       .append(c.getId())
+                       .append("'>")
                        .append(c.getTitolo())
-                       .append(" (<strong>scade il: ")
+                       .append("</a> (<strong>scade il: ")
                        .append(Utils.format(c.getDataScadenza()))
-                       .append("</strong>)<br>");
+                       .append("</strong>)</li>");
             }
+            message.append("</ul>");
         } catch (RuntimeException re) {
             throw new CommandException(FOR_NAME + "Problema a livello dell\'autenticazione utente!\n" + re.getMessage(), re);
         } catch (CommandException ce) {
@@ -260,18 +294,6 @@ public class Data extends HttpServlet implements Constants {
 
         return String.valueOf(message);
     }
-    
-    /* **************************************************************** *
-     *    Metodi per generare tuple prive di presentazione (TEXT, CSV)  *
-     * **************************************************************** */
-    
-
-    
-    /* **************************************************************** *
-     *  Metodi per generare tuple con qualche presentazione (RTF, HTML) *
-     * **************************************************************** */
-    
-
     
     /* **************************************************************** *
      *      Metodi utilizzati per servire richieste asincrone (XHR)     *
@@ -449,6 +471,29 @@ public class Data extends HttpServlet implements Constants {
         String content = header + req.getAttribute("body");
         out.println(content);
         return DEFAULT_ID;
+    }
+    
+    
+    /**
+     * Loads username and password from a properties file named "credentials.properties"
+     * located in the classpath root.
+     * Example properties file contents:
+     *   username = your_username
+     *   password = your_password
+     *
+     * @return a java.util.Properties object containing the loaded username and password keys
+     * @throws IOException if the properties file is not found or cannot be read
+     */
+    public Properties getCredentials() 
+                              throws IOException {
+        Properties props = new Properties();
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream("credentials.properties")) {
+            if (input == null) {
+                throw new IOException("Credentials file not found in classpath");
+            }
+            props.load(input);
+        }
+        return props;
     }
 
 }
