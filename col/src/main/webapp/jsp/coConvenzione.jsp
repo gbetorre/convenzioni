@@ -133,6 +133,41 @@
                                       </span>
                                     </div>
                                   </div>
+                                <c:if test="${not empty conv.caricoBollo}">
+                                  <hr class="separator">
+                                  <div class="row">
+                                    <div class="col-lg-12">
+                                      <h5><strong>Ripartizione spese di bollo</strong></h5>
+                                      <hr class="short">
+                                      <p>
+                                    <c:choose>
+                                      <c:when test="${conv.caricoBollo eq 100.0}">
+                                        Imposte di bollo 100% a carico all'ateneo
+                                      </c:when>
+                                      <c:when test="${conv.caricoBollo eq 50.0}">
+                                        50% in carico all'ateneo e 50% in carico ai contraenti
+                                      </c:when>
+                                      <c:when test="${conv.caricoBollo eq 0.0}">
+                                        Imposte di bollo a carico dei contraenti
+                                      </c:when>
+                                      <c:otherwise>
+                                        <c:out value="${conv.caricoBollo}" />% a carico dell'ateneo
+                                      </c:otherwise>
+                                    </c:choose>  
+                                      </p>
+                                    </div>
+                                  </div>
+                                </c:if>
+                                <c:if test="${not empty conv.pagato}">
+                                  <hr class="separator">
+                                  <div class="row">
+                                    <div class="col-lg-12">
+                                      <h5><strong>Bollo pagato</strong></h5>
+                                      <hr class="short">
+                                      <p><c:out value="${conv.pagato}" /></p>
+                                    </div>
+                                  </div>
+                                </c:if>
                                 <c:if test="${not empty conv.note}">
                                   <hr class="separator">
                                   <div class="row">
