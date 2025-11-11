@@ -71,6 +71,10 @@ public class Convenzione extends CodeBean {
     private String notaScadenza;
     /** Protocol number */
     private String numRepertorio;
+    /** How much portion of taxes payable by the administration */
+    private Float caricoBollo;
+    /** Fees already paid */
+    private Boolean pagato;
     /** Last modified date */
     private Date dataUltimaModifica;
     /** Last modified time */
@@ -106,6 +110,8 @@ public class Convenzione extends CodeBean {
         this.dataScadenza = null;
         this.notaScadenza = null;
         this.numRepertorio = null;
+        this.setCaricoBollo(null);
+        this.setPagato(null);
         this.dataUltimaModifica = null;
         this.oraUltimaModifica = null;
         this.idUsrUltimaModifica = BEAN_DEFAULT_ID;
@@ -132,6 +138,8 @@ public class Convenzione extends CodeBean {
      * @param dataScadenza expiration date
      * @param notaScadenza notes about expiration date
      * @param numRepertorio protocol number
+     * @param caricoBollo portion of taxes under the administration
+     * @param pagato taxes already paid
      * @param dataUltimaModifica last date modified
      * @param oraUltimaModifica last time modified
      * @param idUsrUltimaModifica last user which modified
@@ -153,6 +161,8 @@ public class Convenzione extends CodeBean {
                        Date dataScadenza, 
                        String notaScadenza,
                        String numRepertorio, 
+                       Float caricoBollo,
+                       Boolean pagato,
                        Date dataUltimaModifica,
                        Time oraUltimaModifica, 
                        int idUsrUltimaModifica,
@@ -173,6 +183,8 @@ public class Convenzione extends CodeBean {
         setDataScadenza(dataScadenza);
         setNotaScadenza(notaScadenza);
         setNumRepertorio(numRepertorio);
+        setCaricoBollo(caricoBollo);
+        setPagato(pagato);
         setDataUltimaModifica(dataUltimaModifica);
         setOraUltimaModifica(oraUltimaModifica);
         setIdUsrUltimaModifica(idUsrUltimaModifica);
@@ -328,6 +340,39 @@ public class Convenzione extends CodeBean {
     }
 
     
+    /**
+     * @return the caricoBollo
+     */
+    public Float getCaricoBollo() {
+        return caricoBollo;
+    }
+
+    /**
+     * @param caricoBollo the caricoBollo to set
+     */
+    public void setCaricoBollo(Float caricoBollo) {
+        this.caricoBollo = caricoBollo;
+    }
+
+
+    /**
+     * @return the pagato flag
+     */
+    public Boolean getPagato() {
+        return pagato;
+    }
+
+    /**
+     * In the database definition, this field is not mandatory;
+     * so, I have to use an object instead a primitive type because
+     * it might be null!
+     * @param pagato the pagato to set
+     */
+    public void setPagato(Boolean pagato) {
+        this.pagato = pagato;
+    }
+
+
     /** @return the last modified date */
     public Date getDataUltimaModifica() {
         return this.dataUltimaModifica;
