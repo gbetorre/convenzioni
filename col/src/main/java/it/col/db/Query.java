@@ -280,6 +280,8 @@ public interface Query extends Serializable {
             "   ,   C.data_scadenza         AS \"dataScadenza\"" +
             "   ,   C.nota_scadenza         AS \"notaScadenza\"" +
             "   ,   C.num_repertorio        AS \"numRepertorio\"" +
+            "   ,   C.carico_bollo          AS \"caricoBollo\"" +
+            "   ,   C.bollo_pagato          AS \"pagato\"" +
             "   ,   C.data_ultima_modifica  AS \"dataUltimaModifica\"" +
             "   ,   C.ora_ultima_modifica   AS \"oraUltimaModifica\"" +
             "   ,   C.id_usr_ultima_modifica                                    AS \"idUsrUltimaModifica\"" +
