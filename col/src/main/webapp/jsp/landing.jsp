@@ -76,7 +76,7 @@
         <thead>
           <tr>
             <th width="6%">Tipologia</th>
-            <th width="20%">Contraenti</th>
+            <th width="19%">Contraenti</th>
             <th width="*">Titolo</th>
             <th width="5%" class="dt-head-left">Data approvazione</th>
             <th width="5%" class="dt-head-left">Data sottoscrizione</th>
@@ -99,6 +99,35 @@
               <a href="${initParam.appName}/?q=co&id=${conv.id}" class="btn-sm text-primary" title="${conv.note}">
                 <c:out value="${conv.titolo}" />
               </a>
+            <c:choose>
+              <c:when test="${conv.caricoBollo eq 100.0}">
+                <span class="text-icon" title="Imposte di bollo 100% a carico dell'ateneo">
+                  <i class="fa fa-circle teal-icon"></i>
+                </span>
+              </c:when>
+              <c:when test="${conv.caricoBollo eq 50.0}">
+                <span class="text-icon" title="50% in carico all'ateneo e 50% in carico ai contraenti">
+                  <i class="fa fa-adjust teal-icon"></i>
+                </span>
+              </c:when>
+              <c:when test="${conv.caricoBollo eq 0.0}">
+                <span class="text-icon" title="Imposte di bollo a carico dei contraenti">
+                 <i class="fa fa-circle-o teal-icon"></i> 
+                </span>
+              </c:when>
+            </c:choose>
+            <c:choose>
+              <c:when test="${conv.pagato}">
+                <span class="text-icon" title="Bollo pagato">
+                  <i class="fa fa-check-circle text-success"></i> 
+                </span>
+              </c:when>
+              <c:when test="${not empty conv.pagato and not conv.pagato}">
+                <span class="text-icon" title="bollo da pagare">
+                  <i class="fa fa-times-circle text-danger"></i>
+                </span>
+              </c:when>
+            </c:choose>
             </td>
             <td data-order="<fmt:formatDate value="${conv.dataApprovazione}" pattern="yyyy-MM-dd" />">
               <fmt:formatDate value="${conv.dataApprovazione}" pattern="dd MMMMM yyyy" />
