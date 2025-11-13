@@ -223,6 +223,8 @@ public interface Query extends Serializable {
             "   ,   C.data_scadenza         AS \"dataScadenza\"" +
             "   ,   C.nota_scadenza         AS \"notaScadenza\"" +
             "   ,   C.num_repertorio        AS \"numRepertorio\"" +
+            "   ,   C.carico_bollo          AS \"caricoBollo\"" +
+            "   ,   C.bollo_pagato          AS \"pagato\"" +
             "   ,   C.data_ultima_modifica  AS \"dataUltimaModifica\"" +
             "   ,   C.ora_ultima_modifica   AS \"oraUltimaModifica\"" +
             "   ,   C.id_usr_ultima_modifica                                    AS \"idUsrUltimaModifica\"" +
@@ -370,6 +372,20 @@ public interface Query extends Serializable {
             "   ,   F.informativa           AS \"informativa\"" +
             "   ,   F.ordinale              AS \"ordinale\"" +
             "   FROM finalita F" +
+            "   ORDER BY F.ordinale, F.nome";
+    
+    /**
+     * <p>Estrae le finalit&agrave; di una data convenzione.</p>
+     */
+    public static final String GET_SCOPES_BY_CONVENTION =
+            "SELECT DISTINCT" +
+            "       F.id                    AS \"id\"" +
+            "   ,   F.nome                  AS \"nome\"" +
+            "   ,   F.informativa           AS \"informativa\"" +
+            "   ,   F.ordinale              AS \"ordinale\"" +
+            "   FROM finalita F" +
+            "       INNER JOIN convenzione_finalita CF ON CF.id_finalita = F.id" +
+            "   WHERE CF.id_convenzione = ?" +
             "   ORDER BY F.ordinale, F.nome";
     
     /* ************************************************************************ *
