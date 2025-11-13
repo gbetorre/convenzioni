@@ -77,6 +77,10 @@ dd::before {
   line-height: 1.2;
 }
 
+.teal-icon {
+  color: teal;
+}
+
 /*------------------------------ HORIZONTAL ROWS -------------------------------*/
 
 hr.separator {
