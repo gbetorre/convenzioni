@@ -50,7 +50,7 @@
                                 </div>
                               </div>
                               <hr class="separator">
-                              <div class="col-lg-12">
+                              <div class="col-lg-9">
                                 <div class="row">
                                   <h5><strong>Contraenti</strong></h5>
                                   <dl>
@@ -65,6 +65,25 @@
                                   </c:if>
                                   </dl>
                                 </div>
+                              </div>
+                              <div class="col-lg-3">
+                                <div class="text-icon">
+                                  <h5>
+                                    <img src="${initParam.urlDirImages}search-icon-05.png" alt=""> 
+                                    <strong>Finalit&agrave;</strong>
+                                  </h5>
+                                </div>
+                                <dl>
+                                  <dt></dt>
+                                  <c:forEach var="finalita" items="${conv.finalita}" varStatus="status">
+                                    <dd><c:out value="${finalita.nome}" /></dd>
+                                  </c:forEach>
+                                  <c:if test="${empty conv.finalita}">
+                                    <span class="list-item">
+                                      <cite>Nessuna finalit&agrave; gi&agrave; assegnato</cite>
+                                    </span>
+                                  </c:if>
+                                </dl>
                               </div>
                               <hr class="separator">
                               <div class="col-lg-12">
@@ -139,22 +158,29 @@
                                     <div class="col-lg-12">
                                       <h5><strong>Ripartizione spese di bollo</strong></h5>
                                       <hr class="short">
-                                      <p>
                                     <c:choose>
                                       <c:when test="${conv.caricoBollo eq 100.0}">
-                                        Imposte di bollo 100% a carico all'ateneo
+                                        <div class="text-icon">
+                                          <img src="${initParam.urlDirImages}100-0.png" alt="">
+                                          Imposte di bollo 100% a carico dell'ateneo
+                                        </div>
                                       </c:when>
                                       <c:when test="${conv.caricoBollo eq 50.0}">
-                                        50% in carico all'ateneo e 50% in carico ai contraenti
+                                        <div class="text-icon">
+                                          <img src="${initParam.urlDirImages}50-50.png" alt="fifty-fifty">
+                                          50% in carico all'ateneo e 50% in carico ai contraenti
+                                        </div>
                                       </c:when>
                                       <c:when test="${conv.caricoBollo eq 0.0}">
-                                        Imposte di bollo a carico dei contraenti
+                                        <div class="text-icon">
+                                          <img src="${initParam.urlDirImages}0-100.png" alt="">
+                                          Imposte di bollo a carico dei contraenti
+                                        </div>
                                       </c:when>
                                       <c:otherwise>
                                         <c:out value="${conv.caricoBollo}" />% a carico dell'ateneo
                                       </c:otherwise>
-                                    </c:choose>  
-                                      </p>
+                                    </c:choose>
                                     </div>
                                   </div>
                                 </c:if>
@@ -164,7 +190,20 @@
                                     <div class="col-lg-12">
                                       <h5><strong>Bollo pagato</strong></h5>
                                       <hr class="short">
-                                      <p><c:out value="${conv.pagato}" /></p>
+                                    <c:choose>
+                                      <c:when test="${conv.pagato}">
+                                        <div class="text-icon"> 
+                                          <img src="${initParam.urlDirImages}shield-ok.png" alt="">
+                                          SI
+                                        </div> 
+                                      </c:when>
+                                      <c:when test="${not conv.pagato}">
+                                        <div class="text-icon">
+                                          <img src="${initParam.urlDirImages}shield-notok.png" alt="">
+                                          NO
+                                        </div>
+                                      </c:when>
+                                    </c:choose>
                                     </div>
                                   </div>
                                 </c:if>
