@@ -85,6 +85,7 @@ When will be ready, I will release, package or tag
 # History
 
 ```
+* [0.3.7] (Nov 13, 2025) Add scopes information
 * [0.3.6] (Nov 11, 2025) Add payment information
 * [0.3.5] (Nov 05, 2025) Implemented dynamic subset of agreements considering all user's memberships
 * [0.3.4] (Oct 30, 2025) Cookie banner added
