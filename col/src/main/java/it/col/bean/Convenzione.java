@@ -87,6 +87,8 @@ public class Convenzione extends CodeBean {
     private String stato;
     /** List of Contractors */
     private ArrayList<PersonBean> contraenti;
+    /** List of Scopes */
+    private ArrayList<CodeBean> finalita;
 
     
     /* ======================= Constructors ======================= */
@@ -118,6 +120,7 @@ public class Convenzione extends CodeBean {
         this.tipo = null;
         this.stato = null;
         this.setContraenti(null);
+        this.setFinalita(null);
     }
 
     
@@ -168,7 +171,8 @@ public class Convenzione extends CodeBean {
                        int idUsrUltimaModifica,
                        String tipo, 
                        String stato,
-                       ArrayList<PersonBean> contraenti) {
+                       ArrayList<PersonBean> contraenti,
+                       ArrayList<CodeBean> finalita) {
         setId(id);
         setTitolo(titolo);
         setInformativa(informativa);
@@ -191,6 +195,7 @@ public class Convenzione extends CodeBean {
         setTipo(tipo);
         setStato(stato);
         setContraenti(contraenti);
+        setFinalita(finalita);
     }
 
 
@@ -439,6 +444,21 @@ public class Convenzione extends CodeBean {
      */
     public void setContraenti(ArrayList<PersonBean> contraenti) {
         this.contraenti = contraenti;
+    }
+
+
+    /**
+     * @return the finalita
+     */
+    public ArrayList<CodeBean> getFinalita() {
+        return finalita;
+    }
+
+    /**
+     * @param finalita the finalita to set
+     */
+    public void setFinalita(ArrayList<CodeBean> finalita) {
+        this.finalita = finalita;
     }
     
 }
