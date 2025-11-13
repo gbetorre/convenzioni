@@ -714,9 +714,10 @@ public class DBWrapper extends QueryImpl {
                                      AttributoNonValorizzatoException {
         try (Connection con = col_manager.getConnection()) {
             PreparedStatement pst = null;
-            ResultSet rs, rs1 = null;
+            ResultSet rs, rs1, rs2 = null;
             Convenzione c = null;
             ArrayList<PersonBean> contractors = new ArrayList<>();
+            ArrayList<CodeBean> scopes = new ArrayList<>();
             try {
                 // TODO: Controllare i diritti dell'utente
                 pst = con.prepareStatement(GET_CONVENTION);
@@ -738,6 +739,18 @@ public class DBWrapper extends QueryImpl {
                         contractors.add(contractor);
                     }
                     c.setContraenti(contractors);
+                    // Recupera le finalità della convenzione
+                    pst = null;
+                    pst = con.prepareStatement(GET_SCOPES_BY_CONVENTION);
+                    pst.clearParameters();
+                    pst.setInt(1, idConvention);
+                    rs2 = pst.executeQuery();
+                    while (rs2.next()) {
+                        CodeBean scope = new CodeBean();
+                        BeanUtil.populate(scope, rs2);
+                        scopes.add(scope);
+                    }
+                    c.setFinalita(scopes);
                 }
                 // Try to engage the Garbage Collector
                 pst = null;
