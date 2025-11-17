@@ -394,6 +394,16 @@ public interface Query extends Serializable {
      *      assemblata in funzione dei parametri ricevuti)                      *
      * ************************************************************************ */
 
+    /**
+     * <p>Costruisce dinamicamente la query che seleziona le convenzioni 
+     * sulla base dei parametri di ricerca immessi
+     * 
+     * @param type  tipologia selezionata
+     * @param scope finalit&agrave; selezionata
+     * @param key   chiave/i di ricerca immesse
+     * @return <code>String</code> - la query che seleziona le convenzioni desiderate
+     */
+    public String getQueryConventionsByKeys(String type, String scope, String key);
     
     /* ********************************************************************** *
      *                         Query di inserimento                           *
