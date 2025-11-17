@@ -99,7 +99,7 @@ public class Utils implements Constants {
      * contiene almeno un valore significativo, <code> false</code> altrimenti.</p>
      *
      * @param params - HashMap da controllare
-     * @return <code>true</code> se la HashMap contiene almeno un valore diverso da stringa vuota
+     * @return <code>true</code> - se la HashMap contiene almeno un valore diverso da stringa vuota
      * @throws NotFoundException se il valore dell'argomento vale null
      */
     public static boolean containsValues(HashMap<String, String> params)
@@ -126,7 +126,7 @@ public class Utils implements Constants {
      * modificata. Altrimenti, restituisce la stringa originale.</p>
      *
      * @param s la String da controllare
-     * @return <code>String</code> la String con i doppi apici trattati, o la stringa originale se questi non sono stati trovati
+     * @return <code>String</code> - la String con i doppi apici trattati, o la stringa originale se questi non sono stati trovati
      */
     public static String checkQuote(String s) {
         final String doubleQuote = "\"";
@@ -145,7 +145,7 @@ public class Utils implements Constants {
      * maiuscola.</p>
      *
      * @param s la String da capitalizzare
-     * @return <code>String</code> la String da capitalizzare
+     * @return <code>String</code> - la String da capitalizzare
      */
     public static String capitalize(String s) {
         String s1 = s.substring(0, 1).toUpperCase();
@@ -165,7 +165,7 @@ public class Utils implements Constants {
      *  </ul></p>
      *  
      * @param names la String da formattare
-     * @return <code>String</code> lista di nomi formattati
+     * @return <code>String</code> - lista di nomi formattati
      */
     public static String formatNames(String names) {
         String[] words = names.trim().split("\\s+");
@@ -189,12 +189,44 @@ public class Utils implements Constants {
         return formatted.toString();
     }
     
+    
+    /**
+     * Tokenize by comma and trim each token.
+     * The regex \\s*,\\s* splits on commas with optional spaces before and after.
+     * This treats "For instance, the key" as two tokens because the split happens on the single comma.
+     * For instance, the key:  
+     * "For, instance, the, key" 
+     * is split into four tokens.
+     * 
+     * Examples:
+     * String example1 = "For instance, the key";
+     * String example2 = "For, instance, the, key";
+     * String[] result1 = tokenizeByComma(example1);
+     * String[] result2 = tokenizeByComma(example2);
+     * 
+     * example1 output:
+     * {"For instance","the key"}
+     * example2 output:
+     * {"For","instance","the","key"}
+     * 
+     * @param input the text search keys
+     * @return <code>String[]</code> - array containing the single tokens, or empty in case of empty or null input
+     */
+    public static String[] tokenizeByComma(String input) {
+        if (input == null || input.isEmpty()) {
+            return new String[NOTHING]; // Return empty array if input empty or null
+        }
+        // Split by commas with optional spaces around
+        String[] tokens = input.split("\\s*,\\s*");
+        return tokens;
+    }
+    
 
     /**
      * <p>Controlla se una stringa corrisponde a un valore intero.</p>
      *
      * @param s la String da controllare
-     * @return <code>true</code> se la String e' convertibile in intero, false altrimenti
+     * @return <code>true</code> - se la String e' convertibile in intero, false altrimenti
      */
     public static boolean isInteger(String s) {
         try {
@@ -216,7 +248,7 @@ public class Utils implements Constants {
      * int.</p>
      *
      * @param f il valore da convertire
-     * @return <code>int</code> il valore convertito, se tutto e' andato a buon fine
+     * @return <code>int</code> - il valore convertito, se tutto e' andato a buon fine
      */
     public static int parseInt(float f) {
         int result = NOTHING;
@@ -239,7 +271,7 @@ public class Utils implements Constants {
      * aggiunge uno zero prima della cifra intera da convertire in String.</p>
      *
      * @param i il valore numerico da convertire
-     * @return <code>String</code> il valore convertito, se tutto e' andato a buon fine
+     * @return <code>String</code> - il valore convertito, se tutto e' andato a buon fine
      */
     public static String parseString(int i) {
         String result = null;
