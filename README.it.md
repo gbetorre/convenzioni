@@ -127,6 +127,7 @@ Il software è un'applicazione Java three-tier
 # History
 
 ```
+* [0.3.8] (Nov 17, 2025) Implementato motore di ricerca full text
 * [0.3.7] (Nov 13, 2025) Aggiunte informazioni relative alle finalità delle convenzioni
 * [0.3.6] (Nov 11, 2025) Aggiunte informazioni relative al pagamento delle imposte di bollo
 * [0.3.5] (Nov 05, 2025) Selezione convenzioni considerando tutti i gruppi di appartenenza dell'utente loggato
