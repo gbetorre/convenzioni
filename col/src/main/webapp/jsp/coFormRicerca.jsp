@@ -1,138 +1,127 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      max-width: 700px;
-      margin: 40px auto;
-      padding: 0 20px;
-      background-color: #fafafa;
-      color: #333;
-    }
-    h1 {
-      text-align: center;
-      font-weight: 600;
-      margin-bottom: 40px;
-      color: #222;
-    }
-    form {
-      display: flex;
-      margin-bottom: 30px;
-      justify-content: center;
-    }
-    input[type="text"] {
-      flex: 1;
-      padding: 10px 15px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 6px 0 0 6px;
-      outline: none;
-      transition: border-color 0.3s;
-    }
-    input[type="text"]:focus {
-      border-color: #4caf50;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      border: 1px solid #4caf50;
-      background-color: #4caf50;
-      color: white;
-      cursor: pointer;
-      border-radius: 0 6px 6px 0;
-      transition: background-color 0.3s, border-color 0.3s;
-    }
-    button:hover {
-      background-color: #45a049;
-      border-color: #45a049;
-    }
-    ul.results {
-      list-style: none;
-      padding-left: 0;
-      border-top: 1px solid #ddd;
-      margin: 0;
-    }
-    ul.results li {
-      padding: 20px 0;
-      border-bottom: 1px solid #eee;
-    }
-    ul.results a {
-      font-weight: 600;
-      color: #1a73e8;
-      text-decoration: none;
-      font-size: 18px;
-      display: block;
-      margin-bottom: 6px;
-    }
-    ul.results a:hover {
-      text-decoration: underline;
-    }
-    ul.results .snippet {
-      font-size: 14px;
-      color: #555;
-      line-height: 1.4;
-    }
-    .hidden {
-      display: none;
-    }
-  </style>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<c:set var="types" value="${requestScope.tipi}" scope="page" />
+<c:set var="scopes" value="${requestScope.finalita}" scope="page" />
+<c:set var="cons" value="${requestScope.convenzioni}" scope="page" />
+<c:set var="tipo" value="<em>Tutte</em>" scope="page" />
+<c:if test="${not empty types[requestScope.params.res.type - 1]}">
+  <c:set var="tipo" value="${types[requestScope.params.res.type - 1].nome}" scope="page" />
+</c:if>
+<c:set var="finalita" value="<em>Tutte</em>" scope="page" />
+<c:if test="${not empty types[requestScope.params.res.scop - 1]}">
+  <c:set var="finalita" value="${types[requestScope.params.res.scop - 1].nome}" scope="page" />
+</c:if>
+    <div class="main-banner">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="top-text header-text">
+              <h2>Cerca Convenzione</h2>
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <form id="search-form" name="gs" method="post" role="search" action="${initParam.appName}/?q=co&op=res">
+              <div class="row">
+                <div class="col-lg-3 align-self-center">
+                  <fieldset>
+                    <select id="chooseCategory" name="co-tipo" class="form-select" aria-label="Tipo">
+                      <option value="0" selected>Tutte le tipologie</option>
+                      <c:forEach var="type" items="${pageScope.types}">
+                      <option value="${type.id}"><c:out value="${type.nome}" /></option>
+                      </c:forEach>
+                    </select>
+                  </fieldset>
+                </div>
+                <div class="col-lg-3 align-self-center">
+                  <fieldset>
+                    <input type="text" name="co-nome" class="searchText" placeholder="Chiave di ricerca" autocomplete="on" required>
+                  </fieldset>
+                </div>
+                <div class="col-lg-3 align-self-center">
+                  <fieldset>
+                    <select id="chooseCategory" name="co-fine" class="form-select" aria-label="Finalita">
+                      <option value="0" selected>Tutte le finalit&agrave;</option>
+                      <c:forEach var="scope" items="${pageScope.scopes}">
+                      <option value="${scope.id}"><c:out value="${scope.nome}" /></option>
+                      </c:forEach>
+                    </select>
+                  </fieldset>
+                </div>
+                <div class="col-lg-3">                        
+                  <fieldset>
+                    <button class="main-button"><i class="fa fa-search"></i> Cerca</button>
+                  </fieldset>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="col-lg-12">
+            <div class="row text-white text-center">
+              <ul class="categories">
+                <li>
+                  TIPOLOGIA:<br> 
+                  <c:out value="${fn:toLowerCase(pageScope.tipo)}" escapeXml="false" />
+                </li>
+                <li>
+                  FINALIT&Agrave;:<br> 
+                  <c:out value="${fn:toLowerCase(pageScope.finalita)}" escapeXml="false" />
+                </li>
+                <li>
+                  CHIAVE:<br> 
+                  <c:out value="${requestScope.params.res.keys}" />
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <a href="#list" class="arrow-link" title="Vai ai risultati"></a>
+    </div>
+    <!-- Agreements List -->
+    <div class="container my-4" id="list">
+      <h2 class="panel-heading">Risultati della Ricerca</h2>
+      <hr class="row">
+      <div class="panel panel-primary">
+        <ul class="list-group">
+        <c:forEach var="conv" items="${pageScope.cons}">
+          <li class="list-group-item">
+            <a href="${initParam.appName}/?q=co&id=${conv.id}" class="btn-sm text-primary">
+              <c:out value="${conv.titolo}" />
+            </a> 
+            <p class="snippet"><c:out value="${conv.informativa}" escapeXml="false" /></p> 
+          </li>
+        </c:forEach>
+        <c:if test="${empty pageScope.cons}">
+          <li class="list-group-item">
+            Nessuna convenzione trovata per le chiavi di ricerca immesse!
+          </li>
+          <br>
+        </c:if>
+        </ul>
+      </div>
+    </div>
 
-  <h1>Simple Search</h1>
-  <form id="search-form" onsubmit="return false;">
-    <input type="text" id="query" name="query" placeholder="Search..." aria-label="Search" />
-    <button type="button" id="search-btn">Search</button>
-  </form>
-
-  <ul class="results" id="results">
-    <li>
-      <a href="https://templatemo.com/live/templatemo_564_plot_listing" target="_blank" rel="noopener">Plot Listing Template</a>
-      <p class="snippet">A clean, modern free HTML template for listing plots and properties.</p>
-    </li>
-    <li>
-      <a href="https://www.google.com" target="_blank" rel="noopener">Google Search</a>
-      <p class="snippet">The most popular search engine on the web.</p>
-    </li>
-    <li>
-      <a href="https://plotly.com/javascript/" target="_blank" rel="noopener">Plotly.js</a>
-      <p class="snippet">A graphing library for JavaScript built on top of D3.js and stack.gl.</p>
-    </li>
-  </ul>
-
-  <script>
-    const searchBtn = document.getElementById('search-btn');
-    const queryInput = document.getElementById('query');
-    const results = document.querySelectorAll('#results li');
-
-    function filterResults() {
-      const query = queryInput.value.trim().toLowerCase();
-      let anyVisible = false;
-      results.forEach(li => {
-        const text = li.textContent.toLowerCase();
-        if (text.includes(query)) {
-          li.classList.remove('hidden');
-          anyVisible = true;
-        } else {
-          li.classList.add('hidden');
-        }
+    <!-- jQuery first -->
+    <script src="${initParam.urlDirFrameworks}jquery/jquery.min.js"></script>
+    <!-- Paginathing JS -->
+    <script src="${initParam.urlDirFrameworks}Paginathing/dist/paginathing.min.js" type="text/javascript"></script>
+    <!-- Your script -->
+    <script type="text/javascript">
+      jQuery(document).ready(function ($) {
+        $(".list-group").paginathing({
+          // Items per page
+          perPage: 10,
+          // Extend default container class
+          //containerClass: "panel-footer",
+          // Previous button text
+          prevText: '&lsaquo;',
+          // Next button text
+          nextText: '&rsaquo;',
+          // "First button" text
+          firstText:'&laquo;',
+          // "Last button" text
+          lastText: '&raquo;',
+        });
       });
-      if (!anyVisible) {
-        if (!document.getElementById('no-results')) {
-          const noRes = document.createElement('li');
-          noRes.id = 'no-results';
-          noRes.textContent = 'No results found.';
-          document.getElementById('results').appendChild(noRes);
-        }
-      } else {
-        const noRes = document.getElementById('no-results');
-        if (noRes) noRes.remove();
-      }
-    }
-
-    searchBtn.addEventListener('click', filterResults);
-
-    queryInput.addEventListener('keyup', function(e) {
-      if(e.key === "Enter") {
-        filterResults();
-      }
-    });
-  </script>
-  <script src="${initParam.urlDirFrameworks}jquery/jquery.min.js"></script>
+    </script>
