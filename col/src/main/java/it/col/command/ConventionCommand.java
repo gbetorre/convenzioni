@@ -256,6 +256,8 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                         }
                         break;
                     case SEARCH:
+                        // Search the conventions
+                        conventions = db.getConventions(user, params);
                         fileJspT = pages.get(operation);
                         break;
                     default:
@@ -288,6 +290,9 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                         break;
                     case DELETE:
                         // TODO
+                        break;
+                    case SEARCH:
+                        fileJspT = pages.get(operation);
                         break;
                     default:
                         // If there is no operation, there is a SELECT operation
@@ -421,15 +426,16 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                     // Finalità
                     convention.put("scop",  req.getParameter("co-fine"));
                     // Chiave di ricerca
-                    convention.put("name",  req.getParameter("co-nome"));
+                    convention.put("keys",  req.getParameter("co-nome"));
+                    // Aggiunge le chiavi di ricerca ai parametri
+                    formParams.put(operation, convention);
                 }
                 break;
             default:
                 // If there is no operation, there is a SELECT operation
                 break; // not required here, still here for consistency
-            }
-
-
+        }
+        
     }
 
     
