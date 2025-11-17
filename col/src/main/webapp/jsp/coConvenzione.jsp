@@ -80,7 +80,7 @@
                                   </c:forEach>
                                   <c:if test="${empty conv.finalita}">
                                     <span class="list-item">
-                                      <cite>Nessuna finalit&agrave; gi&agrave; assegnato</cite>
+                                      <cite>Nessuna finalit&agrave; gi&agrave; assegnata</cite>
                                     </span>
                                   </c:if>
                                 </dl>
