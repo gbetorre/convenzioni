@@ -8,6 +8,7 @@
 <c:set var="cons" value="${requestScope.convenzioni}" scope="page" />
 <c:set var="grp" value="${fn:toUpperCase(usr.gruppi.get(0).nome)}" />
     <link rel="stylesheet" href="${initParam.urlDirFrameworks}DataTables/css/datatables.min.css" type="text/css" />
+    <link rel="stylesheet" href="${initParam.urlDirFrameworks}DataTables/plug-ins/searchHighlight/dataTables.searchHighlight.css" type="text/css" />
     <div class="main-banner">
       <div class="container">
         <div class="row">
@@ -67,7 +68,7 @@
           </div>
         </div>
       </div>
-      <a href="#list" class="arrow-link" title="Go to list section"></a>
+      <a href="#list" class="arrow-link" title="Vai all'elenco"></a>
     </div>
     <!-- Agreements List -->
     <div class="container my-4" id="list">
@@ -123,7 +124,7 @@
                 </span>
               </c:when>
               <c:when test="${not empty conv.pagato and not conv.pagato}">
-                <span class="text-icon" title="bollo da pagare">
+                <span class="text-icon" title="Bollo da pagare">
                   <i class="fa fa-times-circle text-danger"></i>
                 </span>
               </c:when>
@@ -163,8 +164,12 @@
         </tbody>
       </table>
     </div>
+    <!-- jQuery first -->
+    <script src="${initParam.urlDirFrameworks}jquery/jquery.min.js"></script>
     <!-- DataTables JS -->
     <script src="${initParam.urlDirFrameworks}DataTables/js/datatables.min.js" type="text/javascript"></script>
+    <script src="${initParam.urlDirFrameworks}DataTables/plug-ins/searchHighlight/dataTables.searchHighlight.min.js" type="text/javascript"></script>
+        <script src="https://bartaz.github.io/sandbox.js/jquery.highlight.js"></script>
     <script>
       $(document).ready(function () {
         // Set datatable for a layer of mine
@@ -175,6 +180,8 @@
           "searching":    true,
           "info":         true,
           "autoWidth":    false,
+          "searchHighlight": true,
+          "mark":         true,
           "language": {
             "search": "_INPUT_",
             "searchPlaceholder": "Filtra convenzione...",
