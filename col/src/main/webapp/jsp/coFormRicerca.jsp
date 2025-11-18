@@ -12,6 +12,7 @@
 <c:if test="${not empty types[requestScope.params.res.scop - 1]}">
   <c:set var="finalita" value="${types[requestScope.params.res.scop - 1].nome}" scope="page" />
 </c:if>
+    <link rel="stylesheet" href="${initParam.urlDirFrameworks}Paginathing/css/paginathing.css" type="text/css" />
     <div class="main-banner">
       <div class="container">
         <div class="row">
@@ -64,12 +65,15 @@
                   <c:out value="${fn:toLowerCase(pageScope.tipo)}" escapeXml="false" />
                 </li>
                 <li>
-                  FINALIT&Agrave;:<br> 
-                  <c:out value="${fn:toLowerCase(pageScope.finalita)}" escapeXml="false" />
-                </li>
-                <li>
                   CHIAVE:<br> 
                   <c:out value="${requestScope.params.res.keys}" />
+                  <c:if test="${empty requestScope.params.res.keys}">
+                    <em>nessuna</em>
+                  </c:if>
+                </li>                
+                <li>
+                  FINALIT&Agrave;:<br> 
+                  <c:out value="${fn:toLowerCase(pageScope.finalita)}" escapeXml="false" />
                 </li>
               </ul>
             </div>
@@ -94,7 +98,7 @@
         </c:forEach>
         <c:if test="${empty pageScope.cons}">
           <li class="list-group-item">
-            Nessuna convenzione trovata per le chiavi di ricerca immesse!
+            Nessuna convenzione trovata
           </li>
           <br>
         </c:if>
