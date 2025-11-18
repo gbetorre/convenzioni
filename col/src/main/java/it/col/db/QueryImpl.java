@@ -69,8 +69,8 @@ public class QueryImpl implements Query, Constants {
 
 
     /** 
-     * {@link Query#getQueryConventionsBySearch(String, String, String)} 
-     * @see it.col.db.Query#getQueryConventionsBySearch(String, String, String)
+     * {@link Query#getQueryConventionsByKeys(String, String, String)} 
+     * @see it.col.db.Query#getQueryConventionsByKeys(String, String, String)
      */
     @Override
     public String getQueryConventionsByKeys(String type, 
@@ -79,17 +79,12 @@ public class QueryImpl implements Query, Constants {
         StringBuffer join = new StringBuffer();
         StringBuffer clause = new StringBuffer("WHERE");
         clause.append(BLANK_SPACE);
-        if (type.equals(String.valueOf(NOTHING))) {
-            //
-        } else {
+        if (!type.equals(String.valueOf(NOTHING))) {
             clause.append("C.id_tipo = ")
-                  .append(type)
-                  .append(" AND ");
+            .append(type)
+            .append(" AND ");
         }
-        
-        if (scope.equals(String.valueOf(NOTHING))) {
-            //
-        } else {
+        if (!scope.equals(String.valueOf(NOTHING))) {
             join.append("INNER JOIN convenzione_finalita CF ON CF.id_convenzione = C.id");
             clause
                   .append("CF.id_finalita = ")
@@ -99,14 +94,6 @@ public class QueryImpl implements Query, Constants {
         // The key is mandatory
         //clause.append("C.titolo ~* ANY(ARRAY[");
         String[] keys = Utils.tokenizeByComma(key);
-        /* boilerplate code
-        for (int i = 0; i < keys.length; i++) {
-            clause.append("'")
-                  .append(key)
-                  .append("',");
-        }
-        clause.append("])");
-            */
         StringJoiner joiner = new StringJoiner(COMMA);
 
         for (String k : keys) {
