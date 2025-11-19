@@ -98,6 +98,10 @@ public class ConventionCommand extends CommandBean implements Command, Constants
      */    
     private static final CodeBean dettagli = new CodeBean("coConvenzione.jsp", "Dettagli convenzione");
     /**
+     *  SELECT Contractor page
+     */
+    private static final CodeBean contraente = new CodeBean("coContraente.jsp", "Scheda contraente");
+    /**
      *  UPDATE Convention: assign one or more contractors to a single convention
      */    
     private static final CodeBean contraenti = new CodeBean("coFormContraenti.jsp", "Assegna contraente");
@@ -129,7 +133,8 @@ public class ConventionCommand extends CommandBean implements Command, Constants
         pages.put(COMMAND_CONV,     elenco);
         pages.put(SEARCH,           ricerca);
         pages.put(SELECT,           dettagli);
-        pages.put(CONTRACTOR,       contraenti);
+        pages.put(CONTRACTOR+INSERT,contraenti);
+        pages.put(CONTRACTOR       ,contraente);
     }
     
     
@@ -166,6 +171,8 @@ public class ConventionCommand extends CommandBean implements Command, Constants
         PersonBean user = null;
         // Single Agreement
         Convenzione convention = null;
+        // Single Contractor
+        PersonBean contractor = null;
         // List of Agreements
         ArrayList<Convenzione> conventions = null;
         // List of Contractors
@@ -206,6 +213,8 @@ public class ConventionCommand extends CommandBean implements Command, Constants
         Date end = Utils.format(endAsString);
         // Retrieve, or initialize, 'id agreement'
         int idA = parser.getIntParameter("id", DEFAULT_ID);
+        // The exposed parameter for idContractor (idC) is still 'id'
+        int idC = idA;
         /* ******************************************************************** *
          *                          Build the db access                         *
          * ******************************************************************** */
@@ -280,7 +289,7 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                                     // Get all the contractors
                                     contractors = db.getContractors(user, convention, !Query.GET_ALL);
                                     // Show the form to assign a consultant to a convention
-                                    fileJspT = pages.get(object);
+                                    fileJspT = pages.get(object + operation);
                                 }
                             }
                         }
@@ -295,30 +304,39 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                         fileJspT = pages.get(operation);
                         break;
                     default:
-                        // If there is no operation, there is a SELECT operation
-                        if (idA > DEFAULT_ID) {
-                            // Get the convention
-                            convention = db.getConvention(user, idA);
-                            // Show the details page
-                            fileJspT = pages.get(SELECT);
-                        } else {
-                            // Get the conventions
-                            conventions = db.getConventions(user);
-                            // Show the landing page
-                            fileJspT = pages.get(this.getNome());
+                        // If there is no operation, we have a SELECT operation
+                        operation = SELECT;
+                        // Test if we are dealing with a contractor
+                        if (object.equalsIgnoreCase(CONTRACTOR)) {
+                            // Select the contractor of the idC id
+                            contractor = db.getContractor(user, idC);
+                            // Show the contractor's page
+                            fileJspT = pages.get(object);
+                        } else { // Not a contractor focus: must be an agreement focus
+                            if (idA > DEFAULT_ID) {
+                                // Get the convention
+                                convention = db.getConvention(user, idA);
+                                // Show the details page
+                                fileJspT = pages.get(SELECT);
+                            } else {
+                                // Get the conventions
+                                conventions = db.getConventions(user);
+                                // Show the landing page
+                                fileJspT = pages.get(this.getNome());
+                            }
                         }
                         break; // not required here, still here for consistency
                     }
                 }
-
-//        }  catch (WebStorageException wse) {
-//            String msg = FOR_NAME + "Si e\' verificato un problema nel recupero di valori dal db.\n";
-//            LOG.severe(msg);
-//            throw new CommandException(msg + wse.getMessage(), wse);
-//        } catch (CommandException ce) {
-//            String msg = FOR_NAME + "Si e\' tentato di effettuare un\'operazione non andata a buon fine.\n";
-//            LOG.severe(msg);
-//            throw new CommandException(msg + ce.getMessage(), ce);
+        // We have a situation here...
+        }  catch (WebStorageException wse) {
+            String msg = FOR_NAME + "Si e\' verificato un problema nel recupero di valori dal db.\n";
+            LOG.severe(msg);
+            throw new CommandException(msg + wse.getMessage(), wse);
+        } catch (CommandException ce) {
+            String msg = FOR_NAME + "Si e\' tentato di effettuare un\'operazione non andata a buon fine.\n";
+            LOG.severe(msg);
+            throw new CommandException(msg + ce.getMessage(), ce);
         } catch (IllegalStateException ise) {
             String msg = FOR_NAME + "Impossibile redirigere l'output. Verificare se la risposta e\' stata gia\' committata.\n";
             LOG.severe(msg);
@@ -347,11 +365,15 @@ public class ConventionCommand extends CommandBean implements Command, Constants
         if (convention != null) {
             req.setAttribute("convenzione", convention);
         }
-        // List of agreements, if it does exist
+        // List of conventions, if they do exist
         if (conventions != null) {
             req.setAttribute("convenzioni", conventions);
         }
-        // List of contractors, if it does exist
+        // Single contractor, if it does exist
+        if (contractor != null) {
+            req.setAttribute("contraente", contractor);
+        }
+        // List of contractors, if they do exist
         if (contractors != null) {
             req.setAttribute("contraenti", contractors);
         }
