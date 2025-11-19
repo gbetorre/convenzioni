@@ -92,10 +92,8 @@ public class QueryImpl implements Query, Constants {
                   .append(" AND ");
         }
         // The key is mandatory
-        //clause.append("C.titolo ~* ANY(ARRAY[");
         String[] keys = Utils.tokenizeByComma(key);
         StringJoiner joiner = new StringJoiner(COMMA);
-
         for (String k : keys) {
             joiner.add("'" + k + "'");
         }
@@ -138,8 +136,8 @@ public class QueryImpl implements Query, Constants {
                     "   ,   C.id_usr_ultima_modifica                                    AS \"idUsrUltimaModifica\"" +
                     "   ,   (SELECT nome FROM tipo_convenzione WHERE id = C.id_tipo)    AS \"tipo\"" +
                     "   FROM convenzione C " +
-                        join +
-                        clause + 
+                            join +
+                            clause + 
                     "   ORDER BY C.ordinale, C.titolo";
         return GET_CONVENTIONS_BY_KEYS;
     }
