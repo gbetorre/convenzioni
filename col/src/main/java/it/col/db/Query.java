@@ -292,6 +292,36 @@ public interface Query extends Serializable {
             "   WHERE C.id = ?";
     
     /**
+     * <p>Estrae le convenzioni associate a un contraente di dato id.</p>
+     */
+    public static final String GET_CONVENTIONS_BY_CONTRACTOR =
+            "SELECT DISTINCT" +
+            "       C.id                    AS \"id\"" +
+            "   ,   C.titolo                AS \"titolo\"" +
+            "   ,   C.informativa           AS \"informativa\"" +
+            "   ,   C.ordinale              AS \"ordinale\"" +
+            "   ,   C.note                  AS \"note\"" +
+            "   ,   C.data_approvazione     AS \"dataApprovazione\"" +
+            "   ,   C.nota_approvazione     AS \"notaApprovazione\"" +
+            "   ,   C.data_approvazione2    AS \"dataApprovazione2\"" +
+            "   ,   C.nota_approvazione2    AS \"notaApprovazione2\"" +
+            "   ,   C.data_sottoscrizione   AS \"dataSottoscrizione\"" +
+            "   ,   C.nota_sottoscrizione   AS \"notaSottoscrizione\"" +
+            "   ,   C.data_scadenza         AS \"dataScadenza\"" +
+            "   ,   C.nota_scadenza         AS \"notaScadenza\"" +
+            "   ,   C.num_repertorio        AS \"numRepertorio\"" +
+            "   ,   C.carico_bollo          AS \"caricoBollo\"" +
+            "   ,   C.bollo_pagato          AS \"pagato\"" +
+            "   ,   C.data_ultima_modifica  AS \"dataUltimaModifica\"" +
+            "   ,   C.ora_ultima_modifica   AS \"oraUltimaModifica\"" +
+            "   ,   C.id_usr_ultima_modifica                                    AS \"idUsrUltimaModifica\"" +
+            "   ,   (SELECT nome FROM tipo_convenzione WHERE id = C.id_tipo)    AS \"tipo\"" +
+            "   FROM convenzione C" +
+            "       INNER JOIN contraente_convenzione CC ON CC.id_convenzione = C.id" +
+            "   WHERE CC.id_contraente = ?" +
+            "   ORDER BY C.ordinale, C.titolo";
+    
+    /**
      * <p><dl>
      * <dt>Estrae tutti i contraenti salvo quelli collegati a una data convenzione</dt>
      * <dd>se viene passato l'id della convenzione sul primo e secondo parametro</dd>
@@ -331,6 +361,22 @@ public interface Query extends Serializable {
             "        (SELECT CC.id_contraente FROM contraente_convenzione CC WHERE CC.id_convenzione = ?)" +  
             "         OR -1 = ?" +
             "   ORDER BY P.ordinale, P.nome";
+    
+    /**
+     * <p>Estrae un contraente di dato id</p>
+     */
+    public static final String GET_CONTRACTOR =
+            "SELECT DISTINCT" +
+            "       P.id                    AS \"id\"" +
+            "   ,   P.nome                  AS \"nome\"" +
+            "   ,   P.informativa           AS \"informativa\"" +
+            "   ,   P.ordinale              AS \"ordinale\"" +
+            "   ,   P.codice_fiscale        AS \"codiceFiscale\"" +
+            "   ,   P.partita_iva           AS \"partitaIva\"" +
+            "   ,   P.email                 AS \"email\"" +
+            "   ,   (SELECT nome FROM tipo_contraente WHERE id = P.id_tipo)    AS \"note\"" +
+            "   FROM contraente P" +
+            "   WHERE P.id = ?";
     
     /**
      * <p>Estrae i contraenti collegati ad una data convenzione.</p>
