@@ -37,9 +37,8 @@
 package it.col.bean;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Vector;
-
-import it.col.util.Constants;
 
 
 /**
@@ -83,10 +82,10 @@ public class PersonBean extends CodeBean {
     private String ruolo;
     /** Membership groups */
     private Vector<CodeBean> gruppi;
-    /** Person department id */
-    protected int idDipartimento;
-    /** Person department website */
-    protected String urlDipartimento;
+    /** Contractor type id */
+    private int idTipo;
+    /** Contractor's agreements */
+    private ArrayList<Convenzione> convenzioni;
 
 
     /**
@@ -94,7 +93,7 @@ public class PersonBean extends CodeBean {
      */
     public PersonBean() {
         super();
-        idDipartimento = BEAN_DEFAULT_ID;
+        idTipo = BEAN_DEFAULT_ID;
         cognome = codiceFiscale = partitaIva = email = urlPersonalPage = null;
         dataNascita = new Date(0);
         eta = BEAN_DEFAULT_ID;
@@ -106,9 +105,19 @@ public class PersonBean extends CodeBean {
         usrId = BEAN_DEFAULT_ID;
         gruppi = ruoli = null;
         ruolo = null;
-        urlDipartimento = null;
+        setConvenzioni(null);
     }
-
+    
+    
+    /**
+     * <p>Initialize from given data.</p>
+     * 
+     * @param id unique identifier 
+     */
+    public PersonBean(int id) {
+        super.setId(id);
+    }
+    
 
     /**
      * Gets the last name.
@@ -390,43 +399,36 @@ public class PersonBean extends CodeBean {
     
     
     /**
-     * Gets the person department id.
-     * @return the person department id (idDipartimento)
+     * Gets the person category (for instance, the contractor type).
+     * @return the person category id (idTipo)
      */
-    public int getIdDipartimento() {
-        return idDipartimento;
+    public int getIdTipo() {
+        return idTipo;
     }
 
     /**
-     * Sets the person department id.
-     * @param idDipartimento the person department id to set
+     * Sets the person category id.
+     * @param idTipo the person type id to set
      */
-    public void setIdDipartimento(int idDipartimento) {
-        this.idDipartimento = idDipartimento;
+    public void setIdTipo(int idTipo) {
+        this.idTipo = idTipo;
     }
 
 
     /**
-     * Gets the person department website URL.
-     * @return the person department website URL (urlDipartimento)
+     * Gets the contractor's agreements.
+     * @return the contractor's agreements
      */
-    public String getUrlDipartimento() {
-        return urlDipartimento;
+    public ArrayList<Convenzione> getConvenzioni() {
+        return convenzioni;
     }
 
     /**
-     * Sets the person department website URL.
-     * @param urlDipartimento the person department website URL to set
+     * Sets the contractor's agreements.
+     * @param convenzioni the agreements to set
      */
-    public void setUrlDipartimento(String urlDipartimento) {
-        this.urlDipartimento = urlDipartimento;
-    }
-
-    /**
-     * @return true if URL department's is pointless 
-     */
-    public boolean isUrlDipartimentoEmpty() {
-           return (urlDipartimento == null || urlDipartimento.equals(Constants.VOID_STRING));
+    public void setConvenzioni(ArrayList<Convenzione> convenzioni) {
+        this.convenzioni = convenzioni;
     }
 
 }
