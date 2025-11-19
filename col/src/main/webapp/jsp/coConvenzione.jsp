@@ -56,7 +56,11 @@
                                   <dl>
                                     <dt></dt>
                                   <c:forEach var="contraente" items="${conv.contraenti}" varStatus="status">
-                                    <dd><c:out value="${contraente.nome}" /></dd>
+                                    <dd>
+                                      <a href="${initParam.appName}/?q=co&op=sel&obj=cont&id=${contraente.id}" class="btn-sm text-success">
+                                        <c:out value="${contraente.nome}" />
+                                      </a>
+                                    </dd>
                                   </c:forEach>
                                   <c:if test="${empty conv.contraenti}">
                                     <span class="list-item">
