@@ -700,7 +700,7 @@ public class DBWrapper extends QueryImpl {
     
     /**
      * <p>Restituisce la lista delle convenzioni attive 
-     * entro un intervallo considerato.</p>
+     * in base a una o pi&uacute; chiavi di ricerca passate dall'utente.</p>
      *
      * @param user utente che ha effettuato la richiesta
      * @param params parametri di ricerca scelti dall'utente
@@ -727,7 +727,7 @@ public class DBWrapper extends QueryImpl {
                 String query = getQueryConventionsByKeys(type, scope, key);
                 pst = con.prepareStatement(query);
                 pst.clearParameters();
-                // Per il momento, ignora i gruppi dell'utente: le convenzioni escono nella ricerca ma i link verranno bloccati
+                // TODO Per il momento, ignora i gruppi dell'utente: le convenzioni escono nella ricerca ma i link verranno bloccati
                 rs = pst.executeQuery();
                 while (rs.next()) {
                     c = new Convenzione();
@@ -741,6 +741,70 @@ public class DBWrapper extends QueryImpl {
                 return convenzioni;
             } catch (SQLException sqle) {
                 String msg = FOR_NAME + "Problema nella query della ricerca libera.\n";
+                LOG.severe(msg);
+                throw new WebStorageException(msg + sqle.getMessage(), sqle);
+            } finally {
+                try {
+                    con.close();
+                } catch (NullPointerException npe) {
+                    String msg = FOR_NAME + "Ooops... problema nella chiusura della connessione.\n";
+                    LOG.severe(msg);
+                    throw new WebStorageException(msg + npe.getMessage());
+                } catch (SQLException sqle) {
+                    throw new WebStorageException(FOR_NAME + sqle.getMessage());
+                }
+            }
+        } catch (SQLException sqle) {
+            String msg = FOR_NAME + "Problema con la creazione della connessione.\n";
+            LOG.severe(msg);
+            throw new WebStorageException(msg + sqle.getMessage(), sqle);
+        } catch (Exception e) {
+            String msg = FOR_NAME + "Problema non intercettato in precedenza.\n";
+            LOG.severe(msg);
+            throw new WebStorageException(msg + e.getMessage(), e);
+        }
+    }
+    
+    
+    /**
+     * <p>Restituisce la lista delle convenzioni collegate a un dato
+     * contraente.</p>
+     *
+     * @param user utente che ha effettuato la richiesta
+     * @param params parametri di ricerca scelti dall'utente
+     * @return <code>ArrayList&lt;Convenzione&gt;</code> - lista convenzioni trovate in base alle chiavi di ricerca immesse
+     * @throws it.col.exception.WebStorageException se si verifica un problema nell'esecuzione della query, nell'accesso al db o in qualche tipo di puntamento
+     * @throws it.col.exception.AttributoNonValorizzatoException  eccezione che viene sollevata un dato obbligatorio di un oggetto non risulta valorizzato
+     */
+    @SuppressWarnings("static-method")
+    public ArrayList<Convenzione> getConventions(PersonBean user,
+                                                 PersonBean contractor)
+                                          throws WebStorageException, 
+                                                 AttributoNonValorizzatoException {
+        try (Connection con = col_manager.getConnection()) {
+            PreparedStatement pst = null;
+            ResultSet rs = null;
+            int nParam = NOTHING; 
+            Convenzione c = null;
+            ArrayList<Convenzione> convenzioni = new ArrayList<>();
+            try {
+                pst = con.prepareStatement(GET_CONVENTIONS_BY_CONTRACTOR);
+                pst.clearParameters();
+                pst.setInt(++nParam,contractor.getId());
+                // TODO Per il momento, ignora i gruppi dell'utente: le convenzioni escono nella ricerca ma i link verranno bloccati
+                rs = pst.executeQuery();
+                while (rs.next()) {
+                    c = new Convenzione();
+                    BeanUtil.populate(c, rs);
+                    // Aggiunge la convenzione alla lista
+                    convenzioni.add(c);
+                }
+                // Try to engage the Garbage Collector
+                pst = null;
+                // Back Off
+                return convenzioni;
+            } catch (SQLException sqle) {
+                String msg = FOR_NAME + "Problema nella query.\n";
                 LOG.severe(msg);
                 throw new WebStorageException(msg + sqle.getMessage(), sqle);
             } finally {
@@ -896,6 +960,68 @@ public class DBWrapper extends QueryImpl {
                 pst = null;
                 // Get Out
                 return contraenti;
+            } catch (SQLException sqle) {
+                String msg = FOR_NAME + "Problema nella query.\n";
+                LOG.severe(msg);
+                throw new WebStorageException(msg + sqle.getMessage(), sqle);
+            } catch (ClassCastException cce) {
+                String msg = FOR_NAME + "Problema in una conversione di oggetti.\n";
+                LOG.severe(msg);
+                throw new WebStorageException(msg + cce.getMessage(), cce);
+            } finally {
+                try {
+                    con.close();
+                } catch (NullPointerException npe) {
+                    String msg = FOR_NAME + "Ooops... problema nella chiusura della connessione.\n";
+                    LOG.severe(msg);
+                    throw new WebStorageException(msg + npe.getMessage());
+                } catch (SQLException sqle) {
+                    throw new WebStorageException(FOR_NAME + sqle.getMessage());
+                }
+            }
+        } catch (SQLException sqle) {
+            String msg = FOR_NAME + "Problema con la creazione della connessione.\n";
+            LOG.severe(msg);
+            throw new WebStorageException(msg + sqle.getMessage(), sqle);
+        }
+    }
+    
+    
+    /**
+     * <p>Restituisce i dettagli di un contraente.</p>
+     *
+     * @param user utente che ha effettuato la richiesta
+     * @param id identificativo del contraente
+     * @return <code>ArrayList&lt;PersonBean&gt;</code> - lista contraenti trovati
+     * @throws it.col.exception.WebStorageException se si verifica un problema nell'esecuzione della query, nell'accesso al db o in qualche tipo di puntamento
+     * @throws it.col.exception.AttributoNonValorizzatoException  eccezione che viene sollevata se questo oggetto viene usato e l'id della persona non &egrave; stato valorizzato (&egrave; un dato obbligatorio)
+     */
+    public PersonBean getContractor(PersonBean user,
+                                    int id)
+                             throws WebStorageException, 
+                                    AttributoNonValorizzatoException {
+        try (Connection con = col_manager.getConnection()) {
+            PreparedStatement pst = null;
+            ResultSet rs = null;
+            int numParam = NOTHING; 
+            PersonBean c = null;
+            ArrayList<Convenzione> convenzioni = new ArrayList<>();
+            try {
+                // TODO: Controllare i diritti dell'utente
+                pst = con.prepareStatement(GET_CONTRACTOR);
+                pst.clearParameters();
+                pst.setInt(++numParam, id);
+                rs = pst.executeQuery();
+                if (rs.next()) {
+                    c = new PersonBean();
+                    BeanUtil.populate(c, rs);
+                    convenzioni = this.getConventions(user, c);
+                    c.setConvenzioni(convenzioni);
+                }
+                // Try to engage the Garbage Collector
+                pst = null;
+                // Get Out
+                return c;
             } catch (SQLException sqle) {
                 String msg = FOR_NAME + "Problema nella query.\n";
                 LOG.severe(msg);
