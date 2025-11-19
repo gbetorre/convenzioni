@@ -93,7 +93,9 @@
             <td>
             <c:forEach var="cont" items="${conv.contraenti}">
               <i class="fa fa-caret-right" aria-hidden="true" me-1></i>
-              <c:out value="${cont.nome}" /><br>
+              <a href="${initParam.appName}/?q=co&op=sel&obj=cont&id=${cont.id}" class="btn-sm text-success">
+                <c:out value="${cont.nome}" />
+              </a><br>
             </c:forEach>
             </td>
             <td>
