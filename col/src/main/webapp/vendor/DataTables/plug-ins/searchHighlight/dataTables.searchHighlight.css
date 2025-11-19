@@ -1,7 +1,12 @@
 
 
 table.dataTable span.highlight {
-  background-color: #FFFF88;
+/*background-color: #FFFF88; */   /* Default */
+/*  background-color: #FFFF00; */ /* Pure bright yellow */
+/*  background-color: #ADFF2F; */ /* Greenyellow (limish) */
+/*  background-color: #CCCC00; */ /* Dark yellow1 */
+  background-color: #FFD700;      /* Gold yellow */
+  color: black;
   border-radius: 0.28571429rem;
 }
 
