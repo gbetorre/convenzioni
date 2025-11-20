@@ -127,6 +127,7 @@ Il software è un'applicazione Java three-tier
 # History
 
 ```
+* [0.4.1] (Nov 20, 2025) Migliorie di presentazione
 * [0.4.0] (Nov 19, 2025) Implementata pagina dettagli contraente
 * [0.3.9] (Nov 18, 2025) Migliorie di presentazione; aggiornate librerie
 * [0.3.8] (Nov 17, 2025) Implementato motore di ricerca full text
