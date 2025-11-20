@@ -16,3 +16,9 @@ PROMPT: scene from above, point of view from 10-13 feet high on the heads of peo
 RESULT: image-8.webp
 PROMPT: an azure painted wall with several sheets representing printed Excel folders and calendar timetables appointments pinned to the wall by thumbtacks, a lot of paperclip, post-it, paper print pinned to the cork board by thumbtacks, very thin light, photographic, blurred, wall semitransparent, volumetric, lighting effects, blurred and almost transparent background, no people
 
+RESULT: image-11.webp
+PROMPT: a contract between two parties, made by several papersheets bound together, a simple cover and some stamp making it official; in the background, two hands shacking and some lawyer satisfied with the results achieved; in the background, very thin and with heavy transparency, an entrance to an official building, with a staircase, columns, and a pediment; some councilor and client goes up and down, people meet each other, a TV reporter looks for someone to interview with a microphone in his hand. Daylight, photographic, blurred, background semitransparent, volumetric, lighting effects, realistic
+
+
+RESULT: image-12.webp
+PROMPT: a contract between two parties, made by several papersheets bound together, a simple cover and some stamp making it official; in the background, two hands shacking and some lawyer satisfied with the results achieved; in the background, very thin and with heavy transparency, an entrance to an official building, with a staircase, columns, and a pediment, the facade of the building is clearly visible, reminiscent of the City Court of Copenhagen, where is written "With Law the Country shall be built"; some councilor and client goes up and down, people meet each other, a TV reporter looks for someone to interview with a microphone in his hand. Daylight, photographic, blurred, background semitransparent, volumetric, lighting effects, realistic
