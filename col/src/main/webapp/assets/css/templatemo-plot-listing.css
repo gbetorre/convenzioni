@@ -1377,7 +1377,13 @@ Page Heading
   margin-top: 15px;
 }
 
+.convention {
+  background-image: url(../images/screenshot/FLUX.1/image-11.jpeg);
+}
 
+.contractor {
+  background-image: url(../images/screenshot/FLUX.1/image-12.jpeg);
+}
 
 /*
 ---------------------------------------
