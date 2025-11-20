@@ -3,7 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <fmt:setLocale value="it_IT"/>
 <c:set var="conv" value="${requestScope.convenzione}" scope="page" />
-    <div class="page-heading">
+    <div class="page-heading convention">
       <div class="container">
         <div class="row">
           <div class="col-lg-12">
