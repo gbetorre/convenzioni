@@ -1,0 +1,29 @@
+    /* Basic styles for the cookie consent banner */
+
+    #cookieConsent {
+      position: fixed;
+      bottom: 0;
+      left: 0; right: 0;
+      background: #222;
+      color: white;
+      padding: 15px;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      z-index: 9999;
+      display: none;
+    }
+
+    #cookieConsent button {
+      margin-left: 15px;
+      padding: 8px 15px;
+      border: none;
+      background-color: #f1d600;
+      color: #222;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #cookieConsent a {
+      color: #f1d600;
+      text-decoration: underline;
+    }
