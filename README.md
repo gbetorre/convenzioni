@@ -84,6 +84,8 @@ When will be ready, I will release, package or tag
 
 # History
 
+* [ [0.4.2] (Nov 24, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-11-24&until=2025-11-24) 
+Downloading and local pointing of residual APIs
 * [ [0.4.1] (Nov 20, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-11-20&until=2025-11-20) 
 Presentation improvements
 * [ [0.4.0] (Nov 19, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-11-19&until=2025-11-19) 
