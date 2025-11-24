@@ -171,7 +171,8 @@
     <!-- DataTables JS -->
     <script src="${initParam.urlDirFrameworks}DataTables/js/datatables.min.js" type="text/javascript"></script>
     <script src="${initParam.urlDirFrameworks}DataTables/plug-ins/searchHighlight/dataTables.searchHighlight.min.js" type="text/javascript"></script>
-        <script src="https://bartaz.github.io/sandbox.js/jquery.highlight.js"></script>
+    <script src="${initParam.urlDirFrameworks}DataTables/plug-ins/jquery.highlight/jquery.highlight.js" type="text/javascript"></script>
+    <!--  <script src="https://bartaz.github.io/sandbox.js/jquery.highlight.js"></script> -->
     <script>
       $(document).ready(function () {
         // Set datatable for a layer of mine
