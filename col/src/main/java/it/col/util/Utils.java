@@ -221,6 +221,32 @@ public class Utils implements Constants {
         return tokens;
     }
     
+    
+    /**
+     * Escapes regex characters in the String passed by parameter.
+     * 
+     * <p>Examples:<ul><code>
+     * <li>escapeRegexp("*") -> \*</li>
+     * <li>escapeRegexp("^") -> \^</li>
+     * <li>escapeRegexp("\") -> \\</li>
+     * </code></ul></p>
+     * 
+     * @param input the String that has to be escaped
+     * @return <code>String</code> - the Sctring excaped
+     */
+    public static String escapeRegex(String input) {
+        // Escape characters that are special in PostgreSQL regex by prefixing "\"
+        String regexSpecials = "[](){}.*+?$^|#\\";
+        StringBuilder escaped = new StringBuilder();
+        for (char c : input.toCharArray()) {
+            if (regexSpecials.indexOf(c) != DEFAULT_ID) {
+                escaped.append('\\');
+            }
+            escaped.append(c);
+        }
+        return escaped.toString();
+    }
+    
 
     /**
      * <p>Controlla se una stringa corrisponde a un valore intero.</p>
