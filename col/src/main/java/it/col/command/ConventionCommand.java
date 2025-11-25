@@ -102,9 +102,13 @@ public class ConventionCommand extends CommandBean implements Command, Constants
      */
     private static final CodeBean contraente = new CodeBean("coContraente.jsp", "Scheda contraente");
     /**
+     *  SELECT Contractors page
+     */
+    private static final CodeBean contraenti = new CodeBean("coContraenti.jsp", "Registro contraenti");
+    /**
      *  UPDATE Convention: assign one or more contractors to a single convention
      */    
-    private static final CodeBean contraenti = new CodeBean("coFormContraenti.jsp", "Assegna contraente");
+    private static final CodeBean contraenti_ins = new CodeBean("coFormContraenti.jsp", "Assegna contraente");
     /**
      *  Search results
      */    
@@ -133,7 +137,8 @@ public class ConventionCommand extends CommandBean implements Command, Constants
         pages.put(COMMAND_CONV,     elenco);
         pages.put(SEARCH,           ricerca);
         pages.put(SELECT,           dettagli);
-        pages.put(CONTRACTOR+INSERT,contraenti);
+        pages.put(CONTRACTOR+INSERT,contraenti_ins);
+        pages.put(CONTRACTOR+SELECT,contraenti);
         pages.put(CONTRACTOR       ,contraente);
     }
     
@@ -306,12 +311,19 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                     default:
                         // If there is no operation, we have a SELECT operation
                         operation = SELECT;
-                        // Test if we are dealing with a contractor
+                        // Test if we are dealing with some contractor
                         if (object.equalsIgnoreCase(CONTRACTOR)) {
-                            // Select the contractor of the idC id
-                            contractor = db.getContractor(user, idC);
-                            // Show the contractor's page
-                            fileJspT = pages.get(object);
+                            if (idC > DEFAULT_ID) { // Single contractor
+                                // Select the contractor of the idC id
+                                contractor = db.getContractor(user, idC);
+                                // Show the contractor's page
+                                fileJspT = pages.get(object);
+                            } else {                // List of contractors
+                                // Get all the contractors
+                                contractors = db.getContractors(user, new Convenzione(DEFAULT_ID), Query.GET_ALL);
+                                // Show the form to assign a consultant to a convention
+                                fileJspT = pages.get(object + operation);
+                            }
                         } else { // Not a contractor focus: must be an agreement focus
                             if (idA > DEFAULT_ID) {
                                 // Get the convention
@@ -444,11 +456,11 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                 // Se non è specificato oggetto, assume oggetto = convenzione
                 if (obj.equalsIgnoreCase(DASH)) {
                     // Tipo Convenzione
-                    convention.put("type",  req.getParameter("co-tipo"));
+                    convention.put("type", req.getParameter("co-tipo"));
                     // Finalità
-                    convention.put("scop",  req.getParameter("co-fine"));
+                    convention.put("scop", req.getParameter("co-fine"));
                     // Chiave di ricerca
-                    convention.put("keys",  req.getParameter("co-nome"));
+                    convention.put("keys", Utils.escapeRegex(req.getParameter("co-nome")));
                     // Aggiunge le chiavi di ricerca ai parametri
                     formParams.put(operation, convention);
                 }
