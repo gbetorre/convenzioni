@@ -68,6 +68,7 @@
                                   </dl>
                                 </div>
                               </div>
+                              <c:if test="${not empty cont.codiceFiscale}">
                               <hr class="separator">
                               <div class="col-lg-12">
                                 <div class="row">
@@ -76,6 +77,8 @@
                                   <p><c:out value="${cont.codiceFiscale}" /></p>
                                 </div>
                               </div>
+                              </c:if>
+                              <c:if test="${not empty cont.partitaIva}">
                               <hr class="separator">
                               <div class="col-lg-12">
                                 <div class="row">
@@ -86,6 +89,7 @@
                                   </div>
                                 </div>
                               </div>
+                              </c:if>
                               <hr class="separator">
                               <div class="col-lg-12">
                                 <div class="row">
