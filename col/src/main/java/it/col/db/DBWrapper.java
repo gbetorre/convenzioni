@@ -770,9 +770,9 @@ public class DBWrapper extends QueryImpl {
      * <p>Restituisce la lista delle convenzioni collegate a un dato
      * contraente.</p>
      *
-     * @param user utente che ha effettuato la richiesta
-     * @param params parametri di ricerca scelti dall'utente
-     * @return <code>ArrayList&lt;Convenzione&gt;</code> - lista convenzioni trovate in base alle chiavi di ricerca immesse
+     * @param user       utente che ha effettuato la richiesta
+     * @param contractor contraente di cui si vogliono recuperare le convenzioni
+     * @return <code>ArrayList&lt;Convenzione&gt;</code> - lista convenzioni trovate in base al contraente passato
      * @throws it.col.exception.WebStorageException se si verifica un problema nell'esecuzione della query, nell'accesso al db o in qualche tipo di puntamento
      * @throws it.col.exception.AttributoNonValorizzatoException  eccezione che viene sollevata un dato obbligatorio di un oggetto non risulta valorizzato
      */
@@ -929,7 +929,6 @@ public class DBWrapper extends QueryImpl {
      * @throws it.col.exception.WebStorageException se si verifica un problema nell'esecuzione della query, nell'accesso al db o in qualche tipo di puntamento
      * @throws it.col.exception.AttributoNonValorizzatoException  eccezione che viene sollevata se questo oggetto viene usato e l'id della persona non &egrave; stato valorizzato (&egrave; un dato obbligatorio)
      */
-    @SuppressWarnings({ "static-method" })
     public ArrayList<PersonBean> getContractors(PersonBean user,
                                                 Convenzione conv,
                                                 boolean getAll)
@@ -941,6 +940,7 @@ public class DBWrapper extends QueryImpl {
             int numParam = NOTHING; 
             PersonBean p = null;
             ArrayList<PersonBean> contraenti = new ArrayList<>();
+            ArrayList<Convenzione> convenzioni = new ArrayList<>();
             try {
                 // TODO: Controllare i diritti dell'utente
                 
@@ -954,6 +954,8 @@ public class DBWrapper extends QueryImpl {
                 while (rs.next()) {
                     p = new PersonBean();
                     BeanUtil.populate(p, rs);
+                    convenzioni = getConventions(user, p);
+                    p.setConvenzioni(convenzioni);
                     contraenti.add(p);
                 }
                 // Try to engage the Garbage Collector
