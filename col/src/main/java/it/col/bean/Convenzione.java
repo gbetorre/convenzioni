@@ -122,7 +122,7 @@ public class Convenzione extends CodeBean {
         this.setContraenti(null);
         this.setFinalita(null);
     }
-
+    
     
     /**
      * Parameterized constructor which calls setters for each field.
@@ -149,6 +149,7 @@ public class Convenzione extends CodeBean {
      * @param tipo label for tipology 
      * @param stato label for state of agreement 
      * @param contraenti list of contractors bound by the agreement
+     * @param finalita list of the scopes of the current agreement
      */
     public Convenzione(int id, 
                        String titolo, 
@@ -200,7 +201,7 @@ public class Convenzione extends CodeBean {
 
 
     /**
-     * Parameterized constructor which calls the mother class
+     * Parameterized constructor which calls the parent class
      * 
      * @param o object which to clone properties
      * @throws AttributoNonValorizzatoException if some mandatory properties is not correctly set
@@ -212,6 +213,8 @@ public class Convenzione extends CodeBean {
 
     
     /**
+     * Parametrized constructor which calls the parent class
+     * 
      * @param id agreement id
      * @param nome agreement name
      * @param informativa agreement description
@@ -219,6 +222,18 @@ public class Convenzione extends CodeBean {
      */
     public Convenzione(int id, String nome, String informativa, int ordinale) {
         super(id, nome, informativa, ordinale);
+    }
+    
+    
+    /**
+     * "Quick" constructor: initializing mandatory field id to a parametrized value.
+     * This avoids the "AttributoNonValorizzatoException" if the mandatory field
+     * id is not proper initialized.
+     * 
+     * @param id a value to avoid the exception on mandatory field 'id' 
+     */
+    public Convenzione(int id) {
+        super.setId(id);
     }
 
     
