@@ -81,7 +81,7 @@
             <th width="*">Titolo</th>
             <th width="5%" class="dt-head-left">Data approvazione</th>
             <th width="5%" class="dt-head-left">Data sottoscrizione</th>
-            <th width="8%" class="dt-head-left">Data scadenza</th>
+            <th width="9%" class="dt-head-left">Data scadenza&nbsp;</th>
             <th width="12%">Num. repertorio</th>
             <th width="10%">Azioni</th>
           </tr>
@@ -185,6 +185,7 @@
           "autoWidth":    false,
           "searchHighlight": true,
           "mark":         true,
+          "order": [[ 2, 'asc' ]], // columnIndex is the zero-based index of the column one want to sort by
           "language": {
             "search": "_INPUT_",
             "searchPlaceholder": "Filtra convenzione...",
