@@ -28,7 +28,7 @@
               <!-- ***** Menu Start ***** -->
               <ul class="nav">
                 <li><a href="index.html" class="active" title="Homepage">Home</a></li>
-                <li><a href="${initParam.appName}/?q=co&op=sel&obj=cont&data=ent" class="" title="Registri">Liste</a></li>
+                <li><a href="${initParam.appName}/?q=co&op=sel&obj=cont&data=ent" class="" title="Registri">Contraenti</a></li>
                 <li><a href="${initParam.appName}/?q=co&op=res" class="" title="Ricerca avanzata">Cerca</a></li>
                 <li><a href="${initParam.appName}/auth" class="" title="Logout">Esci</a></li> 
                 <li><div class="main-white-button"><a href="#"><i class="fa fa-plus"></i> Aggiungi Convenzione</a></div></li> 
