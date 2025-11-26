@@ -19,6 +19,8 @@ PROMPT: an azure painted wall with several sheets representing printed Excel fol
 RESULT: image-11.webp
 PROMPT: a contract between two parties, made by several papersheets bound together, a simple cover and some stamp making it official; in the background, two hands shacking and some lawyer satisfied with the results achieved; in the background, very thin and with heavy transparency, an entrance to an official building, with a staircase, columns, and a pediment; some councilor and client goes up and down, people meet each other, a TV reporter looks for someone to interview with a microphone in his hand. Daylight, photographic, blurred, background semitransparent, volumetric, lighting effects, realistic
 
-
 RESULT: image-12.webp
 PROMPT: a contract between two parties, made by several papersheets bound together, a simple cover and some stamp making it official; in the background, two hands shacking and some lawyer satisfied with the results achieved; in the background, very thin and with heavy transparency, an entrance to an official building, with a staircase, columns, and a pediment, the facade of the building is clearly visible, reminiscent of the City Court of Copenhagen, where is written "With Law the Country shall be built"; some councilor and client goes up and down, people meet each other, a TV reporter looks for someone to interview with a microphone in his hand. Daylight, photographic, blurred, background semitransparent, volumetric, lighting effects, realistic
+
+RESULT: image-13.webp
+a banner implying that something was missing, an element is unexpectedly lost, something that the user was expecting in that time at that place is unavailable, a clerk with sleeves rolled up scratching his head, a small group of employees whispering among themselves, trying to figure out what went wrong, realistic, photographic, high details
