@@ -81,6 +81,10 @@ dd::before {
   color: teal;
 }
 
+.marginBottom {
+	margin-bottom:20px;
+}
+
 /*------------------------------ HORIZONTAL ROWS -------------------------------*/
 
 hr.separator {
