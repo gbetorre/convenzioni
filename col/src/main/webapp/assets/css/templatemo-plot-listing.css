@@ -1389,6 +1389,10 @@ Page Heading
   background-image: url(../images/contractors-bg.jpeg);
 }
 
+.missing {
+	background-image: url(../images/image-13.jpeg);
+}
+
 /*
 ---------------------------------------
 Category Post
