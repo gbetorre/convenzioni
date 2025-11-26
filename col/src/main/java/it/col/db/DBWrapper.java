@@ -533,7 +533,7 @@ public class DBWrapper extends QueryImpl {
 
     
     /**
-     * <p>Restituisce la lista delle convenzioni attive.</p>
+     * <p>Restituisce la lista delle convenzioni attive per l'utente considerato.</p>
      *
      * @param user utente che ha effettuato la richiesta
      * @return <code>ArrayList&lt;Convenzione&gt;</code> - lista convenzioni trovate
@@ -643,12 +643,16 @@ public class DBWrapper extends QueryImpl {
             ArrayList<PersonBean> contraenti = null;
             ArrayList<Convenzione> convenzioni = new ArrayList<>();
             try {
+                // Recupera i gruppi dell'utente
+                Vector<CodeBean> groups = user.getGruppi();
+                // Ne trasforma gli id in un array di interi
+                Integer[] groupIds = Utils.convert(groups);
+                // Quindi crea un array SQL a partire da quello travasato sopra
+                Array sqlArray = con.createArrayOf("integer", groupIds);
                 pst = con.prepareStatement(GET_CONVENTIONS_BY_DATES);
                 pst.clearParameters();
-                // Per il momento, assume che l'utente abbia uno e un solo gruppo
-                pst.setInt(++nParam, user.getGruppi().get(NOTHING).getId());
-                // Non accetta un GregorianCalendar né una data java.util.Date, ma java.sql.Date
-                pst.setDate(++nParam, Utils.convert(Utils.convert(start))); 
+                pst.setArray(++nParam, sqlArray);
+                pst.setDate(++nParam, Utils.convert(Utils.convert(start))); // Non accetta un GregorianCalendar né una data java.util.Date, ma java.sql.Date
                 pst.setDate(++nParam, Utils.convert(Utils.convert(end)));
                 rs = pst.executeQuery();
                 while (rs.next()) {
@@ -832,6 +836,17 @@ public class DBWrapper extends QueryImpl {
     
     /**
      * <p>Restituisce una convenzione di dato id.</p>
+     * <p>Effettua un controllo dei diritti dell'utente a valle dell'estrazione
+     * della convenzione per differenziare il comportamento tra:<dl>
+     * <dt>convenzione non esistente</dt>
+     * <dd>p.es. ...&id=10000, messaggio "la convenzione non esiste"</dd>
+     * <dt>convenzione esistente ma non visualizzabile</dt>
+     * <dd>messaggio "la convenzione esiste ma non hai diritto a visualizzarla"</dd>
+     * </dl>
+     * Se la query mettesse a monte la solita clausola tra la convenzione e i gruppi
+     * ( AND C.id IN (SELECT CG.id_convenzione FROM convenzione_grp CG WHERE CG.id_grp = ANY(?))" +)
+     * cui appartiene l'utente, non sarebbe possibile discriminare tra queste
+     * due situazioni, che per&ograve; &egrave; opportuno gestire in modo differente.</p>
      *
      * @param user utente che ha effettuato la richiesta
      * @param idConvention identificativo della convenzione che si vuole recuperare
@@ -846,43 +861,62 @@ public class DBWrapper extends QueryImpl {
                                      AttributoNonValorizzatoException {
         try (Connection con = col_manager.getConnection()) {
             PreparedStatement pst = null;
-            ResultSet rs, rs1, rs2 = null;
+            ResultSet rs, rs1, rs2, rs3 = null;
             Convenzione c = null;
             ArrayList<PersonBean> contractors = new ArrayList<>();
             ArrayList<CodeBean> scopes = new ArrayList<>();
+            Vector<CodeBean> groups = new Vector<>();
+            CodeBean group = new CodeBean();
             try {
-                // TODO: Controllare i diritti dell'utente
                 pst = con.prepareStatement(GET_CONVENTION);
                 pst.clearParameters();
                 pst.setInt(1, idConvention);
                 rs = pst.executeQuery();
                 if (rs.next()) {
+                    // Se siamo qui ha trovato la convenzione... 
                     c = new Convenzione();
                     BeanUtil.populate(c, rs);
-                    // Recupera i contraenti collegati alla convenzione
+                    // ...ma ora bisogna vedere se l'utente ha i diritti di visualizzarla
                     pst = null;
-                    pst = con.prepareStatement(GET_CONTRACTORS_BY_CONVENTION);
+                    // Recupera i gruppi cui è collegata la convenzione
+                    pst = con.prepareStatement(GET_GROUPS_BY_CONVENTION);
                     pst.clearParameters();
                     pst.setInt(1, idConvention);
-                    rs1 = pst.executeQuery();
-                    while (rs1.next()) {
-                        PersonBean contractor = new PersonBean();
-                        BeanUtil.populate(contractor, rs1);
-                        contractors.add(contractor);
+                    rs3 = pst.executeQuery();
+                    while (rs3.next()) {
+                        BeanUtil.populate(group, rs3);
+                        groups.add(group);
                     }
-                    c.setContraenti(contractors);
-                    // Recupera le finalità della convenzione
-                    pst = null;
-                    pst = con.prepareStatement(GET_SCOPES_BY_CONVENTION);
-                    pst.clearParameters();
-                    pst.setInt(1, idConvention);
-                    rs2 = pst.executeQuery();
-                    while (rs2.next()) {
-                        CodeBean scope = new CodeBean();
-                        BeanUtil.populate(scope, rs2);
-                        scopes.add(scope);
+                    // Almeno un gruppo dell'utente deve combaciare con uno di quelli della convenzione 
+                    if (!Utils.belongs(user.getGruppi(), groups)) {
+                        // Se la convenzione esiste ma non appartiene all'utente restituirà una convenzione vuota
+                        c = new Convenzione(DEFAULT_ID);
+                    } else {
+                        // Recupera i contraenti collegati alla convenzione
+                        pst = null;
+                        pst = con.prepareStatement(GET_CONTRACTORS_BY_CONVENTION);
+                        pst.clearParameters();
+                        pst.setInt(1, idConvention);
+                        rs1 = pst.executeQuery();
+                        while (rs1.next()) {
+                            PersonBean contractor = new PersonBean();
+                            BeanUtil.populate(contractor, rs1);
+                            contractors.add(contractor);
+                        }
+                        c.setContraenti(contractors);
+                        // Recupera le finalità della convenzione
+                        pst = null;
+                        pst = con.prepareStatement(GET_SCOPES_BY_CONVENTION);
+                        pst.clearParameters();
+                        pst.setInt(1, idConvention);
+                        rs2 = pst.executeQuery();
+                        while (rs2.next()) {
+                            CodeBean scope = new CodeBean();
+                            BeanUtil.populate(scope, rs2);
+                            scopes.add(scope);
+                        }
+                        c.setFinalita(scopes);
                     }
-                    c.setFinalita(scopes);
                 }
                 // Try to engage the Garbage Collector
                 pst = null;
