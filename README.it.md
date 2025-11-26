@@ -127,6 +127,7 @@ Il software è un'applicazione Java three-tier
 # History
 
 ```
+* [0.4.4] (Nov 26, 2025) Implementati controlli sui diritti di visualizzazione dei dettagli di una convenzione
 * [0.4.3] (Nov 25, 2025) Implementata generazione elenco contraenti
 * [0.4.2] (Nov 24, 2025) Puntamento librerie in locale
 * [0.4.1] (Nov 20, 2025) Migliorie di presentazione
