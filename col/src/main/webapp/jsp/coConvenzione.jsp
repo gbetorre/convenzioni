@@ -3,6 +3,8 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <fmt:setLocale value="it_IT"/>
 <c:set var="conv" value="${requestScope.convenzione}" scope="page" />
+<c:choose>
+  <c:when test="${conv.id gt 0}">
     <div class="page-heading convention">
       <div class="container">
         <div class="row">
@@ -14,7 +16,7 @@
         </div>
       </div>
     </div>
-    <div class="category-post" style="margin-bottom:20px;">
+    <div class="category-post marginBottom">
       <div class="container">
         <div class="row">
           <div class="col-lg-12">
@@ -248,4 +250,78 @@
         </div>
       </div>
     </div>
+  </c:when>
+  <c:when test="${conv.id eq -1}">
+    <div class="page-heading">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="top-text header-text">
+              <h2>Accesso Negato</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="category-post marginBottom">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="naccs">
+              <div class="grid">
+                <hr class="separator">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="alert alert-danger">
+                      <h5><strong>Motivo</strong></h5>
+                      <hr class="short">
+                      <p>I dettagli della convenzione considerata 
+                      non sono consultabili dal tuo gruppo di appartenenza</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </c:when>
+  <c:otherwise>
+    <div class="page-heading missing">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="top-text header-text">
+              <h2>Elemento non trovato</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="category-post marginBottom">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="naccs">
+              <div class="grid">
+                <hr class="separator">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="alert alert-danger">
+                      <h5><strong>Motivo</strong></h5>
+                      <hr class="short">
+                      <p>Non risulta una convenzione avente questi parametri
+                         <em>(<c:out value="${requestScope.queryString}" />)</em></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </c:otherwise>
+</c:choose>
     <script src="${initParam.urlDirFrameworks}jquery/jquery.min.js"></script>
