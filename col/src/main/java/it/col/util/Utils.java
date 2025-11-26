@@ -40,14 +40,19 @@ import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.MissingResourceException;
+import java.util.Vector;
 import java.util.logging.Logger;
 
+import it.col.bean.CodeBean;
+import it.col.exception.AttributoNonValorizzatoException;
 import it.col.exception.CommandException;
 import it.col.exception.NotFoundException;
 
@@ -311,6 +316,45 @@ public class Utils implements Constants {
         }
         return result;
     }
+    
+    
+    /**
+     * 
+     * @param groups
+     * @return
+     * @throws AttributoNonValorizzatoException
+     */
+    public static Integer[] convert(Vector<CodeBean> groups) 
+                             throws AttributoNonValorizzatoException {
+        List<Integer> ids = new ArrayList<>();
+        for (CodeBean g : groups) {
+            ids.add(g.getId());
+        }
+        // Convert List<Integer> to Integer[] array
+        Integer[] groupIds = ids.toArray(new Integer[NOTHING]);  
+        //OR with the functional expression: Integer[] groupIds = groups.stream().map(CodeBean::getId).toArray(Integer[]::new);
+        return groupIds;
+    }
+    
+    
+
+    public static boolean belongs(Vector<CodeBean> userGroups,
+                                  Vector<CodeBean> convGroups) 
+                           throws AttributoNonValorizzatoException {
+        List<Integer> convGroupIds = new ArrayList<>();
+        // Load agreement groups id into a List of Integers
+        for (CodeBean cg : convGroups) {
+            convGroupIds.add(cg.getId());
+        }
+        // Test if an user group matches with an id group which the agreement belongs
+        for (CodeBean ug : userGroups) {
+            if (convGroupIds.contains(ug.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
 
     /* ************************************************************************ *
      *   Metodi di utilita' per la definizione e la manipolazione delle date    *
