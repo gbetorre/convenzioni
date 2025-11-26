@@ -259,7 +259,7 @@ public interface Query extends Serializable {
             "   ,   (SELECT nome FROM tipo_convenzione WHERE id = C.id_tipo)    AS \"tipo\"" +
             "   FROM convenzione C" +
             "   WHERE C.id_stato = (SELECT id FROM stato_convenzione WHERE nome = 'ATTIVO')" +
-            "       AND C.id IN (SELECT CG.id_convenzione FROM convenzione_grp CG WHERE CG.id_grp = ?)" +
+            "       AND C.id IN (SELECT CG.id_convenzione FROM convenzione_grp CG WHERE CG.id_grp = ANY(?))" +
             "       AND (C.data_scadenza > ? AND C.data_scadenza < ?)" + 
             "   ORDER BY C.data_scadenza, C.titolo";
     
@@ -433,6 +433,16 @@ public interface Query extends Serializable {
             "       INNER JOIN convenzione_finalita CF ON CF.id_finalita = F.id" +
             "   WHERE CF.id_convenzione = ?" +
             "   ORDER BY F.ordinale, F.nome";
+    
+    /**
+     * <p>Estrae i gruppi cui &egrave; associata una data convenzione.</p>
+     */
+    public static final String GET_GROUPS_BY_CONVENTION =
+            "SELECT DISTINCT" +
+            "       CG.id_grp               AS \"id\"" +
+            "   FROM convenzione_grp CG" +
+            "   WHERE CG.id_convenzione = ?" +
+            "   ORDER BY CG.id_grp";
     
     /* ************************************************************************ *
      *  Interfacce di metodi che costruiscono dinamicamente Query di Selezione  *
