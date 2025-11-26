@@ -12,7 +12,7 @@
         </div>
       </div>
     </div>
-    <div class="category-post" style="margin-bottom:20px;">
+    <div class="category-post marginBottom">
       <div class="container">
         <div class="row">
           <div class="col-lg-12">
