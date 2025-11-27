@@ -85,7 +85,7 @@
     </error-page>
     <error-page>
       <error-code>405</error-code>
-      <location>/html/methodNotAllowed.html</location>
+      <location>/html/405-methodNotAllowed.html</location>
     </error-page>
     <error-page>
       <error-code>406</error-code>
@@ -121,7 +121,7 @@
     </error-page>
     <error-page>
       <error-code>502</error-code>
-      <location>/html/badGateway.html</location>
+      <location>/html/502-badGateway.html</location>
     </error-page>
     <error-page>
       <error-code>503</error-code>
