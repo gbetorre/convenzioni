@@ -37,6 +37,7 @@
 package it.col;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,7 +49,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import it.col.bean.ItemBean;
 import it.col.command.Command;
+import it.col.command.HomePageCommand;
+import it.col.exception.AttributoNonValorizzatoException;
 import it.col.exception.CommandException;
 import it.col.util.Utils;
 
@@ -126,7 +130,9 @@ public class Main extends HttpServlet {
         String fileJsp = null;
         // Get the error page
         String errorJsp = ConfigManager.getErrorJsp();
-        // Get the token associated with the wanted Command
+        /* 
+         * Get the token associated with the wanted Command
+         */
         try {
             q = req.getParameter(ConfigManager.getEntToken());
         } catch (NullPointerException npe) {
@@ -136,6 +142,21 @@ public class Main extends HttpServlet {
         } catch (Exception e) { // Just in case
             req.setAttribute("javax.servlet.jsp.jspException", e);
             log(FOR_NAME + "Eccezione generica: " + e);
+            flush(req, res, errorJsp);
+        }
+        /* 
+         * Get the header voices
+         */
+        try {
+            LinkedHashMap<String, ItemBean> mO = HomePageCommand.getHorizontalMenu();
+            req.setAttribute("menu", mO);
+        } catch (AttributoNonValorizzatoException anve) {
+            String msg = FOR_NAME +
+                         "L\'errore e\' stato generato dalla seguente chiamata: " +
+                         "HomePageCommand.getHorizontalMenu()";
+            log.log(Level.SEVERE, msg, anve);
+            req.setAttribute("message", anve.getMessage());
+            req.setAttribute("javax.servlet.jsp.jspException", anve);
             flush(req, res, errorJsp);
         }
         // Get the Command and try to invoke its execute method
