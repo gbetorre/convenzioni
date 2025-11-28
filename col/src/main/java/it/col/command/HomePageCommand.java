@@ -38,6 +38,9 @@ package it.col.command;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -55,6 +58,9 @@ import it.col.db.DBWrapper;
 import it.col.exception.CommandException;
 import it.col.exception.WebStorageException;
 import it.col.util.Constants;
+import it.col.util.DataUrl;
+import it.col.exception.AttributoNonValorizzatoException;
+import it.col.bean.ItemBean;
 
 
 /**
@@ -65,19 +71,29 @@ import it.col.util.Constants;
  */
 public class HomePageCommand extends CommandBean implements Command, Constants {
 
-    /** Seralization needs a long type const, identifying the serial version.   */
+    /** 
+     * Seralization needs a long type const, identifying the serial version
+     */
     private static final long serialVersionUID = -4437906730411178543L;
-    /** The name of this (for the error messages)                               */
+    /** 
+     * The name of this (for the error messages)
+     */
     static final String FOR_NAME = "\n" + Logger.getLogger(new Throwable().getStackTrace()[0].getClassName()) + ": "; //$NON-NLS-1$
-    /** Debug log                                                               */
+    /** 
+     * Debug log
+     */
     protected static Logger LOG = Logger.getLogger(Main.class.getName());
-    /** Login page                                                              */
+    /** 
+     * Login page
+     */
     private static final String nomeFileElenco = "/jsp/login.jsp";
-    /** Landing page                                                            */
-    private static final String nomeFileLanding = "/jsp/landing.jsp";
-    /** DataBound                                                               */
-    private static DBWrapper db;
-    /** Database name                                                           */
+    /**
+     * Horizontal Menu
+     */
+    private static LinkedHashMap<String, ItemBean> menu = new LinkedHashMap<>();
+    /** 
+     * Database name
+     */ 
     private static String dbName = null;
 
 
@@ -103,22 +119,8 @@ public class HomePageCommand extends CommandBean implements Command, Constants {
         this.setNomeClasse(voice.getNomeClasse());
         this.setPagina(voice.getPagina());
         this.setInformativa(voice.getInformativa());
-        if (this.getPagina() == null) {
-          String msg = FOR_NAME + "La command " + this.getNome() + " non ha il campo pagina. Impossibile visualizzare i risultati.\n";
-          throw new CommandException(msg);
-        }
-        try {
-            // Activate database connection
-            db = new DBWrapper();
-        }
-        catch (WebStorageException wse) {
-            String msg = FOR_NAME + "Non e\' possibile avere una connessione al database.\n" + wse.getMessage();
-            throw new CommandException(msg, wse);
-        }
-        catch (Exception e) {
-            String msg = FOR_NAME + "Problemi nell'inizializzazione della Command.\n" + e.getMessage();
-            throw new CommandException(msg, e);
-        }
+        // Load horizontal menu containing the voices of the header
+        menu = makeHorizontalMenu();
     }
 
 
@@ -140,45 +142,17 @@ public class HomePageCommand extends CommandBean implements Command, Constants {
         PersonBean user = null;
         // Dichiara la pagina a cui reindirizzare
         String fileJspT = null;
-        // Dichiara un messaggio di errore
-        String error = null;
-        
+        // Stringa per il redirect quando non ci sono le condizioni per il forward
         String redirect = null;
         /* ******************************************************************** *
-         *                 Recupero dei parametri di navigazione                *
-         * ******************************************************************** */
-        // Parser per la gestione assistita dei parametri di input
-        ParameterParser parser = new ParameterParser(req);
-        // 
-        ArrayList<Convenzione> conventions = null;
-        /* ******************************************************************** *
-         *      Instanzia nuova classe WebStorage per il recupero dei dati      *
-         * ******************************************************************** */
-        try {
-            db = new DBWrapper();
-        } catch (WebStorageException wse) {
-            throw new CommandException(FOR_NAME + "Non e\' disponibile un collegamento al database\n." + wse.getMessage(), wse);
-        }
-        // Non controlla qui se l'utente è già loggato perché questa command deve rispondere anche PRIMA del login
-        /* ******************************************************************** *
-         *             Rami in cui occorre che l'utente sia loggato             *
+         *           Questa command deve rispondere anche PRIMA del login       *
          * ******************************************************************** */
         try {
             if (isLoggedUser(req)) {
-                //conventions = db.getConventions(getLoggedUser(req));
-                //fileJspT = nomeFileLanding;
                 redirect =  ConfigManager.getEntToken() + EQ + Constants.COMMAND_CONV;
             } else {
                 fileJspT = nomeFileElenco;
             }
-        } catch (IllegalStateException ise) {
-            String msg = FOR_NAME + "Impossibile redirigere l'output. Verificare se la risposta e\' stata gia\' committata.\n";
-            LOG.severe(msg);
-            throw new CommandException(msg + ise.getMessage(), ise);
-        } catch (ClassCastException cce) {
-            String msg = FOR_NAME + ": Si e\' verificato un problema in una conversione di tipo.\n";
-            LOG.severe(msg);
-            throw new CommandException(msg + cce.getMessage(), cce);
         } catch (NullPointerException npe) {
             String msg = FOR_NAME + "Si e\' verificato un problema di puntamento a null.\n";
             LOG.severe(msg);
@@ -212,21 +186,18 @@ public class HomePageCommand extends CommandBean implements Command, Constants {
         /* ******************************************************************** *
          *              Settaggi in request dei valori calcolati                *
          * ******************************************************************** */
-        // Imposta nella request elenco completo convenzioni
-        if (conventions != null) {
-            req.setAttribute("convenzioni", conventions);
-        }
+
         // Imposta l'eventuale indirizzo a cui redirigere
         if (redirect != null) {
             req.setAttribute("redirect", redirect);
         }   
-        if (error != null) {
-            req.setAttribute("error", true);
-            req.setAttribute("msg", error);
-        }
     }
 
-
+    
+    /* ************************************************************************ *
+     *          Metodi di controllo dello stato dell'utente in sessione         *
+     * ************************************************************************ */
+    
     /**
      * <p>Restituisce l'utente loggato, se lo trova nella sessione utente,
      * altrimenti lancia un'eccezione.</p>
@@ -261,10 +232,6 @@ public class HomePageCommand extends CommandBean implements Command, Constants {
             String msg = FOR_NAME + "Impossibile redirigere l'output. Verificare se la risposta e\' stata gia\' committata.\n";
             LOG.severe(msg);
             throw new CommandException(msg + ise.getMessage(), ise);
-        } catch (ClassCastException cce) {
-            String msg = FOR_NAME + ": Si e\' verificato un problema in una conversione di tipo.\n";
-            LOG.severe(msg);
-            throw new CommandException(msg + cce.getMessage(), cce);
         } catch (NullPointerException npe) {
             String msg = FOR_NAME + "Si e\' verificato un problema di puntamento a null, probabilmente nel tentativo di recuperare l\'utente.\n";
             LOG.severe(msg);
@@ -278,8 +245,8 @@ public class HomePageCommand extends CommandBean implements Command, Constants {
 
 
     /**
-     * <p>Restituisce true se l'utente &egrave; loggato e se lo trova nella sessione utente,
-     * altrimenti restituisce false.</p>
+     * <p>Restituisce true se l'utente &egrave; loggato ed esiste 
+     * nella sessione utente, altrimenti restituisce false.</p>
      *
      * @param req HttpServletRequest contenente la sessione e i suoi attributi
      * @return <code>boolean</code> - flag di utente trovato in sessione
@@ -314,6 +281,72 @@ public class HomePageCommand extends CommandBean implements Command, Constants {
     }
     
 
+    /* ************************************************************************ *
+     * Metodi di generazione di liste di voci (per MENU,submenu,breadcrumbs...) *
+     * ************************************************************************ */
+    
+    /**
+     * <p>Restituisce una struttura vettoriale <cite>(with insertion order)</cite> 
+     * contenente le voci principali del menu orizzontale 
+     * del sito di gestione delle convenzioni on-line <em>(COL-GECO)</em></p>.
+     *
+     * @return <code>LinkedHashMap&lt;String, ItemBean&gt;</code> - struttura vettoriale, rispettante l'ordine di inserimento, che contiene le voci del menu orizzontale
+     * @throws CommandException nel caso in cui si verifichi un problema nel recupero di un attributo obbligatorio, o in qualche altro tipo di puntamento
+     */
+    private static LinkedHashMap<String, ItemBean> makeHorizontalMenu()
+                                                               throws CommandException {
+        LinkedHashMap<String, ItemBean> mO = new LinkedHashMap<>(7);
+        DataUrl dataUrl = new DataUrl();
+        // HOME (VOCE 1)
+        dataUrl.put(ConfigManager.getEntToken(), COMMAND_CONV);
+        ItemBean vO = null;
+        vO = new ItemBean(COMMAND_CONV,         // "co" 
+                          "Home",               // labelWeb
+                          dataUrl.getUrl(),     // url
+                          "Pagina Iniziale",    // informativa
+                          ELEMENT_LEV_1);       // livello
+        mO.put(vO.getNome(), vO);
+        dataUrl = null;
+        vO = null;
+        // VOCE 2
+        dataUrl = new DataUrl();
+        dataUrl.put(ConfigManager.getEntToken(), COMMAND_CONV)
+               .put(OPERATION, SELECT)
+               .put(OBJECT, CONTRACTOR)
+               .put(DB_CONSTRUCT, ENTITY);
+        vO = new ItemBean(CONTRACTOR,           // "cont"
+                          "Contraenti",         // labelWeb
+                          dataUrl.getUrl(),     // url
+                          "Registro Contraenti",// informativa
+                          ELEMENT_LEV_1);       // livello
+        mO.put(vO.getNome(), vO);
+        dataUrl = null;
+        vO = null;
+        // VOCE 3
+        dataUrl = new DataUrl();
+        dataUrl.put(ConfigManager.getEntToken(), COMMAND_CONV)
+               .put(OPERATION, SEARCH);
+        vO = new ItemBean(SEARCH,               // "res" 
+                          "Cerca",              // labelWeb
+                          dataUrl.getUrl(),     // url
+                          "Ricerca Avanzata",   // informativa
+                          ELEMENT_LEV_1);       // livello
+        mO.put(vO.getNome(), vO);
+        dataUrl = null;
+        vO = null;
+        /* VOCE 4
+        vO = new ItemBean("auth",               // nome 
+                          "Esci",               // labelWeb
+                          "auth",               // url
+                          "Logout",             // informativa
+                          ELEMENT_LEV_1);       // livello
+        mO.put(vO.getNome(), vO);
+        dataUrl = null;
+        vO = null;*/
+        return mO;
+    }
+
+    
     /* ************************************************************************ *
      *                             Metodi di debug                              *
      * ************************************************************************ */
@@ -431,4 +464,25 @@ public class HomePageCommand extends CommandBean implements Command, Constants {
         return false;
     }
 
+    /* ************************************************************************ *
+     *                    Getters sulle variabili di classe                     *
+     * ************************************************************************ */
+
+    /**
+     * <p>Restituisce il menu orizzontale.</p>
+     *
+     * @return <code>LinkedHashMap&lt;String, ItemBean&gt;</code> - una mappa ordinata di voci di menu indicizzate per scala ordinale
+     * @throws AttributoNonValorizzatoException se la mappa di voci di menu risulta vuota
+     */
+    public static LinkedHashMap<String, ItemBean> getHorizontalMenu()
+                                                             throws AttributoNonValorizzatoException {
+        if (menu.isEmpty()) {
+            String msg = FOR_NAME + ": Si e\' verificato un problema nella generazione del menu orizzontale.\n";
+            LOG.severe(msg);
+            throw new AttributoNonValorizzatoException(msg);
+        }
+        return menu;
+    }
+
+    
 }
