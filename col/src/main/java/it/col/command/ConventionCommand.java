@@ -52,6 +52,7 @@ import it.col.SessionManager;
 import it.col.bean.CodeBean;
 import it.col.bean.CommandBean;
 import it.col.bean.Convenzione;
+import it.col.bean.ItemBean;
 import it.col.bean.PersonBean;
 import it.col.db.DBWrapper;
 import it.col.db.Query;
@@ -188,6 +189,8 @@ public class ConventionCommand extends CommandBean implements Command, Constants
         final ArrayList<CodeBean> types = ConfigManager.getTypes();
         // List of agreement scopes
         final ArrayList<CodeBean> scopes = ConfigManager.getScopes();
+        // Header Menu customized by the current Command
+        LinkedHashMap<String, ItemBean> menu = null;
         // Page
         CodeBean fileJspT = new CodeBean();
         // Redirect from POST call to a GET request
@@ -306,6 +309,11 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                         // TODO
                         break;
                     case SEARCH:
+                        /* Make active the appropriate voice of menu
+                        menu = (LinkedHashMap<String, ItemBean>) req.getAttribute("menu");
+                        ItemBean current = menu.get(operation);
+                        current.setExtraInfo("active");
+                        menu.put(current.getNome(), current);*/
                         fileJspT = pages.get(operation);
                         break;
                     default:
@@ -321,6 +329,11 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                             } else {                // List of contractors
                                 // Get all the contractors
                                 contractors = db.getContractors(user, new Convenzione(DEFAULT_ID), Query.GET_ALL);
+                                /* Customize the header horizontal menuto make active the appropriate voice
+                                menu = (LinkedHashMap<String, ItemBean>) req.getAttribute("menu");
+                                current = menu.get(object);
+                                current.setExtraInfo("active");
+                                menu.put(current.getNome(), current);*/
                                 // Show the form to assign a consultant to a convention
                                 fileJspT = pages.get(object + operation);
                             }
@@ -368,10 +381,15 @@ public class ConventionCommand extends CommandBean implements Command, Constants
         // Redirect address, if it exists
         if (redirect != null) {
             req.setAttribute("redirect", redirect);
-        }   
+        }
         // All navigation params
         if (!params.isEmpty()) {
             req.setAttribute("params", params);
+        }
+        // Overwrite the voices of the header in case of customization from this
+        if (menu != null) {
+            req.removeAttribute("menu");
+            req.setAttribute("menu", menu);
         }
         // Single convention, if it does exist
         if (convention != null) {
@@ -395,6 +413,8 @@ public class ConventionCommand extends CommandBean implements Command, Constants
         req.setAttribute("finalita", scopes);
         // Date of today
         req.setAttribute("now", today);
+        // Horizontal menu
+        req.setAttribute("mO", menu);
         // Page title
         req.setAttribute("tP", fileJspT.getInformativa()); 
         // Page JSP to forward
