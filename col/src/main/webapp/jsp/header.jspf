@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<c:set var="activetab" value="${requestScope.tabs}" scope="page" />
+<c:set var="mO" value="${requestScope.menu}" scope="page" />
     <!-- ***** Preloader Start ***** -->
     <div id="js-preloader" class="js-preloader">
       <div class="preloader-inner">
@@ -27,12 +27,26 @@
               </span>
               <!-- ***** Menu Start ***** -->
               <ul class="nav">
-                <li><a href="index.html" class="active" title="Homepage">Home</a></li>
-                <li><a href="${initParam.appName}/?q=co&op=sel&obj=cont&data=ent" class="" title="Registri">Contraenti</a></li>
-                <li><a href="${initParam.appName}/?q=co&op=res" class="" title="Ricerca avanzata">Cerca</a></li>
+              <c:forEach var="entry" items="${mO.entrySet()}">
+                <c:set var="key" value="${entry.getKey()}" scope="page" />
+                <c:set var="vO" value="${mO.get(key)}" scope="page" />
+                <c:choose>
+                  <c:when test="${vO.url eq requestScope.queryString}">
+                    <c:set var="selected" value="active" scope="page" />
+                  </c:when>
+                  <c:otherwise>
+                    <c:set var="selected" value="" scope="page" />
+                  </c:otherwise>
+                </c:choose>
+                <li>
+                  <a href="${initParam.appName}/?${vO.url}" class="${selected}" title="${vO.informativa}">
+                    <c:out value="${vO.labelWeb}" />
+                  </a>
+                </li>
+              </c:forEach>
                 <li><a href="${initParam.appName}/auth" class="" title="Logout">Esci</a></li> 
                 <li><div class="main-white-button"><a href="#"><i class="fa fa-plus"></i> Aggiungi Convenzione</a></div></li> 
-              </ul>        
+              </ul>
               <a class='menu-trigger'>
                 <span>Menu</span>
               </a>
