@@ -84,6 +84,8 @@ When will be ready, I will release, package or tag
 
 # History
 
+* [ [0.4.5] (Nov 28, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-11-28&until=2025-11-28)
+Implemented dynamic generation of header links list
 * [ [0.4.4] (Nov 26, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-11-26&until=2025-11-26) 
 Implemented controls based on user memberships
 * [ [0.4.3] (Nov 25, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-11-25&until=2025-11-25) 
