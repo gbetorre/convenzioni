@@ -40,7 +40,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -95,9 +98,13 @@ public class ConventionCommand extends CommandBean implements Command, Constants
      */    
     private static final CodeBean elenco = new CodeBean("landing.jsp", "COL [Convenzioni On Line]");
     /**
-     *  SELECT Details page
+     *  SELECT Convention Details page (read-only)
      */    
     private static final CodeBean dettagli = new CodeBean("coConvenzione.jsp", "Dettagli convenzione");
+    /**
+     *  SELECT Convention Details page (updateable)
+     */    
+    private static final CodeBean convenzione = new CodeBean("coFormConvenzione.jsp", "Modifica convenzione");
     /**
      *  SELECT Contractor page
      */
@@ -138,6 +145,7 @@ public class ConventionCommand extends CommandBean implements Command, Constants
         pages.put(COMMAND_CONV,     elenco);
         pages.put(SEARCH,           ricerca);
         pages.put(SELECT,           dettagli);
+        pages.put(UPDATE,           convenzione);
         pages.put(CONTRACTOR+INSERT,contraenti_ins);
         pages.put(CONTRACTOR+SELECT,contraenti);
         pages.put(CONTRACTOR       ,contraente);
@@ -303,7 +311,14 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                         }
                         break;
                     case UPDATE:
-                        // TODO
+                        // Test if there is a convention id
+                        if (idA > DEFAULT_ID) { 
+                            // Get the convention
+                            convention = db.getConvention(user, idA);
+                            // Update the scopes checking the current convention scopes
+                            
+                            fileJspT = pages.get(operation);
+                        }
                         break;
                     case DELETE:
                         // TODO
@@ -526,8 +541,7 @@ public class ConventionCommand extends CommandBean implements Command, Constants
     
     
     /* **************************************************************** *
-     *                  Metodi di recupero dei dati                     *                     
-     *                            (retrieve)                            *
+     *          Data retrieve methods and other utility methods         *
      * **************************************************************** */
     
     /**
@@ -587,6 +601,63 @@ public class ConventionCommand extends CommandBean implements Command, Constants
             throw new CommandException(msg + e.getMessage(), e);
         }
         return conventions;
+    }
+    
+    
+    private static List<CodeBean> updateScopes(final ArrayList<CodeBean> generalPurposes,
+                                               final Convenzione c) 
+                                             throws CommandException {
+        ArrayList<CodeBean> updatedScopes = null;
+        try {
+            // Input control
+            if (c == null || generalPurposes == null) {
+                String msg = FOR_NAME + "Parametri di input non corretti.\n";
+                LOG.severe(msg);
+                throw new CommandException(msg);
+            }
+            if (c.getFinalita() == null || c.getFinalita().isEmpty()) {
+                return new ArrayList<>();
+            }
+            // Create HashSet for O(1) lookup of generalPurposes
+            Set<Integer> generalPurposeIds = generalPurposes.stream()
+                                                            .map(t -> {
+                                                                        try {
+                                                                            return t.getId();
+                                                                        } catch (AttributoNonValorizzatoException anve) {
+                                                                            String msg = FOR_NAME + "Attributo id del CodeBean non valorizzato.\n";
+                                                                            LOG.severe(msg);
+                                                                        }
+                                                                        return null;
+                                                                      })
+                                                            .collect(Collectors.toSet());
+            // Create shallow copy of original scopes and update only matching ones
+            return c.getFinalita().stream()
+                           .filter(scope -> {
+                            try {
+                                return generalPurposeIds.contains(scope.getId());
+                            } catch (AttributoNonValorizzatoException anve) {
+                                String msg = FOR_NAME + "Attributo id del CodeBean non valorizzato.\n";
+                                LOG.severe(msg);
+                            }
+                            return false;
+                           })
+                           .map(scope -> {
+                               CodeBean newScope = new CodeBean();
+                               try {
+                                newScope = new CodeBean(scope);
+                               } catch (AttributoNonValorizzatoException anve) {
+                                   String msg = FOR_NAME + "Attributo id del CodeBean non valorizzato.\n";
+                                   LOG.severe(msg);
+                               }
+                               newScope.setInformativa("checked");
+                               return newScope;
+                           })
+                           .collect(Collectors.toList());
+        } catch (Exception e) {
+            String msg = FOR_NAME + "Si e\' verificato un problema.\n";
+            LOG.severe(msg);
+            throw new CommandException(msg + e.getMessage(), e);
+        }
     }
     
 }
