@@ -155,7 +155,7 @@
                   </a>
                 </li>
                 <li class="list-inline-item me-1">
-                  <a href="#" class="btn btn-sm btn-primary" title="Modifica Convenzione">
+                  <a href="${initParam.appName}/?q=co&op=upd&obj=conv&data=ent&id=${conv.id}" class="btn btn-sm btn-primary" title="Modifica Convenzione">
                     <i class="fa fa-pencil"></i>
                   </a>
                 </li>
