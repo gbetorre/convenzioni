@@ -1282,23 +1282,23 @@ form .contact input::placeholder {
   font-weight: 500;
 }
 
-form .contact textarea {
+textarea.contact  {
   margin-top: 10px;
   width: 100%;
   min-width: 100%;
   max-width: 100%;
-  max-height: 180px;
+/*max-height: 180px;*/
   min-height: 140px;
   height: 140px;
   border-radius: 7px;
   background-color: transparent;
   border: 1px solid #8d99af;
   outline: none;
-  font-size: 15px;
+/*font-size: 15px;
   font-weight: 300;
-  color: #8d99af;
+  color: #8d99af;*/
   padding: 15px;
-  margin-bottom: 30px;
+/*margin-bottom: 30px;*/
 }
 
 form .contact textarea::placeholder {
@@ -1361,13 +1361,6 @@ Page Heading
   text-align: left;
 }
 
-.page-heading .top-text h6 {
-  color: #fff;
-  font-size: 15px;
-  font-weight: 500;
-  text-transform: uppercase;
-}
-
 .page-heading .top-text h2 {
   color: #fff;
   line-height: 70px;
@@ -1377,8 +1370,29 @@ Page Heading
   margin-top: 15px;
 }
 
+.page-heading .top-text h3 {
+  color: #fff;
+  line-height: 50px;
+  font-size: 35px;
+  font-weight: 700;
+  text-transform: capitalize;
+  margin-top: 12px;
+}
+
+.page-heading .top-text h6 {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
 .convention {
   background-image: url(../images/convention-bg.jpeg);
+}
+
+.convention-note {
+  background-image: url(../images/convention-md.jpeg);
+  padding-bottom: 80px;
 }
 
 .contractor {
