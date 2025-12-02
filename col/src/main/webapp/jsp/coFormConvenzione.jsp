@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"  pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:setLocale value="it_IT"/>
 <c:set var="scopes" value="${requestScope.finalita}" scope="page" />
 <c:set var="conv" value="${requestScope.convenzione}" scope="page" />
     <style>
@@ -51,20 +53,21 @@
       transition: background-color 0.3s ease;
     }
     </style>
-    <div class="page-heading">
+    <!-- Bootstrap Datepicker CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
+    <div class="page-heading convention-note">
       <div class="container">
         <div class="row">
-          <div class="col-lg-8">
+          <div class="col-lg-12">
             <div class="top-text header-text">
               <h6>Modifica Convenzione</h6>
-              <h2><c:out value="${conv.titolo}" /></h2>
+              <h3><a href="${initParam.appName}/?q=co&id=${conv.id}" class="text-white"><c:out value="${conv.titolo}" /></a></h3>
             </div>
           </div>
         </div>
       </div>
     </div>
   
-
     <div class="container">
       <div class="row">
         <div class="col-lg-12">
@@ -73,7 +76,7 @@
               <div class="col-lg-12 align-self-center">
                 <form name="upd-conv" id="contact" action="" method="post" class="contact">
                   <fieldset>
-                    <legend><!-- Dati identificativi della convenzione --></legend>
+                    <legend>Modifica Convenzione</legend>
                     <div class="form-group row">
                       <label for="conv-title" class="col-sm-4 col-form-label">
                         <strong>Titolo Convenzione</strong>
@@ -82,7 +85,7 @@
                         <input type="text" name="co-titl" id="conv-title" value="${conv.titolo}" autocomplete="on" required class="form-control contact">
                       </div>
                     </div>
-                    <hr class="short">
+                    <hr class="separator">
                     <div class="form-group row">
                       <label for="conv-prot" class="col-sm-4 col-form-label">
                         <strong>Repertorio</strong>
@@ -97,7 +100,7 @@
                         <strong>Oggetto</strong>
                       </label>
                       <div class="col-sm-8">
-                        <textarea name="co-info" id="conv-info" required class="form-control contact"><c:out value="${conv.informativa}" /></textarea> 
+                        <textarea name="co-info" id="conv-info" required class="contact"><c:out value="${conv.informativa}" /></textarea> 
                       </div>
                     </div>
                     <hr class="short">
@@ -107,24 +110,47 @@
                       </label>
                       <div class="col-sm-8">&nbsp;
                         <ul name="co-fine" id="conv-scop" class="contact">
-                        <c:forEach var="scope" items="${pageScope.scopes}">
+                        <c:forEach var="scope" items="${pageScope.conv.finalita}">
                           <li>
-                            <input type="checkbox" name="option1" value="cars" ${scope.informativa}>
+                            <input type="checkbox" name="scope" value="${scope.id}" ${scope.informativa}>
                             <span><c:out value="${scope.nome}" /></span>
                           </li>
                         </c:forEach>
-                         
-                          <li><input type="checkbox" name="option2" value="aparmtents" checked><span>Apartments</span></li>
-                          <li><input type="checkbox" name="option3" value="shopping"><span>Shopping</span></li>
-                          <li><input type="checkbox" name="option4" value="food"><span>Food &amp; Life</span></li>
-                          <li><input type="checkbox" name="option5" value="traveling"><span>Traveling</span></li>
                         </ul>
                       </div>
                     </div>
-                    
+                    <hr class="short">
                     <div class="form-group row">
-                      <button type="submit" id="form-submit" class="main-button contact"><i class="fa fa-paper-plane"></i> Aggiorna</button>
+                      <label for="conv-note" class="col-sm-4 col-form-label">
+                        <strong>Note</strong>
+                      </label>
+                      <div class="col-sm-8">
+                        <textarea name="co-note" id="conv-note" class="contact"><c:out value="${conv.note}" /></textarea> 
+                      </div>
                     </div>
+
+                    <hr class="separator">
+                    <div class="form-group row">
+                      <label for="conv-dat1" class="col-sm-4 col-form-label">
+                        <strong>Data approvazione</strong>
+                      </label>
+                      <div class="col-sm-8">
+                        <input type="text" name="co-dat1" id="conv-dat1" class="contact calendarData" placeholder="<fmt:formatDate value="${conv.dataApprovazione}" pattern="dd MMMMM yyyy" />">
+                      </div>
+                    </div>
+                    <hr class="separator">
+                    <div class="form-group row">
+                     <label for="form-submit" class="col-sm-4 col-form-label">
+                        <strong>Salva</strong>
+                      </label>
+                      <div class="col-sm-2">
+                        <button type="submit" id="form-submit" class="bg-info text-white btn btn-sm btn-primary form-control contact">
+                          <i class="fa fa-save"></i> &nbsp;
+                          Aggiorna
+                        </button>
+                      </div>
+                    </div>
+                    
                     
                   </fieldset>
                 </form>
@@ -135,3 +161,14 @@
       </div>
     </div>
     <script src="${initParam.urlDirFrameworks}jquery/jquery.min.js"></script>
+    <!-- Bootstrap Datepicker JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/js/bootstrap-datepicker.min.js"></script>
+    <script>
+    $(document).ready(function(){
+        $('input[type="text"].calendarData').datepicker({
+          format: 'yyyy-mm-dd',         // Date format to store and display
+          autoclose: true,              // Close calendar after selection
+          todayHighlight: true          // Highlight today's date
+        });
+    });
+    </script>
