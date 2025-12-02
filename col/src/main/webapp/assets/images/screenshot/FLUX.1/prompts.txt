@@ -24,3 +24,7 @@ PROMPT: a contract between two parties, made by several papersheets bound togeth
 
 RESULT: image-13.webp
 a banner implying that something was missing, an element is unexpectedly lost, something that the user was expecting in that time at that place is unavailable, a clerk with sleeves rolled up scratching his head, a small group of employees whispering among themselves, trying to figure out what went wrong, realistic, photographic, high details
+
+RESULT: image-14.webp
+PROMPT: in foreground an hand and the arm of someone wearing a suit holding a pencil and annotating some side notes under a contract between two parties, made by several papersheets bound together, a simple cover and some stamp making it official; in the background, a clerk doing his job, looking like a court clerk who is registering other contracts, and some lawyer satisfied with the results achieved; in the background, very thin and with heavy transparency, an entrance to an official building, with a staircase, columns, and a pediment; some councilor and client goes up and down, people meet each other, a TV reporter looks for someone to interview with a microphone in his hand. Daylight, photographic, blurred, background semitransparent, volumetric, lighting effects, realistic
+
