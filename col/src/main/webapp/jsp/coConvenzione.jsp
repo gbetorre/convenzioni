@@ -237,7 +237,10 @@
                       <div class="col text-center">
                         <div class="main-white-button">
                           <a href="${initParam.appName}/?q=co&op=ins&obj=cont&data=rel&id=${conv.id}" class="bg-info text-white btn btn-sm btn-warning">
-                            <i class="fa fa-plus bg-warning text-grey"></i> Assegna Contraenti
+                            <i class="fa fa-plus bg-warning text-grey"></i> Assegna &nbsp;Contraenti
+                          </a>
+                          <a href="${initParam.appName}/?q=co&op=upd&obj=conv&data=ent&id=${conv.id}" class="bg-info text-white btn btn-sm btn-primary">
+                            <i class="fa fa-pencil bg-primary text-grey"></i> Modifica Convenzione
                           </a>
                         </div>
                       </div>
