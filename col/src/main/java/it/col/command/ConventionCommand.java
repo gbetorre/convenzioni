@@ -39,6 +39,7 @@ package it.col.command;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
@@ -316,7 +317,7 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                             // Get the convention
                             convention = db.getConvention(user, idA);
                             // Update the scopes checking the current convention scopes
-                            
+                            convention.setFinalita(updateScopes(scopes, convention));
                             fileJspT = pages.get(operation);
                         }
                         break;
@@ -604,6 +605,49 @@ public class ConventionCommand extends CommandBean implements Command, Constants
     }
     
     
+    private static ArrayList<CodeBean> updateScopes(final ArrayList<CodeBean> generalPurposes,
+                                                    final Convenzione c) 
+                                             throws CommandException {
+        ArrayList<CodeBean> updatedScopes = new ArrayList<>(generalPurposes.size());
+        try {
+            // Input validation
+            if (c == null || generalPurposes == null) {
+                String msg = FOR_NAME + "Parametri di input non corretti.\n";
+                LOG.severe(msg);
+                throw new CommandException(msg);
+            }
+            ArrayList<CodeBean> currentScopes = c.getFinalita();
+            if (currentScopes == null || currentScopes.isEmpty()) {
+                return new ArrayList<>();
+            }
+            // O(1) lookup optimization - HashSet for generalPurposes IDs
+            Set<Integer> currentScopeIds = new HashSet<>();
+            for (CodeBean scope : currentScopes) {
+                currentScopeIds.add(scope.getId());
+            }
+            // Single pass: O(n) instead of O(n*m)
+            for (CodeBean purpose : generalPurposes) {
+                CodeBean newScope = new CodeBean(purpose);  // Copy constructor
+                if (currentScopeIds.contains(purpose.getId())) {
+                    newScope.setInformativa("checked");
+                }/*
+                for (CodeBean scope : currentScopes) {
+                    if (scope.getId() == purpose.getId()) {
+                        newScope.setInformativa("checked");
+                    }
+                }*/
+                updatedScopes.add(newScope);
+            }
+
+        } catch (Exception e) {
+            String msg = FOR_NAME + "Si e\' verificato un problema.\n";
+            LOG.severe(msg);
+            throw new CommandException(msg + e.getMessage(), e);
+        }
+        return updatedScopes;
+    }
+    
+    /*
     private static List<CodeBean> updateScopes(final ArrayList<CodeBean> generalPurposes,
                                                final Convenzione c) 
                                              throws CommandException {
@@ -659,5 +703,5 @@ public class ConventionCommand extends CommandBean implements Command, Constants
             throw new CommandException(msg + e.getMessage(), e);
         }
     }
-    
+    */
 }
