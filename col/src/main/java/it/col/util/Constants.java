@@ -239,6 +239,10 @@ public interface Constants extends Serializable {
      * --------------------    OTHER VALUES    -------------------- 
      */
     /**
+     * <p>Costante per il valore del parametro identificante una convenzione.</p>
+     */
+    public static final String CONVENTION               = "conv";
+    /**
      * <p>Costante per il valore del parametro identificante il contraente.</p>
      */
     public static final String CONTRACTOR               = "cont";
