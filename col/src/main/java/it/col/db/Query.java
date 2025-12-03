@@ -507,7 +507,29 @@ public interface Query extends Serializable {
             "   ,   ora_ultimo_accesso = ?" +
             "   WHERE id = ? ";
 
-
+    /**
+     * <p>Query per aggiornamento di una convenzione di dato id.</p>
+     */
+    public static final String UPDATE_CONVENTION =
+            "UPDATE convenzione" +
+            "   SET titolo  = ?" +
+            "   ,   informativa = ?" +
+            "   ,   note = ?" +
+            "   ,   data_approvazione = ?" +
+            "   ,   nota_approvazione = ?" +
+            "   ,   data_approvazione2 = ?" +
+            "   ,   nota_approvazione2 = ?" +
+            "   ,   data_sottoscrizione = ?" +
+            "   ,   nota_sottoscrizione = ?" +
+            "   ,   data_scadenza = ?" +
+            "   ,   nota_scadenza = ?" +
+            "   ,   num_repertorio = ?" +
+            "   ,   carico_bollo = ?" +
+            "   ,   bollo_pagato = ?" +
+            "   ,   data_ultima_modifica = ?" +
+            "   ,   ora_ultima_modifica = ?" +
+            "   ,   id_usr_ultima_modifica = ?" +
+            "   WHERE id = ? ";
 
     /* ********************************************************************** *
      *                         Query di eliminazione                          *
