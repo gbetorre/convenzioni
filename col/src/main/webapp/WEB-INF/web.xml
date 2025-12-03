@@ -116,6 +116,10 @@
       <location>/html/500-internalServerError.html</location>
     </error-page>
     <error-page>
+      <exception-type>it.col.exception.CommandException</exception-type>
+      <location>/html/500-internalServerError.html</location>
+    </error-page>
+    <error-page>
       <error-code>501</error-code>
       <location>/html/notImplemented.html</location>
     </error-page>
