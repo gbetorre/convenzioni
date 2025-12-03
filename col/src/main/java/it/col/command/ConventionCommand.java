@@ -281,6 +281,16 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                             }
                         }
                         break;
+                    case UPDATE:
+                        // Test if there is a convention id
+                        if (idA > DEFAULT_ID) { 
+                            // Update the convention
+                            convention = db.updateConvention(user, params);
+                            // Update the scopes checking the current convention scopes
+                            //convention.setFinalita(updateScopes(scopes, convention));
+                            fileJspT = pages.get(operation);
+                        }
+                        break;
                     case SEARCH:
                         // Search the conventions
                         conventions = db.getConventions(user, params);
@@ -483,7 +493,49 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                 }
                 break;
             case UPDATE:
-                // TODO
+                /* -------------------------------------------------------- *
+                 *                  Ramo di UPDATE convenzione              *
+                 * -------------------------------------------------------- */
+                if (obj.equalsIgnoreCase(CONVENTION)) {
+                    // ID Convenzione
+                    convention.put("conv",  req.getParameter("co-id"));
+                    // Titolo Convenzione
+                    convention.put("titl",  req.getParameter("co-titl"));
+                    // Protocollo
+                    convention.put("prot",  req.getParameter("co-prot"));
+                    // Oggetto
+                    convention.put("info",  req.getParameter("co-info"));
+                    // Note
+                    convention.put("note",  req.getParameter("co-note"));
+                    // Finalità (Array)
+                    String[] scopes = req.getParameterValues("co-scop");
+                    // Travasa l'array di finalità su chiavi diverse (appiattisce i valori)
+                    int nScopes = decantStructures(obj, scopes, convention);
+                    // Aggiunge il numero di finalità da associare
+                    convention.put("scop",  String.valueOf(nScopes));
+                    // Data Approvazione
+                    convention.put("dat1",  req.getParameter("co-dat1"));
+                    // Nota Approvazione
+                    convention.put("not1",  req.getParameter("co-not1"));
+                    // Data Approvazione 2
+                    convention.put("dat2",  req.getParameter("co-dat2"));
+                    // Nota Approvazione 2
+                    convention.put("not2",  req.getParameter("co-not2"));
+                    // Data Sottoscrizione
+                    convention.put("dat3",  req.getParameter("co-dat3"));
+                    // Nota Sottoscrizione
+                    convention.put("not3",  req.getParameter("co-not3"));
+                    // Data Scadenza
+                    convention.put("dat4",  req.getParameter("co-dat4"));
+                    // Nota Scadenza
+                    convention.put("not4",  req.getParameter("co-not4"));
+                    // Ripartizione Bolli
+                    convention.put("fees",  req.getParameter("co-boll"));
+                    // Pagato
+                    convention.put("payd",  req.getParameter("co-pago"));
+                    // Aggiunge gli estremi dei contraenti da associare all'id convenzione
+                    formParams.put(obj, convention);
+                }
                 break;
             case DELETE:
                 // TODO
