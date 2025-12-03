@@ -127,6 +127,7 @@ Il software è un'applicazione Java three-tier
 # History
 
 ```
+* [0.4.7] (Dec 03, 2025) Continuazione implementazione modifica convenzione
 * [0.4.6] (Dec 02, 2025) Prima bozza implementazione modifica convenzione
 * [0.4.5] (Nov 28, 2025) Implementate voci dell'header dinamiche
 * [0.4.4] (Nov 26, 2025) Implementati controlli sui diritti di visualizzazione dei dettagli di una convenzione
