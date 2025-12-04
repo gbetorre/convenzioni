@@ -85,6 +85,56 @@ dd::before {
 	margin-bottom:20px;
 }
 
+/*------------------------------ COL form classes ------------------------------*/
+
+.col-form-label {
+  cursor: pointer; /* changes mouse pointer to hand */
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-right: 20px; /* space for the arrow */
+  white-space: nowrap;
+}
+
+.col-form-label::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 5px); /* start right after label text */
+  right: 20px; /* end just before the arrow */
+  height: 2px;
+  background-color: #007bff;
+  transform: translateY(-50%);
+  z-index: 1;
+  transition: background-color 0.3s ease;
+}
+
+.col-form-label::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 10px solid #007bff;
+  transform: translateY(-50%);
+  z-index: 2;
+  transition: border-left-color 0.3s ease;
+}
+
+.col-form-label:hover::before {
+  border-left-color: #ff4500; /* change arrow color on hover, for example, to orange */
+  filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.3)); /* optional shadow for emphasis */
+  transition: border-left-color 0.3s ease;
+}
+
+.col-form-label:hover::after {
+  background-color: #ff4500; /* same highlight color */
+  transition: background-color 0.3s ease;
+}
+
 /*------------------------------ HORIZONTAL ROWS -------------------------------*/
 
 hr.separator {
