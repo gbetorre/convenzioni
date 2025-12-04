@@ -493,6 +493,22 @@ public interface Query extends Serializable {
             "   ,       ? " +          // data_ultima_modifica
             "   ,       ? " +          // ora_ultima_modifica
             "   ,       ?)" ;          // id_usr_ultima_modifica
+    
+    /**
+     * <p>Query per inserimento della relazione tra convenzione e finalità.</p>
+     */
+    public static final String INSERT_CONVENTION_SCOPE =
+            "INSERT INTO convenzione_finalita" +
+            "   (   data_ultima_modifica" +
+            "   ,   ora_ultima_modifica" +
+            "   ,   id_usr_ultima_modifica" +
+            "   ,   id_convenzione" +
+            "   ,   id_finalita)" +
+            "   VALUES (? " +          // data_ultima_modifica
+            "   ,       ? " +          // ora_ultima_modifica
+            "   ,       ? " +          // id_usr_ultima_modifica
+            "   ,       ? " +          // id_convenzione
+            "   ,       ?)" ;          // id_finalita
 
     /* ********************************************************************** *
      *                         Query di aggiornamento                         *
@@ -513,6 +529,7 @@ public interface Query extends Serializable {
     public static final String UPDATE_CONVENTION =
             "UPDATE convenzione" +
             "   SET titolo  = ?" +
+            "   ,   num_repertorio = ?" +                    
             "   ,   informativa = ?" +
             "   ,   note = ?" +
             "   ,   data_approvazione = ?" +
@@ -523,17 +540,22 @@ public interface Query extends Serializable {
             "   ,   nota_sottoscrizione = ?" +
             "   ,   data_scadenza = ?" +
             "   ,   nota_scadenza = ?" +
-            "   ,   num_repertorio = ?" +
             "   ,   carico_bollo = ?" +
             "   ,   bollo_pagato = ?" +
             "   ,   data_ultima_modifica = ?" +
             "   ,   ora_ultima_modifica = ?" +
             "   ,   id_usr_ultima_modifica = ?" +
-            "   WHERE id = ? ";
+            "   WHERE id = ?";
 
     /* ********************************************************************** *
      *                         Query di eliminazione                          *
      * ********************************************************************** */
 
+    /**
+     * <p>Query per la cancellazione delle relazioni tra una convenzione e le sue finalità.</p>
+     */
+    public static final String DELETE_CONVENTION_SCOPE =
+            "DELETE FROM convenzione_finalita" +
+            "   WHERE id_convenzione = ? ";
     
 }
