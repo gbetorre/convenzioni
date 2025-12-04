@@ -4,57 +4,9 @@
 <fmt:setLocale value="it_IT"/>
 <c:set var="scopes" value="${requestScope.finalita}" scope="page" />
 <c:set var="conv" value="${requestScope.convenzione}" scope="page" />
-    <style>
-    .col-form-label {
-      cursor: pointer; /* changes mouse pointer to hand */
-      position: relative;
-      display: flex;
-      align-items: center;
-      padding-right: 20px; /* space for the arrow */
-      white-space: nowrap;
-    }
-    
-    .col-form-label::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: calc(100% + 5px); /* start right after label text */
-      right: 20px; /* end just before the arrow */
-      height: 2px;
-      background-color: #007bff;
-      transform: translateY(-50%);
-      z-index: 1;
-      transition: background-color 0.3s ease;
-    }
-    
-    .col-form-label::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      right: 0;
-      width: 0;
-      height: 0;
-      border-top: 6px solid transparent;
-      border-bottom: 6px solid transparent;
-      border-left: 10px solid #007bff;
-      transform: translateY(-50%);
-      z-index: 2;
-      transition: border-left-color 0.3s ease;
-    }
-    
-    .col-form-label:hover::before {
-      border-left-color: #ff4500; /* change arrow color on hover, for example, to orange */
-      filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.3)); /* optional shadow for emphasis */
-      transition: border-left-color 0.3s ease;
-    }
-    
-    .col-form-label:hover::after {
-      background-color: #ff4500; /* same highlight color */
-      transition: background-color 0.3s ease;
-    }
-    </style>
     <!-- Bootstrap Datepicker CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
+    <!-- Banner -->
     <div class="page-heading convention-note">
       <div class="container">
         <div class="row">
@@ -288,21 +240,19 @@
                         </select>
                       </div>
                     </div>
-                    
+                    <!-- Submit -->
                     <hr class="separator">
                     <div class="form-group row">
                      <label for="form-submit" class="col-sm-4 col-form-label">
                         <strong>Salva</strong>
                       </label>
                       <div class="col-sm-2">
-                        <button type="submit" id="form-submit" class="bg-info text-white btn btn-sm btn-primary form-control contact">
+                        <button type="submit" name="upd-conv-form-submit" id="openModalBtn" class="bg-info text-white btn btn-sm btn-primary form-control contact">
                           <i class="fa fa-save"></i> &nbsp;
                           Aggiorna
                         </button>
                       </div>
                     </div>
-                    
-                    
                   </fieldset>
                 </form>
               </div>
