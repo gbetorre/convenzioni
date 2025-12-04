@@ -381,7 +381,7 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                 }
         // We have a situation here...
         }  catch (WebStorageException wse) {
-            String msg = FOR_NAME + "Si e\' verificato un problema nel recupero di valori dal db.\n";
+            String msg = FOR_NAME + "Si e\' verificato un problema di valori dal db.\n";
             LOG.severe(msg);
             throw new CommandException(msg + wse.getMessage(), wse);
         } catch (CommandException ce) {
@@ -510,7 +510,7 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                     // Finalità (Array)
                     String[] scopes = req.getParameterValues("co-scop");
                     // Travasa l'array di finalità su chiavi diverse (appiattisce i valori)
-                    int nScopes = decantStructures(obj, scopes, convention);
+                    int nScopes = decantStructures("scop", scopes, convention);
                     // Aggiunge il numero di finalità da associare
                     convention.put("scop",  String.valueOf(nScopes));
                     // Data Approvazione
@@ -657,10 +657,20 @@ public class ConventionCommand extends CommandBean implements Command, Constants
     }
     
     
+    /**
+     * <p>Aggiunge la stringa "checked" all'informativa dei CodeBean rappresentanti
+     * le finalit&agrave; di una convenzione in base alle finalit&agrave; collegate
+     * mentre lascia l'informativa invariata se la finalit&agrave; esiste 
+     * ma non &egrave; collegata alla convenzione passata come parametro.</p>
+     * 
+     * @param generalPurposes   tutte le finalita'
+     * @param c                 la convenzione contenente le finalita' collegate
+     * @return <code>ArrayList&lt;CodeBean&gt;</code> - lista di finalita' contenenti l'informativa "checked" se collegate a c
+     * @throws CommandException se si verifica un problema nello scorrimento di liste, o in qualche tipo di puntamento
+     */
     private static ArrayList<CodeBean> updateScopes(final ArrayList<CodeBean> generalPurposes,
                                                     final Convenzione c) 
                                              throws CommandException {
-        ArrayList<CodeBean> updatedScopes = new ArrayList<>(generalPurposes.size());
         try {
             // Input validation
             if (c == null || generalPurposes == null) {
@@ -668,6 +678,7 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                 LOG.severe(msg);
                 throw new CommandException(msg);
             }
+            ArrayList<CodeBean> updatedScopes = new ArrayList<>(generalPurposes.size());
             ArrayList<CodeBean> currentScopes = c.getFinalita();
             if (currentScopes == null || currentScopes.isEmpty()) {
                 return new ArrayList<>();
@@ -682,78 +693,15 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                 CodeBean newScope = new CodeBean(purpose);  // Copy constructor
                 if (currentScopeIds.contains(purpose.getId())) {
                     newScope.setInformativa("checked");
-                }/*
-                for (CodeBean scope : currentScopes) {
-                    if (scope.getId() == purpose.getId()) {
-                        newScope.setInformativa("checked");
-                    }
-                }*/
+                }
                 updatedScopes.add(newScope);
             }
+            return updatedScopes;   
+        } catch (Exception e) {
+            String msg = FOR_NAME + "Si e\' verificato un problema.\n";
+            LOG.severe(msg);
+            throw new CommandException(msg + e.getMessage(), e);
+        }
+    }
 
-        } catch (Exception e) {
-            String msg = FOR_NAME + "Si e\' verificato un problema.\n";
-            LOG.severe(msg);
-            throw new CommandException(msg + e.getMessage(), e);
-        }
-        return updatedScopes;
-    }
-    
-    /*
-    private static List<CodeBean> updateScopes(final ArrayList<CodeBean> generalPurposes,
-                                               final Convenzione c) 
-                                             throws CommandException {
-        ArrayList<CodeBean> updatedScopes = null;
-        try {
-            // Input control
-            if (c == null || generalPurposes == null) {
-                String msg = FOR_NAME + "Parametri di input non corretti.\n";
-                LOG.severe(msg);
-                throw new CommandException(msg);
-            }
-            if (c.getFinalita() == null || c.getFinalita().isEmpty()) {
-                return new ArrayList<>();
-            }
-            // Create HashSet for O(1) lookup of generalPurposes
-            Set<Integer> generalPurposeIds = generalPurposes.stream()
-                                                            .map(t -> {
-                                                                        try {
-                                                                            return t.getId();
-                                                                        } catch (AttributoNonValorizzatoException anve) {
-                                                                            String msg = FOR_NAME + "Attributo id del CodeBean non valorizzato.\n";
-                                                                            LOG.severe(msg);
-                                                                        }
-                                                                        return null;
-                                                                      })
-                                                            .collect(Collectors.toSet());
-            // Create shallow copy of original scopes and update only matching ones
-            return c.getFinalita().stream()
-                           .filter(scope -> {
-                            try {
-                                return generalPurposeIds.contains(scope.getId());
-                            } catch (AttributoNonValorizzatoException anve) {
-                                String msg = FOR_NAME + "Attributo id del CodeBean non valorizzato.\n";
-                                LOG.severe(msg);
-                            }
-                            return false;
-                           })
-                           .map(scope -> {
-                               CodeBean newScope = new CodeBean();
-                               try {
-                                newScope = new CodeBean(scope);
-                               } catch (AttributoNonValorizzatoException anve) {
-                                   String msg = FOR_NAME + "Attributo id del CodeBean non valorizzato.\n";
-                                   LOG.severe(msg);
-                               }
-                               newScope.setInformativa("checked");
-                               return newScope;
-                           })
-                           .collect(Collectors.toList());
-        } catch (Exception e) {
-            String msg = FOR_NAME + "Si e\' verificato un problema.\n";
-            LOG.severe(msg);
-            throw new CommandException(msg + e.getMessage(), e);
-        }
-    }
-    */
 }
