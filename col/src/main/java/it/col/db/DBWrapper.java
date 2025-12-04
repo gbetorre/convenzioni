@@ -45,8 +45,10 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -54,6 +56,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import it.col.ConfigManager;
 import it.col.bean.BeanUtil;
 import it.col.bean.CodeBean;
 import it.col.bean.CommandBean;
@@ -1415,11 +1418,13 @@ public class DBWrapper extends QueryImpl {
                                         HashMap<String, LinkedHashMap<String, String>> params) 
                                  throws WebStorageException {
         try (Connection con = col_manager.getConnection()) {
-            PreparedStatement pst = null;
+            PreparedStatement pst, pst1, pst2 = null;
             // Dizionario dei parametri contenente l'identificativo dei contraenti da associare
             LinkedHashMap<String, String> convention = params.get(CONVENTION);
             // Definisce un indice per il numero di parametro da passare alla query
             int nextParam = NOTHING;
+            // Definisce un indice per il numero di finalità da inserire
+            int index = NOTHING;
             // Return type
             Convenzione c = new Convenzione();
             try {
@@ -1478,6 +1483,9 @@ public class DBWrapper extends QueryImpl {
                     Date date2 = Utils.format(date2AsString, DATA_ITALIAN_PATTERN, DATA_SQL_PATTERN);
                     pst.setDate(++nextParam, Utils.convert(date2)); // non accetta String né java.util.Date ma solo java.sql.Date
                     c.setDataApprovazione2(date2);
+                } else {
+                    // Dato facoltativo non inserito
+                    pst.setNull(++nextParam, Types.NULL);
                 }
                 // === [Nota approvazione 2] ===
                 String note2 = null;
@@ -1545,49 +1553,74 @@ public class DBWrapper extends QueryImpl {
                     // Dato facoltativo non inserito
                     pst.setNull(++nextParam, Types.NULL);
                 }
+                // Campi automatici: ora ultimo accesso, data ultimo accesso
+                pst.setDate(++nextParam, Utils.convert(Utils.convert(Utils.getCurrentDate()))); // non accetta un GregorianCalendar né una data java.util.Date, ma java.sql.Date
+                pst.setTime(++nextParam, Utils.getCurrentTime());   // non accetta una Stringa, ma un oggetto java.sql.Time
+                pst.setInt(++nextParam, user.getUsrId());
                 // === Id convenzione ===
                 int idConv = Integer.parseInt(convention.get(CONVENTION));
                 pst.setInt(++nextParam, idConv);
                 c.setId(idConv);
-                
+                // Preparazione aggiornamento finalità
                 try {
-                    // Recupera il numero di finalità
-                    //int nScope = Integer.parseInt(convention.get("size"));
-                    /* Recupera gli id contraente
-                    while (index < nContr) {
+                    // Query eliminazione finalità già presenti
+                    pst1 = con.prepareStatement(DELETE_CONVENTION_SCOPE);
+                    pst1.clearParameters();
+                    pst1.setInt(1, idConv);
+                    // Query di inserimento finalità associate
+                    pst2 = con.prepareStatement(INSERT_CONVENTION_SCOPE);
+                    pst2.clearParameters();
+                    // Recupera il numero di finalità da inserire
+                    int nScope = Integer.parseInt(convention.get("scop"));
+                    // Tutte le finalità definite nell'applicazione
+                    ArrayList<CodeBean> finalita = ConfigManager.getScopes();
+                    // Finalità da impostare in questa convenzione (convenzione corrente)
+                    ArrayList<CodeBean> currentFinalita = new ArrayList<>();
+                    // O(1) lookup optimization - HashSet for generalPurposes IDs
+                    Set<Integer> updatedScopeIds = new HashSet<>();
+                    // Recupera gli id delle finalità da inserire
+                    while (index < nScope) {
                         // Numero di parametro da passare alla query
-                        int nextParam = NOTHING;
+                        nextParam = NOTHING;
                         // Incrementa il suffisso della chiave
                         index++;
                         // Chiave associata a id del contraente
-                        String key = CONTRACTOR + index;
-                        // Valore id del contraente
-                        int idCont = Integer.parseInt(contractor.get(key));
-                        // Per ogni contraente trovato deve inserire 1 tupla
-                        if (idCont > NOTHING) {
-                            // === Id Convenzione === 
-                            pst.setInt(++nextParam, idConv);
-                            // === Id Contraente === 
-                            pst.setInt(++nextParam, idCont);
+                        String key = "scop" + index;
+                        // Valore id della finalità
+                        int idScope = Integer.parseInt(convention.get(key));
+                        // Per ogni finalità trovata deve inserire 1 tupla nella tabella di relazione
+                        if (idScope > NOTHING) {
                             // === Campi automatici: id utente, ora ultima modifica, data ultima modifica ===
-                            pst.setDate(++nextParam, Utils.convert(Utils.convert(Utils.getCurrentDate()))); // non accetta un GregorianCalendar né una data java.util.Date, ma java.sql.Date
-                            pst.setTime(++nextParam, Utils.getCurrentTime());   // non accetta una Stringa, ma un oggetto java.sql.Time
-                            pst.setInt(++nextParam, user.getUsrId());
+                            pst2.setDate(++nextParam, Utils.convert(Utils.convert(Utils.getCurrentDate()))); // non accetta un GregorianCalendar né una data java.util.Date, ma java.sql.Date
+                            pst2.setTime(++nextParam, Utils.getCurrentTime());   // non accetta una Stringa, ma un oggetto java.sql.Time
+                            pst2.setInt(++nextParam, user.getUsrId());
+                            // === Id Convenzione === 
+                            pst2.setInt(++nextParam, idConv);
+                            // === Id Finalità === 
+                            pst2.setInt(++nextParam, idScope);
                             // CR (Carriage Return) o 0DH
-                            pst.addBatch();
+                            pst2.addBatch();
+                            // Add the current scope to the set of updated scopes
+                            updatedScopeIds.add(idScope);
                         }
                     }
-                    // Execute the batch updates
-                    int[] updateCounts = pst.executeBatch();
-                    LOG.info(updateCounts.length + " relazioni in transazione attiva.\n");*/
+                    // Cicla su tutte le finalità e aggiunge "checked" se la finalità corrisponde a quella aggiornata
+                    for (CodeBean scope : finalita) {
+                        if (updatedScopeIds.contains(scope.getId())) {
+                            scope.setInformativa("checked");
+                        }
+                        currentFinalita.add(scope);
+                    }
+                    c.setFinalita(currentFinalita);
+                    // Do Delete
+                    pst1.executeUpdate();
+                    // Do Insert
+                    int[] updateCounts = pst2.executeBatch();
+                    LOG.info(updateCounts.length + " relazioni in transazione attiva.\n");
                 } catch (NumberFormatException nfe) {
                     String msg = FOR_NAME + "Si e\' verificato un problema nella conversione di interi.\n" + nfe.getMessage();
                     LOG.severe(msg);
                     throw new WebStorageException(msg, nfe);
-                } catch (ArrayIndexOutOfBoundsException aiobe) {
-                    String msg = FOR_NAME + "Si e\' verificato un problema nello scorrimento di liste.\n" + aiobe.getMessage();
-                    LOG.severe(msg);
-                    throw new WebStorageException(msg, aiobe);
                 } catch (NullPointerException npe) {
                     String msg = FOR_NAME + "Si e\' verificato un problema in un puntamento a null.\n" + npe.getMessage();
                     LOG.severe(msg);
@@ -1597,6 +1630,8 @@ public class DBWrapper extends QueryImpl {
                     LOG.severe(msg);
                     throw new WebStorageException(msg, e);
                 }
+                // Do Update: ==>
+                pst.executeUpdate();
                 // End: <==
                 con.commit();
                 pst.close();
