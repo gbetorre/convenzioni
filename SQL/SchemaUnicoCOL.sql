@@ -324,6 +324,8 @@ GRANT INSERT, UPDATE ON access_log, convenzione, contraente, contraente_convenzi
 GRANT INSERT, UPDATE ON convenzione_grp TO www;
 -- www: Permission to change the password!
 GRANT UPDATE ON usr TO www;    
+-- Deve cancellare le relazioni tra convenzione e finalità per poterle aggiornare in modo atomico rispetto a quanto già presente per la stessa convenzione
+GRANT DELETE ON convenzione_finalita TO www;
 
 
 ------------------------
