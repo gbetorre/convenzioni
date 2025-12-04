@@ -36,7 +36,6 @@
 
 package it.col;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
@@ -51,6 +50,7 @@ import it.col.bean.CodeBean;
 import it.col.bean.CommandBean;
 import it.col.command.Command;
 import it.col.db.DBWrapper;
+import it.col.exception.AttributoNonValorizzatoException;
 import it.col.exception.WebStorageException;
 
 
@@ -490,6 +490,26 @@ public class ConfigManager extends HttpServlet {
      */
     public static ArrayList<CodeBean> getScopes() {
         return scopes;
+    }
+    
+    
+    /**
+     * <p>Restituisce una struttura di tipo Tabella hash (dictionary),
+     * contenente le finalità predefinite indicizzate per id
+     * incapsulato in Wrapper di tipo primitivo.</p>
+     * <p>Metodo getter basato su variabile privata di classe che deve essere
+     * stata gi&agrave; valorizzata all'avvio del server.</p>
+     *
+     * @return <code>ConcurrentHashMap&lt;Integer, CodeBean&gt;</code> - le finalita' indicizzate per proprio id
+     * @throws AttributoNonValorizzatoException se l'identificativo della finalita' non e' stato valorizzato
+     */
+    public static ConcurrentHashMap<Integer, CodeBean> getScopesMap() 
+                                                             throws AttributoNonValorizzatoException {
+        ConcurrentHashMap<Integer, CodeBean> scopesAsMap = new ConcurrentHashMap<>();
+        for (CodeBean scope : scopes) {
+            scopesAsMap.put(Integer.valueOf(scope.getId()), scope);
+        }
+        return scopesAsMap;
     }
     
 }
