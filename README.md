@@ -84,8 +84,10 @@ When will be ready, I will release, package or tag
 
 # History
 
+* [ [0.4.8] (Dec 04, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-12-04&until=2025-12-04) 
+Implemented function to modify an agreement
 * [ [0.4.7] (Dec 03, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-12-03&until=2025-12-03) 
-Function for modifying an agreement to be continued
+Function for modifying an agreement (to be continued)
 * [ [0.4.6] (Dec 02, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-12-02&until=2025-12-02) 
 First implementation for modifying an agreement
 * [ [0.4.5] (Nov 28, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-11-28&until=2025-11-28)
