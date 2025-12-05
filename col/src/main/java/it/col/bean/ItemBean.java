@@ -231,7 +231,7 @@ public class ItemBean implements Serializable, Comparable<ItemBean> {
     /**
      * <p>Costruttore parametrizzato</p>
      * <p>
-     * ItemBean(String nome, String labelWeb, String url, String informativa, String icona, int livello)
+     * ItemBean(String nome, String nomeReale, String labelWeb, String url, String informativa, String icona, int livello)
      * </p>
      * 
      * @param nome          nome della voce da creare; puo' corrispondere al token
