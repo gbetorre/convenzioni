@@ -319,16 +319,22 @@ public class Utils implements Constants {
     
     
     /**
+     * Converts a vector of {@link CodeBean} objects to an array of their integer IDs.
+     * <p>This method extracts the ID from each {@code CodeBean} in the input vector
+     * and returns them as a primitive {@code Integer[]} array. 
+     * Empty input vectors result in an empty array.</p>
      * 
-     * @param groups
-     * @return
-     * @throws AttributoNonValorizzatoException
+     * @param groups the vector of {@code CodeBean} objects to convert. Must not be {@code null}. If empty, returns an empty array.
+     * @return <code>Integer[]</code> - an array containing the ID values from each {@code CodeBean} in the input vector, preserving the original order
+     * @throws AttributoNonValorizzatoException if any {@code CodeBean} in the vector has a {@code null} or uninitialized ID value
+     * @throws NullPointerException if {@code groups} is {@code null}
      */
     public static Integer[] convert(Vector<CodeBean> groups) 
                              throws AttributoNonValorizzatoException {
         List<Integer> ids = new ArrayList<>();
         for (CodeBean g : groups) {
-            ids.add(g.getId());
+            //ids.add(g.getId()); <- autoboxing
+            ids.add(Integer.valueOf(g.getId()));    //  <- Explicit Boxing
         }
         // Convert List<Integer> to Integer[] array
         Integer[] groupIds = ids.toArray(new Integer[NOTHING]);  
@@ -337,18 +343,29 @@ public class Utils implements Constants {
     }
     
     
-
+    /**
+     * Checks if any user group belongs to the convention groups by comparing their IDs.
+     * <p>This method determines whether the user has at least one group in common with
+     * the specified convention groups. It extracts IDs from both collections and
+     * performs a membership test, returning {@code true} if there's any overlap.</p>
+     * 
+     * @param userGroups the user's groups to check against conversation groups. Must not be {@code null}. Empty list returns {@code false}.
+     * @param convGroups the convention's required groups. Must not be {@code null}. Empty list returns {@code false} (no matching possible).
+     * @return <code>boolean</code> - {@code true} if at least one user group ID matches a conversation group ID, {@code false} otherwise (no overlap or empty inputs)
+     * @throws AttributoNonValorizzatoException if any {@code CodeBean} in either collection has a {@code null} or uninitialized ID value
+     * @throws NullPointerException if either {@code userGroups} or {@code convGroups} is {@code null}
+     */
     public static boolean belongs(Vector<CodeBean> userGroups,
                                   Vector<CodeBean> convGroups) 
                            throws AttributoNonValorizzatoException {
         List<Integer> convGroupIds = new ArrayList<>();
         // Load agreement groups id into a List of Integers
         for (CodeBean cg : convGroups) {
-            convGroupIds.add(cg.getId());
+            convGroupIds.add(Integer.valueOf(cg.getId()));  //  <- Explicit Boxing
         }
         // Test if an user group matches with an id group which the agreement belongs
         for (CodeBean ug : userGroups) {
-            if (convGroupIds.contains(ug.getId())) {
+            if (convGroupIds.contains(Integer.valueOf(ug.getId()))) { // E. Boxing
                 return true;
             }
         }
@@ -705,7 +722,7 @@ public class Utils implements Constants {
      */
     public static String format(java.util.Date date) {
         SimpleDateFormat fmt = new SimpleDateFormat(DATA_ITALIAN_PATTERN);
-        String dateFormatted = fmt.format(date.getTime());
+        String dateFormatted = fmt.format(Long.valueOf(date.getTime()));
         return dateFormatted;
     }
 
@@ -771,6 +788,10 @@ public class Utils implements Constants {
      * <p>Esempio:<pre><ul> 
      * <li><strong>"Tue Jul 07 00:00:00 CEST 2020"</strong></li>
      * <li> EEE MMM dd HH:mm:ss zzz  yyyy</li></ul></pre></p>
+     * <p>Esempio:<pre><ul> 
+     * <li><strong>"30/07/2024"</strong></li>
+     * <li>"yyyy-MM-dd"</li></ul></pre>
+     * restituisce: java.util.Date</p>
      *
      * @param date una String che deve essere convertita
      * @param initDateFormat il formato con cui la String e' formattata
