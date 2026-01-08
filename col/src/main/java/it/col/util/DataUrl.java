@@ -13,7 +13,8 @@
  *   - to obtain notifications regarding deadlines and renewals
  *   - and to carry out monitoring of activities related to agreements..
  *   
- *   Copyright (C) 2025 Giovanroberto Torre
+ *   Copyright (C) 2025-2026 Giovanroberto Torre
+ *   all right reserved
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -43,7 +44,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import it.col.ConfigManager;
-import it.col.exception.CommandException;
 
 
 /**
