@@ -219,7 +219,7 @@
                       <c:when test="${conv.pagato}">
                         <c:set var="payed" value="selected" scope="page" />
                       </c:when>
-                      <c:when test="${not conv.pagato}">
+                      <c:when test="${conv.pagato eq false}">
                         <c:set var="toPay" value="selected" scope="page" />
                       </c:when>
                       <c:otherwise>
