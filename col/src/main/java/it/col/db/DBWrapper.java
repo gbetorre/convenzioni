@@ -1545,8 +1545,12 @@ public class DBWrapper extends QueryImpl {
                 String pagatoAsString = null;
                 if (!convention.get("payd").equals(VOID_STRING)) {
                     pagatoAsString = new String(convention.get("payd"));
-                    // Explicit unboxing of a Boolean into boolean
-                    boolean pagato = Boolean.valueOf(pagatoAsString).booleanValue();
+                    // The application can legitimately return: "1" | "0" | ""
+                    boolean pagato = false;
+                    // "1".equals(pagatoAsString)
+                    if (String.valueOf(ELEMENT_LEV_1).equals(pagatoAsString)) {
+                        pagato = true;  //   -> true for "1"
+                    }
                     pst.setBoolean(++nextParam, pagato);
                     // Explicit boxing of a bool into Boolean
                     c.setPagato(Boolean.valueOf(pagato));
