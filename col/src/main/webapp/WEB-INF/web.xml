@@ -89,7 +89,7 @@
     </error-page>
     <error-page>
       <error-code>406</error-code>
-      <location>/html/notAcceptable.html</location>
+      <location>/html/406-notAcceptable.html</location>
     </error-page>
     <error-page>
       <error-code>408</error-code>
