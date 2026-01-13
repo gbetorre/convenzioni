@@ -5,8 +5,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="language" content="Italian">
-    <meta name="keywords" content="pa,software pa,open source, convenzioni,gestione convenzioni e partecipate pubbliche,mappatura delle scadenze legate agli incarichi di referente">
-    <meta name="description" content="">
+    <meta name="keywords" content="pa,software pa,open source,convenzioni,gestione convenzioni e partecipate pubbliche,mappatura delle scadenze legate agli incarichi di referente">
+    <meta name="description" content="Applicazione web per la gestione e il monitoraggio delle convenzioni stipulate dalla pubblica amministrazione">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="creator" content="Giovanroberto Torre">
     <meta name="author" content="Giovanroberto Torre, giovanroberto.torre@univr.it">
@@ -27,8 +27,7 @@
     <!--  Customized and taylored CSS for col  -->
     <link rel="stylesheet" href="${initParam.urlDirStyles}col.css">
   <body class="${pageScope.bgbody}">
-  <c:catch var="exception">
-    <!-- Cookie consent -->
+  <c:catch var="exception"><!-- Cookie consent -->
     <%@ include file="cookieConsent.jspf" %>
     <!-- Header -->
     <c:if test="${not empty sessionScope.usr}">
