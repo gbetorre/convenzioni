@@ -7,7 +7,8 @@
                 <img src="assets/images/black-logo.png" alt="Plot Listing">
               </div>
               <p>
-                COL  [Convenzioni On Line]  &nbsp;|&nbsp;  v. 0 . 4  &nbsp;|&nbsp;  2025
+                COL-GeCo  &nbsp;[Convenzioni On Line]  &nbsp;&nbsp;|&nbsp;&nbsp;  
+                v. 0 . 5  &nbsp;&nbsp;|&nbsp;&nbsp;  2026
                 <br>
                 COL is free software, with Bootstrap v5 &amp; HTML5 layout<br>
                 Feel free to contact us to adapt it for your organization.              
@@ -24,7 +25,7 @@
                     <li><a href="https://at.univr.it/rol">ROL</a></li>
                     <li><a href="https://at.univr.it/privacy">TOL</a></li>
                     <li><a href="https://at.univr.it">Portfolio</a></li>
-                    <li><a href="#">DAI</a></li>
+                    <li><a href="https://at.univr.it/archive.html">Archivio</a></li>
                   </ul>
                 </div>
               </div>
@@ -41,7 +42,8 @@
           <div class="col-lg-12">
             <div class="sub-footer">
               <p>
-                Copyright © 2025.&nbsp;&mdash;
+                Copyright © 2025 &ndash; <c:out value="${requestScope.theCurrentYear}" /> .
+                &nbsp;&mdash;&nbsp;
                 Design: 
                 <a rel="nofollow" href="https://templatemo.com" title="CSS Templates">TemplateMo</a>
               </p>
