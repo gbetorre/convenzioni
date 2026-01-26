@@ -28,8 +28,11 @@
                             <div class="row">
                               <div class="col-lg-12">
                                 <div class="row">
-                                  <div class="col-lg-9">
-                                    <h5><strong>Denominazione</strong></h5>
+                                  <div class="col-lg-9 text-icon">
+                                    <h5>
+                                      <img src="${initParam.urlDirImages}verification-id-icon.png" alt="">
+                                      <strong>Denominazione</strong>
+                                    </h5>
                                     <hr class="short">
                                     <p><c:out value="${cont.nome}" /></p>
                                   </div>
