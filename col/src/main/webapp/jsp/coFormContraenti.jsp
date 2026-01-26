@@ -25,21 +25,21 @@
         </h6>
         <div>
           <ul class="categories list-group list-group-horizontal d-flex justify-content-center text-center">
-          <c:forEach var="contraente" items="${conv.contraenti}">
+          <c:forEach var="cont" items="${conv.contraenti}">
             <li>
-              <a href="category.html">
+              <a href="${initParam.appName}/?q=co&op=sel&obj=cont&id=${cont.id}">
                 <span class="icon">
                   <img src="${initParam.urlDirImages}search-icon-02.png" alt="Home">
                 </span> 
                 <span class="smaller-text">
-                  <c:out value="${contraente.nome}" />
+                  <c:out value="${cont.nome}" />
                 </span>
               </a>
             </li>
           </c:forEach>
           <c:if test="${empty conv.contraenti}">
             <li>
-              <a href="category.html">
+              <a href="${initParam.appName}/?q=co&op=sel&obj=cont&data=ent">
                 <span class="icon">
                   <img src="${initParam.urlDirImages}search-icon-01.png" alt="Home">
                 </span> 
