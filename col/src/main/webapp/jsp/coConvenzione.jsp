@@ -32,8 +32,11 @@
                             <div class="row">
                               <div class="col-lg-12">
                                 <div class="row">
-                                  <div class="col-lg-9">
-                                    <h5><strong>Titolo</strong></h5>
+                                  <div class="col-lg-9 text-icon">
+                                    <h5>
+                                      <img src="${initParam.urlDirImages}smiling-document-icon.png" alt="">
+                                      <strong>Titolo</strong>
+                                    </h5>
                                     <hr class="short">
                                     <p><c:out value="${conv.titolo}" /></p>
                                   </div>
