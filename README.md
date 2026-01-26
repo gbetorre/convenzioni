@@ -1,4 +1,5 @@
 ### Languages
+
 [![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/gbetorre/convenzioni/blob/master/README.md)
 [![it](https://img.shields.io/badge/lang-it-yellow.svg)](https://github.com/gbetorre/convenzioni/blob/master/README.it.md)
 
@@ -18,7 +19,7 @@
     ·
     <a href="https://github.com/gbetorre/convenzioni/pulls">Request Feature</a>
     ·
-    <a href="https://github.com/gbetorre/convenzioni/blob/master/README.it.md">Need Italian?&nbsp;<img src="https://github.com/gbetorre/rischi/blob/main/web/img/italy.png" alt="IT" width="40" height="40"></a>
+    <a href="https://github.com/gbetorre/convenzioni/blob/master/README.it.md">Need Italian? <img src="https://github.com/gbetorre/rischi/blob/main/web/img/italy.png" alt="IT" width="40" height="40"></a>
   </p>
 </div>
 
@@ -29,6 +30,7 @@ to track agreements, framework agreements, investee companies, management boards
 between external parties and the public administration itself.
 
 The goal is to create an organized and constantly updated register: 
+
 1. 🗓️ to obtain a schedule for informing and notifying users about upcoming agreements that are about to expire; 
 2. ⏰ to be able to provide monthly summaries and reminders about upcoming deadlines.
 
@@ -45,7 +47,6 @@ The software is designed in a modular way, so that it can be adapted to any admi
 
 Moreover, the ways in which the software alerts you to deadlines and summarizes activities can be extended to several modalities:
 
-
 * ✉️ email 
 * 📆 shared calendar 
 * 💬 push notifications 
@@ -59,6 +60,7 @@ and so on...
 
 I ment to achieve 
 -->
+
 ## 
 
 ![Sample of main interface](col/src/main/webapp/assets/images/screenshot/landing0.13.png)
@@ -68,7 +70,6 @@ I ment to achieve
 The software is not ready yet: please, let me cook.
 
 When will be ready, I will release, package or tag
-
 
 # E-R
 
@@ -84,60 +85,62 @@ When will be ready, I will release, package or tag
 
 # History
 
+* [ [0.5.0] (Jan 26, 2026)](https://github.com/gbetorre/convenzioni/commits/main/?since=2026-01-26&until=2026-01-26) 
+  Presentation improvements
 * [ [0.4.9] (Jan 13, 2026)](https://github.com/gbetorre/convenzioni/commits/main/?since=2026-01-13&until=2026-01-13) 
-Bugfix
+  Bugfix
 * [ [0.4.8] (Dec 04, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-12-04&until=2025-12-04) 
-Implemented function to modify an agreement
+  Implemented function to modify an agreement
 * [ [0.4.7] (Dec 03, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-12-03&until=2025-12-03) 
-Function for modifying an agreement (to be continued)
+  Function for modifying an agreement (to be continued)
 * [ [0.4.6] (Dec 02, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-12-02&until=2025-12-02) 
-First implementation for modifying an agreement
+  First implementation for modifying an agreement
 * [ [0.4.5] (Nov 28, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-11-28&until=2025-11-28)
-Implemented dynamic generation of header links list
+  Implemented dynamic generation of header links list
 * [ [0.4.4] (Nov 26, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-11-26&until=2025-11-26) 
-Implemented controls based on user memberships
+  Implemented controls based on user memberships
 * [ [0.4.3] (Nov 25, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-11-25&until=2025-11-25) 
-Implemented dynamic generation of contractors list
+  Implemented dynamic generation of contractors list
 * [ [0.4.2] (Nov 24, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-11-24&until=2025-11-24) 
-Downloading and local pointing of residual APIs
+  Downloading and local pointing of residual APIs
 * [ [0.4.1] (Nov 20, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-11-20&until=2025-11-20) 
-Presentation improvements
+  Presentation improvements
 * [ [0.4.0] (Nov 19, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-11-19&until=2025-11-19) 
-Implementation contractor details page
+  Implementation contractor details page
 * [ [0.3.9] (Nov 18, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-11-18&until=2025-11-18) 
-Presentation improvements; API update
+  Presentation improvements; API update
 * [ [0.3.8] (Nov 17, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-11-17&until=2025-11-17) 
-Implemented internal full text search engine
+  Implemented internal full text search engine
 * [ [0.3.7] (Nov 13, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-11-13&until=2025-11-13) 
-Add scopes information
+  Add scopes information
 * [ [0.3.6] (Nov 11, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-11-11&until=2025-11-11) 
-Add payment information
+  Add payment information
 * [ [0.3.5] (Nov 05, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-11-05&until=2025-11-05) 
-Implemented dynamic subset of agreements considering all user's memberships
+  Implemented dynamic subset of agreements considering all user's memberships
 * [ [0.3.4] (Oct 30, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-10-30&until=2025-10-30) 
-Cookie banner added
+  Cookie banner added
 * [ [0.3.3] (Oct 29, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-10-29&until=2025-10-29) 
-Presentation improvements
+  Presentation improvements
 * [ [0.3.2] (Oct 28, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-10-28&until=2025-10-28) 
-First implementation messaging feature
+  First implementation messaging feature
 * [ [0.3.1] (Oct 15, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-10-15&until=2025-10-15) 
-Implementation agreements time range extraction
+  Implementation agreements time range extraction
 * [ [0.3.0] (Oct 14, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-10-14&until=2025-10-14) 
-First draft search results page
+  First draft search results page
 * [ [0.2.9] (Oct 13, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-10-13&until=2025-10-13) 
-Bugfix
+  Bugfix
 * [ [0.2.8] (Oct 10, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-10-10&until=2025-10-10) 
-First implementation of the scheduler
+  First implementation of the scheduler
 * [ [0.2.7] (Oct 09, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-10-09&until=2025-10-09) 
-Implementation agreement details page
+  Implementation agreement details page
 * [ [0.2.6] (Oct 08, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-10-08&until=2025-10-08) 
-Implementation assignment contractors to an agreement: show contractors already bound
+  Implementation assignment contractors to an agreement: show contractors already bound
 * [ [0.2.5] (Oct 06, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-10-06&until=2025-10-06) 
-Implementation assignment contractors to an agreement: db persistence
+  Implementation assignment contractors to an agreement: db persistence
 * [ [0.2.4] (Oct 02, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-10-02&until=2025-10-02) 
-First draft of the function for assigning contractors under agreement
+  First draft of the function for assigning contractors under agreement
 * [ [0.2.3] (Oct 01, 2025)](https://github.com/gbetorre/convenzioni/commits/main/?since=2025-10-01&until=2025-10-01) 
-Implemented dynamic subset of agreements based on user membership
+  Implemented dynamic subset of agreements based on user membership
 * [0.2.2] (Sep 30, 2025) Implemented dynamic generation of dropdown lists
 * [0.2.1] (Sep 29, 2025) Presentation improvements
 * [0.2.0] (Sep 25, 2025) Presentation improvements
@@ -160,4 +163,3 @@ Implemented dynamic subset of agreements based on user membership
 * [0.0.3] (Jul 14, 2025)
 * [0.0.2] (Jul 10, 2025)
 * [0.0.1] (Jul 02, 2025)
-
