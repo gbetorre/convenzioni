@@ -81,7 +81,7 @@
         </form>
         <div class="divider">
             <div class="divider-line"></div>
-            <span>COL [Convenzioni On Line]</span>
+            <span>COL-GeCo &copy; 2025 &ndash; <c:out value="${requestScope.theCurrentYear}" /></span>
             <div class="divider-line"></div>
         </div>
         <%@ include file="about.jspf"%>
