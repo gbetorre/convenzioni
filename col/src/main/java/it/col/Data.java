@@ -77,7 +77,7 @@ import it.col.util.Utils;
  * <p><ul><li>Nel primo caso, questa servlet fa a meno, legittimamente, 
  * del design (View), in quanto l'output prodotto consiste in pure tuple 
  * prive di presentazione (potenzialmente: fileset CSV, formati XML, dati 
- * con o senza metadati, serialization formats, JSON, <em>and so on</em>), 
+ * con o senza metadati, serialization formats, JSON, TOON <em>and so on</em>), 
  * oppure in output gi&agrave; autoformattati (p.es. testo formattato 
  * Rich Text Format).</li>
  * <li>Nel secondo caso, la servlet specifica una pagina di output, contenente
@@ -85,8 +85,7 @@ import it.col.util.Utils;
  * </ul></p>
  * <p>Questa servlet estrae l'azione dall'URL, ne verifica la
  * correttezza, quindi in base al valore del parametro <code>'entToken'</code> ricevuto
- * (qui chiamato 'qToken' per motivi storici, ma non importa)
- * richiama le varie Command che devono eseguire i comandi specifici.
+ * richiama le varie classi che devono eseguire i comandi specifici.
  * Infine, recupera l'output dai metodi delle Command stesse richiamati
  * e li restituisce a sua volta al cliente sotto forma non necessariamente di outputstream
  * 'text/html' (come nel funzionamento standard delle applicazioni web),
@@ -97,27 +96,6 @@ import it.col.util.Utils;
  * elabora anche un nome univoco per ogni file generato, basandosi sul
  * timestamp dell'estrazione/richiesta.
  * </p>
- * <p>
- * La classe che realizza l'azione deve implementare l'interfaccia
- * Command e, dopo aver eseguito le azioni necessarie, restituire
- * un set di risultati che dovr&agrave; essere utilizzato per
- * visualizzare i dati all'interno dei files serviti, ai quali
- * sarà fatto un forward.
- * </p>
- * L'azione presente nell'URL deve avere il seguente formato:
- * <pre>&lt;entToken&gt;=&lt;nome&gt;</pre>
- * dove 'nome' è il valore del parametro 'entToken' che identifica
- * l'azione da compiere al fine di generare i record.<br />
- * Oltre al parametro <code>'entToken'</code> possono essere presenti anche
- * eventuali altri parametri, ma essi non hanno interesse nel contesto
- * della presente classe, venendo incapsulati nella HttpServletRequest
- * e quindi inoltrati alla classe Command che deve fare il lavoro di
- * estrazione. Normalmente, tali altri parametri possono essere presenti
- * sotto forma di parametri sulla querystring, ma anche direttamente
- * settati nella request; ci&ograve; non interessa alcunch&eacute; ai fini
- * del funzionamento della presente classe.
- * </p>
- * <p>
  * Altre modalit&agrave; di generazione di output differenti da 'text/html'
  * (chiamate a pagine .jsp che incorporano la logica di preparazione del CSV,
  * chiamate a pagina .jsp che si occupano di presentare il metadato...)
@@ -130,43 +108,37 @@ import it.col.util.Utils;
 public class Data extends HttpServlet implements Constants {
 
     /**
-     * La serializzazione necessita della dichiarazione
-     * di una costante di tipo long identificativa della versione seriale.
-     * (Se questo dato non fosse inserito, verrebbe calcolato in maniera automatica
-     * dalla JVM, e questo potrebbe portare a errori riguardo alla serializzazione).
+     * Serialization requires the declaration
+     * of a long constant identifying the serial version.
+     * (If this data is not entered, it will be calculated automatically
+     * by the JVM, and this could lead to errors regarding serialization).
      */
     private static final long serialVersionUID = -7053908837630394953L;
     /**
-     * Nome di questa classe
-     * (viene utilizzato per contestualizzare i messaggi di errore)
+     * Static name of this class
      */
     private static final String FOR_NAME = "\n" + Logger.getLogger(Data.class.getName()) + COLON + BLANK_SPACE;
     /**
-     * Logger della classe per scrivere i messaggi di errore.
      * All logging goes through this logger.
      */
     private static Logger log = Logger.getLogger(Data.class.getName());
     /**
-     * Serve per inizializzare i rendirizzamenti con il servletToken
+     * Used to initialize redirects with the servletToken
      */
     private ServletContext servletContext;
 
 
     /**
-     * Inizializza (staticamente) le variabili globali e i parametri di inizializzazione.
+     * Static initialization of global variables and parameters.
      *
-     * @param config la configurazione usata dal servlet container per passare informazioni alla servlet <strong>durante l'inizializzazione</strong>
-     * @throws ServletException una eccezione che puo' essere sollevata quando la servlet incontra difficolta'
+     * @param config the configuration used by the servlet container to pass information to the servlet <strong>during initialization</strong>
+     * @throws ServletException an exception that can be raised when the servlet encounters difficulties
      */
     @Override
     public void init(ServletConfig config) throws ServletException {
-        /*
-         *  Inizializzazione da superclasse
-         */
+        // Initialization from its parent
         super.init(config);
-        /*
-         *  Inizializzazione del servletToken
-         */
+        // ServletToken Initialization
         servletContext = getServletContext();
     }
 
@@ -178,62 +150,162 @@ public class Data extends HttpServlet implements Constants {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse res)
                     throws ServletException, IOException {
-        String fileJsp = null;
         // Parser of parameters
         ParameterParser parser = new ParameterParser(req);
-        // Recupera o inizializza parametri per identificare la pagina
+        // Retrieve/initialize the operation got to do
         String operation = parser.getStringParameter(OPERATION, VOID_STRING);
-        log.info("===> Log su servlet Data. <===");
+        // Determine the page to forward, if there is one of those
+        String fileJsp = determinePage(operation);
+        // Here we are
+        log.info("===> Data servlet - operation: { " + operation + " } <===");
         // Message
         switch (operation) {
             case INSERT:
-                // TODO
+                // handleInsert(req, res);
                 break;
             case UPDATE:
-                // TODO
+                // handleUpdate(req, res);
                 break;
             case DELETE:
-                // TODO
+                // handleDelete(req, res);
                 break;
             case SEND:
-                try {
-                    String body = getMessage(req);
-                    // Development environment
-                    if (DBManager.getDbName().endsWith("dev")) {
-                        Properties credentials = this.getCredentials();
-                        final String username = credentials.getProperty("username"); // your SMTP2GO username
-                        final String password = credentials.getProperty("password"); // your SMTP2GO password or API key
-                        MailManager.sendEmail(body, username, password);
-                    } else {    // Production environment
-                        MailManager.sendEmail(body);
-                    }
-                    makeTXT(req, res, body + DBManager.getDbName());
-                    log.info("===> Email inviata. <===");
-                    return;
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                break;
+                handleSendEmail(req, res);  // ← Extracted externally
+                return; // Early return since email completes response
             default:
+                log.warning("Unknown operation: { " + operation + " }");
                 break; // Not required here, still here for consistency
         }
-        // Forward
-        RequestDispatcher dispatcher = servletContext.getRequestDispatcher(fileJsp);
+        if (fileJsp != null) {
+            // Common Forward logic (only reached for non-SEND operations)
+            RequestDispatcher dispatcher = servletContext.getRequestDispatcher(fileJsp);
+            dispatcher.forward(req, res);
+        }
+    }
+
+    
+    /**
+     * Determines the JSP page to forward to based on the requested operation.
+     * Returns <code>null</code> for operations that complete their own response
+     * (like SEND). Maps operations to their corresponding JSP views.
+     * 
+     * <p><strong>Mapping:</strong></p>
+     * <ul>
+     * <li>{@link #INSERT} → <code>/insert.jsp</code></li>
+     * <li>{@link #UPDATE} → <code>/update.jsp</code></li>
+     * <li>{@link #DELETE} → <code>/delete.jsp</code></li>
+     * <li>Other operations → <code>null</code> (no forward needed)</li>
+     * </ul>
+     * 
+     * @param operation the operation parameter from request (e.g. "insert", "update")
+     * @return JSP path (e.g. "/insert.jsp") or <code>null</code> if no forward needed
+     */
+    private static String determinePage(String operation) {
+        return switch (operation) {
+            case INSERT -> "/jsp/insert.jsp";
+            case UPDATE -> "/jsp/update.jsp";
+            case DELETE -> "/jsp/delete.jsp";
+            default -> null;  // SEND or unknown ops handle their own response
+        };
+    }
+
+    
+    /**
+     * Forwards the request to a common error page, preserving error information
+     * as a request attribute for JSP display. Sets HTTP 400 status for bad requests.
+     * 
+     * <p>Used by handler methods when business logic fails (validation, database,
+     * email sending, etc.). The error page can display a message
+     * to users and log details for debugging.</p>
+     * 
+     * <pre>
+     * req.setAttribute("error", "Email sending failed: Connection timeout");
+     * forwardToErrorPage(req, res);
+     * </pre>
+     * 
+     * @param req the request with "error" attribute already set by caller
+     * @param res the response (status set to 400 Bad Request)
+     * @throws ServletException if forward fails
+     * @throws IOException if forward fails
+     */
+    private void forwardToErrorPage(HttpServletRequest req, HttpServletResponse res) 
+                             throws ServletException, IOException {
+        res.setStatus(HttpServletResponse.SC_BAD_REQUEST);  // 400
+        RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/error.jsp");  // Common error page
         dispatcher.forward(req, res);
+    }
+    
+    
+    /* **************************************************************** *
+     * Methods for generating tuples with some presentation (RTF, HTML) *
+     * **************************************************************** */
+    
+    /**
+     * Handles the SEND operation by extracting the email message from the request,
+     * sending it via MailManager, and generating a confirmation TXT response.
+     * Completes the HTTP response directly - no JSP forward required.
+     * 
+     * <p><strong>Flow:</strong></p>
+     * <ul>
+     * <li>Extracts email body from request parameters</li>
+     * <li>Delegates to {@link #sendEmail(String)} for environment-aware sending</li>
+     * <li>Calls {@link #makeTXT} for response logging</li>
+     * <li>Early return - bypasses JSP forwarding</li>
+     * </ul>
+     * 
+     * @param req the HTTP request containing email message parameters
+     * @param res the HTTP response for TXT confirmation output
+     * @throws ServletException if servlet processing fails
+     * @throws IOException if response writing fails
+     */
+    private void handleSendEmail(HttpServletRequest req, HttpServletResponse res) 
+                          throws ServletException, IOException {
+        try {
+            String body = getMessage(req);
+            sendEmail(body);  // Single responsibility
+            makeTXT(req, res, body + DBManager.getDbName());
+            log.info("===> Email sent successfully <===");
+        } catch (Exception e) {
+            log.severe("Failed to send email: " + e.getLocalizedMessage());
+            // Set error attribute for JSP
+            req.setAttribute("error", "Email sending failed: " + e.getMessage());
+            // Forward to error page instead of crashing
+            forwardToErrorPage(req, res);
+        }
     }
 
 
+    /**
+     * Sends email using environment-specific configuration.
+     * 
+     * <p>In <strong>development</strong> (DB name ends with "dev"), 
+     * uses SMTP2GO credentials from {@link #getCredentials()} properties. 
+     * In <strong>production</strong>, uses default MailManager configuration 
+     * (likely application server mail session).</p>
+     * 
+     * <pre>
+     * DEV:   MailManager.sendEmail(body, username, password)
+     * PROD:  MailManager.sendEmail(body)
+     * </pre>
+     * 
+     * @param body the email content to send
+     * @throws IOException if email delivery fails (logged by caller)
+     * @throws Exception if some pointer is wrong
+     */
+    private void sendEmail(String body) 
+            throws IOException, Exception {
+        String subject = "Riepilogo Convenzioni in scadenza del " + Utils.format(Utils.getCurrentDate());
+        // Development environment
+        if (DBManager.getDbName().endsWith("dev")) {
+            Properties credentials = getCredentials();
+            final String username = credentials.getProperty("username"); // your SMTP2GO username
+            final String password = credentials.getProperty("password"); // your SMTP2GO password or API key
+            MailManager.sendEmail(body, username, password);
+        } else {    // Production environment
+            MailManager.sendEmail(subject, body);
+        }
+    }
     
-    /* **************************************************************** *
-     *    Metodi per generare tuple prive di presentazione (TEXT, CSV)  *
-     * **************************************************************** */
-    
-
-    
-    /* **************************************************************** *
-     *  Metodi per generare tuple con qualche presentazione (RTF, HTML) *
-     * **************************************************************** */
     
     /**
      * Extracts parameters from the given HttpServletRequest and 
@@ -242,7 +314,7 @@ public class Data extends HttpServlet implements Constants {
      * This method reads data from the HTTP request (such as parameters),
      * processes it, and returns a message string. 
      * It throws CommandException on failure
-     * to signal problems during message composition or parameters processing.
+     * to report problems during message composition or parameters processing.
      *
      * @param req the HttpServletRequest object containing the client request data
      * @return the generated message as a String
@@ -296,13 +368,19 @@ public class Data extends HttpServlet implements Constants {
         return String.valueOf(message);
     }
     
+
     /* **************************************************************** *
-     *      Metodi utilizzati per servire richieste asincrone (XHR)     *
+     *         Methods for serving asynchronous requests (XHR)          *
+     * **************************************************************** */
+
+    
+    /* **************************************************************** *
+     *    Methods for generating presentation-free tuples  (TEXT, CSV)  *
      * **************************************************************** */
     
 
     /* **************************************************************** *
-     *   Metodi per la preparazione e la generazione dei files di dati  *
+     *   Utility methods for generating output  *
      * **************************************************************** */
 
     /**
