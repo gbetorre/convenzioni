@@ -93,7 +93,7 @@
     </error-page>
     <error-page>
       <error-code>408</error-code>
-      <location>/html/requestTimeout.html</location>
+      <location>/html/408-requestTimeout.html</location>
     </error-page>
     <error-page>
       <error-code>414</error-code>
