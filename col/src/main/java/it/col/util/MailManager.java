@@ -43,6 +43,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -60,6 +61,8 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import it.col.Data;
+
 
 /**
  * <p>This class contains methods for sending emails.</p> 
@@ -69,6 +72,11 @@ import javax.mail.internet.MimeMultipart;
  */
 public class MailManager {
 
+    /**
+     * All logging goes through this logger.
+     */
+    private static Logger log = Logger.getLogger(Data.class.getName());
+    
     
     /**
      * <p>Sends an email message using the provided JavaMail Session.
@@ -166,14 +174,42 @@ public class MailManager {
 
     
     /**
-
+     * Sends an HTML email via University SMTP server (no authentication).
+     * 
+     * <p><strong>Configuration (Production):</strong></p>
+     * <ul>
+     * <li><strong>SMTP Host:</strong> <code>smtp.univr.it:25</code> (no TLS/auth)</li>
+     * <li><strong>To:</strong> Multiple university recipients (comma-separated)</li>
+     * <li><strong>From:</strong> <code>convenzioniecentri@ateneo.univr.it</code> (official)</li>
+     * <li><strong>Subject:</strong> <code>param</code></li>
+     * </ul>
+     * 
+     * <p><strong>Recipients (hardcoded):</strong></p>
+     * <pre>
+     * lindamaria.frigo@univr.it
+     * giovanni.olivieri@univr.it  
+     * elisa.puddu@univr.it
+     * francesca.limberto@univr.it
+     * giovanroberto.torre@univr.it
+     * </pre>
+     * 
+     * <p><strong>Usage:</strong> Production environment default (no credentials needed).
+     * {@code MailManager.sendEmail(subject, body);}
+     * 
+     * <p><strong>Security Note:</strong> Port 25, no auth/TLS - internal university network only.</p>
+     * 
+     * @param subject the subject shown on the e-mail
+     * @param body the HTML email content to send
+     * @return success message "Email inviata" (Email sent)
+     * @throws Exception wraps {@link MessagingException} with Italian error message
      */
-    public static String sendEmail(String body) throws Exception {
+    public static String sendEmail(String subject, 
+                                   String body) 
+                            throws Exception {
         String mailTo = "lindamaria.frigo@univr.it, giovanni.olivieri@univr.it, elisa.puddu@univr.it, francesca.limberto@univr.it, giovanroberto.torre@univr.it";
         //String mailTo = "giovanroberto.torre@univr.it";
         InternetAddress[] addresses = InternetAddress.parse(mailTo);
         String mailFrom = "convenzioniecentri@ateneo.univr.it";
-        String subject = "Richiesta";
         String mailContent = new String(body); 
         Properties props = System.getProperties();  // Get system properties
         props.put("mailTo", mailTo);
@@ -205,8 +241,32 @@ public class MailManager {
     
     
     /**
-
+     * Send an HTML email with the body content as the message and 
+     * the username and password passed as parameters as the login credentials.
+     * 
+     * <p><strong>Configuration (Test):</strong></p>
+     * <ul>
+     * <li><strong>SMTP Host:</strong> <code>mail.smtp2go.com:587</code> (STARTTLS)</li>
+     * <li><strong>To:</strong> (hardcoded)</li>
+     * <li><strong>From:</strong> <code>giovanroberto.torre@univr.eu</code></li>
+     * <li><strong>Subject:</strong> <code>"Richiesta"</code></li>
+     * <li><strong>Content:</strong> HTML body with UTF-8 charset</li>
+     * </ul>
+     * 
+     * <p><strong>Timeouts:</strong> 10 seconds for connection and socket operations.</p>
+     * 
+     * <p><strong>Usage in servlet:</strong></p>
+     * {@code
+     * MailManager.sendEmail(body, "smtp2go_username", "smtp2go_api_key");
+     * }
+     * 
+     * @param body the HTML email content to send
+     * @param username SMTP2GO username (email address)
+     * @param password SMTP2GO password or API key
+     * @return success message "Email inviata" (Email sent)
+     * @throws Exception wraps {@link MessagingException} with Italian error message for servlet error handling
      */
+    
     public static String sendEmail(String body, String username, String password) 
             throws Exception {
         //String mailTo = "albertomaria.arenaagostino@univr.it";
@@ -214,7 +274,7 @@ public class MailManager {
         String mailTo = "giovanroberto.torre@univr.it";
         InternetAddress[] addresses = InternetAddress.parse(mailTo);
         String mailFrom = "giovanroberto.torre@univr.eu";
-        String subject = "Richiesta";
+        String subject = "Riepilogo del " + Utils.format(Utils.getCurrentDate()) + " [TEST]";
         String mailContent = new String(body); 
         Properties props = System.getProperties();  // Get system properties
         props.put("mailTo", mailTo);
@@ -225,30 +285,29 @@ public class MailManager {
         props.put("mail.smtp.connectiontimeout", "10000"); // 10 seconds
         props.put("mail.smtp.timeout", "10000"); // 10 seconds
         Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+            @Override
             protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
                 return new javax.mail.PasswordAuthentication(username, password);
             }
         });
-        
+        // Make the message
         try {
             MimeMessage message = new MimeMessage(session); // Define message
             message.setFrom(new InternetAddress(mailFrom)); // Set the from address
             //message.addRecipient(Message.RecipientType.TO, new InternetAddress(mailTo));    // Set the to address
             message.setRecipients(Message.RecipientType.TO, addresses);
             message.setSubject(subject, "UTF-8");
-            //message.setContent(mailContent, "text/html");   // Set the content
-            message.setContent(mailContent, Constants.MIME_TYPE_HTML + "; charset=UTF-8");
+            message.setContent(mailContent, Constants.MIME_TYPE_HTML + "; charset=UTF-8");  // Set the content
             Transport.send(message);                    // Send message
         } catch (MessagingException mex) {
             String msg = "Si e\' verificato un problema nel processamento del messaggio.\n" + mex.getMessage();
-            //log.warning(msg);
+            log.warning(msg);
             throw new Exception(msg, mex);
         } catch (Exception ex) {
             String msg = "Si e\' verificato un problema generico.\n" + ex.getMessage();
             //log.warning(msg);
             throw new Exception(msg, ex);
         }
-
         return "Email inviata";
     }
     
