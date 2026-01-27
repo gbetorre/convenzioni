@@ -1,4 +1,6 @@
-
+/*  Paginathing pagination library, 
+    a jQuery plugin to paginate your DOM easily;
+    by https://github.com/alfrcr/paginathing.   */ 
 
 .pagination-container {
   text-align: right;
@@ -10,8 +12,7 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  /*gap: 0.5em;*/
-  --bs-pagination-active-bg: #A9A9A9;
+  --bs-pagination-active-bg: #a9a9a9;
 }
 
 .pagination li {
