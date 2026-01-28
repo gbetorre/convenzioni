@@ -97,7 +97,7 @@
     </error-page>
     <error-page>
       <error-code>414</error-code>
-      <location>/html/requestURITooLong.html</location>
+      <location>/html/414-requestURITooLong.html</location>
     </error-page>
     <error-page>
       <error-code>415</error-code>
