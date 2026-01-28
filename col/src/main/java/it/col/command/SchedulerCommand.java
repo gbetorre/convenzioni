@@ -41,6 +41,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -48,6 +50,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.oreilly.servlet.ParameterParser;
 
 import it.col.ConfigManager;
+import it.col.Data;
 import it.col.Main;
 import it.col.SessionManager;
 import it.col.bean.CodeBean;
@@ -64,10 +67,10 @@ import it.col.util.Utils;
 
 
 /** 
- * <p><code>ConventionCommand.java</code> (co)<br />
- * It contains the logic to manage the agreements.</p>
+ * <p><code>SchedulerCommand.java</code> (sc)<br />
+ * It contains the logic to schedule the agreements.</p>
  * 
- * <p>Created on 2025-09-18 16:27:27</p>
+ * <p>First commit on 2025-10-01 18:40:28</p>
  * 
  * @author <a href="mailto:gianroberto.torre@gmail.com">Giovanroberto Torre</a>
  */
@@ -84,7 +87,97 @@ public class SchedulerCommand extends CommandBean implements Command, Constants 
     /**
      *  Log for production debug
      */
-    protected static Logger LOG = Logger.getLogger(Main.class.getName());
+    static Logger log = Logger.getLogger(SchedulerCommand.class.getName());
+    /**
+     * <p>DataBound.</p>
+     * <p>It is defined as:<dl>
+     * <dt>static variable</dt>
+     * <dd>in order to be able to use it in static blocks
+     * (e.g., static initialization block)</dd>
+     * <dt>class variable</dt>
+     * <dd>so that it can be evaluated during initialization and then used 
+     * throughout the code</dd>
+     * <dt>initialized variable</dt>
+     * <dd>to facilitate the application of the <code>Singleton pattern</code>, 
+     * which must be used at every possible instantiation, 
+     * thus avoiding the generation of multiple instantiations. </dd></dl>
+     * <small>NOTE: Local variables, both method and block variables, 
+     * <cite id="horton">must always be initialized at the time 
+     * of their definition. However, this does not apply to 
+     * class and instance variables, which can only be
+     * declared in the context of the class definition and must be
+     * initialized subsequently.</cite> 
+     * In this case, as a precaution, this rule is waived 
+     * for the reasons mentioned above. </small> 
+     * <p>The variable is not private but Default for the same reasons 
+     * that the visibility of the Logger instance is not 
+     * private; leaving it private would cause a:
+     * <pre>Write access to enclosing field SchedulerCommand.db is emulated by a synthetic accessor method</pre>
+     * That is to say that it would create a method 
+     * <code>getDb()</code> behind the scenes to guarantee access to the private field
+     *; it is therefore preferable to open visibility directly 
+     * at the package level, as it himself suggests:<br>
+     * <code>Quick fix:</code>
+     * <pre>Change visiblility of 'db' to 'package'</pre></p>
+     */
+    static DBWrapper db = null;
+    /**
+     * <p>Given that one nanosecond equals 1, the same amount of time
+     * expressed in other units can be obtained 
+     * by using appropriate divisors, as in the following table:
+     * <dl>
+     * <dt>microseconds</dt>
+     * <dd>10<sup>-3</sup></dd>
+     * <dt>milliseconds</dt>
+     * <dd>10<sup>-6</sup></dd>
+     * <dt>seconds</dt>
+     * <dd>10<sup>-9</sup></dd>
+     * <dt>minutes</dt>
+     * <dd>1.67 × 10<sup>-11</sup></dd>
+     * <dt>hours</dt>
+     * <dd>2.78 × 10<sup>-13</sup></dd>
+     * <dt>days</dt>
+     * <dd>1.16 × 10<sup>-14</sup></dd>
+     * </dl>
+     * Therefore, to convert a time expressed in milliseconds, 
+     * such as that provided by the System class, 
+     * simply define numbers with the size of the divisors, 
+     * and place them in the denominator.
+     */
+    public static final double SECOND_DIVISOR = 1E9D;
+    /**
+     * <p>Time, in milliseconds, at which you want to refresh</p>
+     * <p>From the documentation of the constant for the divisor of the time elapsed
+     * for the execution of the thread, it can be seen that between seconds and milliseconds
+     * there are 3 zeros to add to the exponent, so the milliseconds
+     * are separated from seconds by “only” 3 orders of magnitude; 
+     * on the other hand, a second is by definition composed
+     * of 1 x 10³ ms.
+     * <p>Therefore, to obtain the scheduled time for the refresh
+     * in milliseconds, we multiply that time in minutes (e.g., 60)
+     * by 60 (to get the seconds), then by 1000 
+     * (to get the milliseconds).<br>
+     * In practice:<dl>
+     * <dt>SCHEDULED_TIME = 1000</dt>
+     * <dd>→ 1"</dd>
+     * <dt>SCHEDULED_TIME = 1000 * 60</dt>
+     * <dd>→ 1'</dd>
+     * <dt>SCHEDULED_TIME = 1000 * 60 * 60</dt>
+     * <dd>→ 1h</dd>
+     * <dt>SCHEDULED_TIME = 1000 * 60 * 60 * 6</dt>
+     * <dd>→ 6h</dd>
+     * and so on...
+     * </dl>
+     *  By adding additional factors,
+     * the scheduling times can be increased.
+     */
+    static final long SCHEDULED_TIME = 1000 * 60 * 60 * 24 * 7;
+    /** 
+     * Timer to schedule the update
+     */
+    private static Timer updateTimer = new Timer();
+    // Data di oggi sotto forma di oggetto Date
+    //java.util.Date today = Utils.convert(Utils.getCurrentDate());
     /**
      *  Map of pages managed by this Command
      */    
@@ -93,6 +186,44 @@ public class SchedulerCommand extends CommandBean implements Command, Constants 
      *  SELECT List page
      */    
     private static final CodeBean elenco = new CodeBean("scElenco.jsp", "Scadenze [COL]");
+    
+    
+    /**
+     * Blocco statico di inizializzazione per lanciare il ricalcolo e 
+     * l'aggiornamento degli stati delle attivit&agrave;, calcolati all'atto
+     * del salvataggio delle attivit&agrave; stesse, ma da aggiornare 
+     * ogni <em>tot</em> time, perch&egrave; lo stato cambia in funzione 
+     * del tempo che scorre (p.es. un'attivit&agrave; che ieri doveva essere
+     * chiusa, ieri era <cite>&quot;in regola&quot;</cite> ma da oggi, 
+     * se non ha ancora data fine effettiva, diventa 
+     * <cite>&quot;in ritardo&quot;</cite>.
+     */
+    static {
+        log.info(FOR_NAME + "Blocco statico di inizializzazione. ");
+        // Delay: 0 millisecondi
+        // Repeat: ogni 7 giorni
+        updateTimer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                long startTime = System.nanoTime();
+                Date start = Utils.convert(Utils.getCurrentDate());
+                Date end = Utils.convert(Utils.getDate(0, 12, 0));
+
+                int[] convenzioniUO = {1}; 
+                Data.handleSendEmail(convenzioniUO, start, end);
+                log.info(FOR_NAME + "E-mail inviata: " + convenzioniUO);
+                int[] organiUO = {3}; 
+                Data.handleSendEmail(organiUO, start, end);
+                log.info(FOR_NAME + "E-mail inviata: " + organiUO);
+                int[] headUO = {1, 3};
+                Data.handleSendEmail(headUO, start, end);
+                log.info(FOR_NAME + "E-mail inviata: " + headUO);
+
+                long elapsedTime = System.nanoTime() - startTime;
+                log.config(FOR_NAME + "Stati attivita\' aggiornati in " + elapsedTime / SECOND_DIVISOR + "\"");
+                log.info(FOR_NAME + "End run()");
+            }
+        }, 0, SCHEDULED_TIME); // Refresh in SCHEDULED_TIME milliseconds
+    }
     
 
     /** 
@@ -269,15 +400,15 @@ public class SchedulerCommand extends CommandBean implements Command, Constants 
 
         } catch (IllegalStateException ise) {
             String msg = FOR_NAME + "Impossibile redirigere l'output. Verificare se la risposta e\' stata gia\' committata.\n";
-            LOG.severe(msg);
+            log.severe(msg);
             throw new CommandException(msg + ise.getMessage(), ise);
         } catch (NullPointerException npe) {
             String msg = FOR_NAME + "Si e\' verificato un puntamento a null.\n";
-            LOG.severe(msg);
+            log.severe(msg);
             throw new CommandException(msg + npe.getMessage(), npe);
         } catch (Exception e) {
             String msg = FOR_NAME + "Si e\' verificato un problema.\n";
-            LOG.severe(msg);
+            log.severe(msg);
             throw new CommandException(msg + e.getMessage(), e);
         }
         /* ******************************************************************** *
