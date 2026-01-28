@@ -90,7 +90,7 @@ public class ConventionCommand extends CommandBean implements Command, Constants
     /**
      *  Log for production debug
      */
-    protected static Logger LOG = Logger.getLogger(Main.class.getName());
+    protected static Logger log = Logger.getLogger(ConventionCommand.class.getName());
     /**
      *  Map of pages managed by this Command
      */    
@@ -383,23 +383,23 @@ public class ConventionCommand extends CommandBean implements Command, Constants
         // We have a situation here...
         }  catch (WebStorageException wse) {
             String msg = FOR_NAME + "Si e\' verificato un problema di valori dal db.\n";
-            LOG.severe(msg);
+            log.severe(msg);
             throw new CommandException(msg + wse.getMessage(), wse);
         } catch (CommandException ce) {
             String msg = FOR_NAME + "Si e\' tentato di effettuare un\'operazione non andata a buon fine.\n";
-            LOG.severe(msg);
+            log.severe(msg);
             throw new CommandException(msg + ce.getMessage(), ce);
         } catch (IllegalStateException ise) {
             String msg = FOR_NAME + "Impossibile redirigere l'output. Verificare se la risposta e\' stata gia\' committata.\n";
-            LOG.severe(msg);
+            log.severe(msg);
             throw new CommandException(msg + ise.getMessage(), ise);
         } catch (NullPointerException npe) {
             String msg = FOR_NAME + "Si e\' verificato un puntamento a null.\n";
-            LOG.severe(msg);
+            log.severe(msg);
             throw new CommandException(msg + npe.getMessage(), npe);
         } catch (Exception e) {
             String msg = FOR_NAME + "Si e\' verificato un problema.\n";
-            LOG.severe(msg);
+            log.severe(msg);
             throw new CommandException(msg + e.getMessage(), e);
         }
         /* ******************************************************************** *
@@ -616,7 +616,7 @@ public class ConventionCommand extends CommandBean implements Command, Constants
             return retrieveConventions(user, start, end, db);
         } catch (WebStorageException wse) {
             String msg = FOR_NAME + "Si e\' verificato un problema nella creazione del databound.\n";
-            LOG.severe(msg);
+            log.severe(msg);
             throw new CommandException(msg + wse.getMessage(), wse);
         }
     }
@@ -643,15 +643,15 @@ public class ConventionCommand extends CommandBean implements Command, Constants
             conventions = db.getConventions(user, start, end);
         } catch (WebStorageException wse) {
             String msg = FOR_NAME + "Si e\' verificato un problema nel recupero.\n";
-            LOG.severe(msg);
+            log.severe(msg);
             throw new CommandException(msg + wse.getMessage(), wse);
         } catch (NullPointerException npe) {
             String msg = FOR_NAME + "Si e\' verificato un problema di puntamento a null.\n Attenzione: controllare di essere autenticati nell\'applicazione!\n";
-            LOG.severe(msg);
+            log.severe(msg);
             throw new CommandException(msg + npe.getMessage(), npe);
         } catch (Exception e) {
             String msg = FOR_NAME + "Si e\' verificato un problema.\n";
-            LOG.severe(msg);
+            log.severe(msg);
             throw new CommandException(msg + e.getMessage(), e);
         }
         return conventions;
@@ -676,7 +676,7 @@ public class ConventionCommand extends CommandBean implements Command, Constants
             // Input validation
             if (c == null || generalPurposes == null) {
                 String msg = FOR_NAME + "Parametri di input non corretti.\n";
-                LOG.severe(msg);
+                log.severe(msg);
                 throw new CommandException(msg);
             }
             ArrayList<CodeBean> updatedScopes = new ArrayList<>(generalPurposes.size());
@@ -700,7 +700,7 @@ public class ConventionCommand extends CommandBean implements Command, Constants
             return updatedScopes;   
         } catch (Exception e) {
             String msg = FOR_NAME + "Si e\' verificato un problema.\n";
-            LOG.severe(msg);
+            log.severe(msg);
             throw new CommandException(msg + e.getMessage(), e);
         }
     }
