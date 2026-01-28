@@ -75,103 +75,8 @@ public class MailManager {
     /**
      * All logging goes through this logger.
      */
-    private static Logger log = Logger.getLogger(Data.class.getName());
-    
-    
-    /**
-     * <p>Sends an email message using the provided JavaMail Session.
-     * This method creates a MimeMessage using the given session, sets the recipient, subject,
-     * and body content, then sends the email via Transport.send(). 
-     * It assumes the session is properly configured 
-     * for SMTP authentication and connection.</p>
-     * 
-     * @param session the JavaMail Session configured with SMTP server details and authentication
-     * @param toEmail the recipient email address to which the message will be sent
-     * @param subject the subject line of the email message
-     * @param body the main content or body text of the email message
-    */
-    public static void sendEmail(Session session, 
-                                 String toEmail, 
-                                 String subject, 
-                                 String body) {
-        try {
-            MimeMessage msg = new MimeMessage(session);
-            // Set message headers
-            msg.addHeader("Content-type", "text/HTML; charset=UTF-8");
-            msg.addHeader("format", "flowed");
-            msg.addHeader("Content-Transfer-Encoding", "8bit");
-
-            msg.setFrom(new InternetAddress("gianroberto.torre@gmail.com", "Team Leader"));
-
-            msg.setReplyTo(InternetAddress.parse("no_reply@example.com", false));
-
-            msg.setSubject(subject, "UTF-8");
-
-            msg.setText(body, "UTF-8");
-
-            msg.setSentDate(new Date());
-
-            msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail, false));
-            System.out.println("Message is ready");
-            Transport.send(msg);
-
-            System.out.println("EMail Sent Successfully!!");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    
-    
-    /**
-
-     */
-    public static String sendEmail() throws Exception {
-        //String mailTo = "albertomaria.arenaagostino@univr.it";
-        //String mailTo = "lindamaria.frigo@univr.it, giovanni.olivieri@univr.it, elisa.puddu@univr.it, francesca.limberto@univr.it";
-        String mailTo = "giovanroberto.torre@univr.it";
-        InternetAddress[] addresses = InternetAddress.parse(mailTo);
-        String mailFrom = "giovanroberto.torre@univr.it";
-        String subject = "Richiesta";
-        StringBuffer content = new StringBuffer("TEST riepilogo scadenze");
-        content.append("<br><br>")
-               .append("prova")
-               .append("<br><br>")
-               .append("prova")
-               .append("<br><br>")
-               .append("prova")
-               .append("<br><br>")
-               .append("prova")
-               .append("<br>")
-               .append("firma");
-        String mailContent = new String(content); 
-        Properties props = System.getProperties();  // Get system properties
-        props.put("mailTo", mailTo);
-        props.put("mail.smtp.host", "smtp.univr.it");
-        props.put("mail.smtp.port", "25");
-        props.put("mail.smtp.auth", "false");
-        props.put("mail.smtp.starttls.enable", "false");
-        Session session = Session.getInstance(props);   // Get session
-        try {
-            MimeMessage message = new MimeMessage(session); // Define message
-            message.setFrom(new InternetAddress(mailFrom)); // Set the from address
-            //message.addRecipient(Message.RecipientType.TO, new InternetAddress(mailTo));    // Set the to address
-            message.setRecipients(Message.RecipientType.TO, addresses);
-            message.setSubject(subject);
-            message.setContent(mailContent, "text/html");   // Set the content
-            Transport.send(message);                    // Send message
-        } catch (MessagingException mex) {
-            String msg = "Si e\' verificato un problema nel processamento del MimeMessage.\n" + mex.getMessage();
-            //log.warning(msg);
-            throw new Exception(msg, mex);
-        } catch (Exception ex) {
-            String msg = "Si e\' verificato un problema generico.\n" + ex.getMessage();
-            //log.warning(msg);
-            throw new Exception(msg, ex);
-        }
-
-        return "Email inviata";
-    }
-
+    private static Logger log = Logger.getLogger(MailManager.class.getName());
+      
     
     /**
      * Sends an HTML email via University SMTP server (no authentication).
@@ -308,6 +213,107 @@ public class MailManager {
             //log.warning(msg);
             throw new Exception(msg, ex);
         }
+        return "Email inviata";
+    }
+    
+    
+    /**
+
+     */
+    public static String sendEmail(int[] groupIds,
+                                   String subject,
+                                   String body) 
+                            throws Exception {
+        String mailTo = null;
+        // TODO: there is a naming here, this gotta be optimized dinamically, after 
+        if (groupIds.length == 1) {
+            if (groupIds[0] == 1) {
+                mailTo = "lindamaria.frigo@univr.it, giovanni.olivieri@univr.it, elisa.puddu@univr.it, francesca.limberto@univr.it, giovanroberto.torre@univr.it";
+            } else if (groupIds[0] == 3) {
+                mailTo = "mauro.recchia@univr.it, teresa.dalmaso@univr.it, giovanroberto.torre@univr.it";
+            }
+        } else if (groupIds.length > 1) {
+            mailTo = "elisa.silvestri@univr.it, giovanroberto.torre@univr.it";
+        }
+        InternetAddress[] addresses = InternetAddress.parse(mailTo);
+        String mailFrom = "convenzioniecentri@ateneo.univr.it";
+        String mailContent = new String(body); 
+        Properties props = System.getProperties();  // Get system properties
+        props.put("mailTo", mailTo);
+        props.put("mail.smtp.host", "smtp.univr.it");
+        props.put("mail.smtp.port", "25");
+        props.put("mail.smtp.auth", "false");
+        props.put("mail.smtp.starttls.enable", "false");
+        Session session = Session.getInstance(props);   // Get session
+        try {
+            MimeMessage message = new MimeMessage(session); // Define message
+            message.setFrom(new InternetAddress(mailFrom)); // Set the from address
+            //message.addRecipient(Message.RecipientType.TO, new InternetAddress(mailTo));    // Set the to address
+            message.setRecipients(Message.RecipientType.TO, addresses);
+            message.setSubject(subject, "UTF-8");
+            //message.setContent(mailContent, "text/html");   // Set the content
+            message.setContent(mailContent, Constants.MIME_TYPE_HTML + "; charset=UTF-8");
+            Transport.send(message);                    // Send message
+        } catch (MessagingException mex) {
+            String msg = "Si e\' verificato un problema nel processamento del messaggio.\n" + mex.getMessage();
+            //log.warning(msg);
+            throw new Exception(msg, mex);
+        } catch (Exception ex) {
+            String msg = "Si e\' verificato un problema generico.\n" + ex.getMessage();
+            //log.warning(msg);
+            throw new Exception(msg, ex);
+        }
+        return "Email inviata";
+    }
+    
+    
+    /**
+
+     */
+    public static String sendEmail() throws Exception {
+        //String mailTo = "albertomaria.arenaagostino@univr.it";
+        //String mailTo = "lindamaria.frigo@univr.it, giovanni.olivieri@univr.it, elisa.puddu@univr.it, francesca.limberto@univr.it";
+        String mailTo = "giovanroberto.torre@univr.it";
+        InternetAddress[] addresses = InternetAddress.parse(mailTo);
+        String mailFrom = "giovanroberto.torre@univr.it";
+        String subject = "Richiesta";
+        StringBuffer content = new StringBuffer("TEST riepilogo scadenze");
+        content.append("<br><br>")
+               .append("prova")
+               .append("<br><br>")
+               .append("prova")
+               .append("<br><br>")
+               .append("prova")
+               .append("<br><br>")
+               .append("prova")
+               .append("<br>")
+               .append("firma");
+        String mailContent = new String(content); 
+        Properties props = System.getProperties();  // Get system properties
+        props.put("mailTo", mailTo);
+        props.put("mail.smtp.host", "smtp.univr.it");
+        props.put("mail.smtp.port", "25");
+        props.put("mail.smtp.auth", "false");
+        props.put("mail.smtp.starttls.enable", "false");
+        Session session = Session.getInstance(props);   // Get session
+        try {
+            MimeMessage message = new MimeMessage(session); // Define message
+            message.setFrom(new InternetAddress(mailFrom)); // Set the from address
+            //message.addRecipient(Message.RecipientType.TO, new InternetAddress(mailTo));    // Set the to address
+            message.setRecipients(Message.RecipientType.TO, addresses);
+            message.setSubject(subject);
+            message.setContent(mailContent, "text/html");   // Set the content
+            Transport.send(message);                    // Send message
+        } catch (MessagingException mex) {
+            String msg = "Si e\' verificato un problema nel processamento del MimeMessage.\n" + mex.getMessage();
+            //log.warning(msg);
+            throw new Exception(msg, mex);
+        } catch (Exception ex) {
+            String msg = "Si e\' verificato un problema generico.\n" + ex.getMessage();
+            //log.warning(msg);
+            throw new Exception(msg, ex);
+        }
+
         return "Email inviata";
     }
     
