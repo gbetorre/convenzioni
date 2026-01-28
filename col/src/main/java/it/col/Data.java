@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
+import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.servlet.RequestDispatcher;
@@ -56,11 +57,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.oreilly.servlet.ParameterParser;
 
+import it.col.bean.CodeBean;
 import it.col.bean.Convenzione;
 import it.col.bean.PersonBean;
 import it.col.command.ConventionCommand;
 import it.col.db.DBManager;
-import it.col.db.DBWrapper;
 import it.col.exception.CommandException;
 import it.col.util.Constants;
 import it.col.util.MailManager;
@@ -157,7 +158,7 @@ public class Data extends HttpServlet implements Constants {
         // Determine the page to forward, if there is one of those
         String fileJsp = determinePage(operation);
         // Here we are
-        log.info("===> Data servlet - operation: { " + operation + " } <===");
+        log.info("===> Data Servlet - operation: { " + operation + " } <===");
         // Message
         switch (operation) {
             case INSERT:
@@ -237,7 +238,7 @@ public class Data extends HttpServlet implements Constants {
     
     
     /* **************************************************************** *
-     * Methods for generating tuples with some presentation (RTF, HTML) *
+     *  Non-static sending email methods (for sending emails on-demand) *
      * **************************************************************** */
     
     /**
@@ -274,38 +275,6 @@ public class Data extends HttpServlet implements Constants {
         }
     }
 
-
-    /**
-     * Sends email using environment-specific configuration.
-     * 
-     * <p>In <strong>development</strong> (DB name ends with "dev"), 
-     * uses SMTP2GO credentials from {@link #getCredentials()} properties. 
-     * In <strong>production</strong>, uses default MailManager configuration 
-     * (likely application server mail session).</p>
-     * 
-     * <pre>
-     * DEV:   MailManager.sendEmail(body, username, password)
-     * PROD:  MailManager.sendEmail(body)
-     * </pre>
-     * 
-     * @param body the email content to send
-     * @throws IOException if email delivery fails (logged by caller)
-     * @throws Exception if some pointer is wrong
-     */
-    private void sendEmail(String body) 
-            throws IOException, Exception {
-        String subject = "Riepilogo Convenzioni in scadenza del " + Utils.format(Utils.getCurrentDate());
-        // Development environment
-        if (DBManager.getDbName().endsWith("dev")) {
-            Properties credentials = getCredentials();
-            final String username = credentials.getProperty("username"); // your SMTP2GO username
-            final String password = credentials.getProperty("password"); // your SMTP2GO password or API key
-            MailManager.sendEmail(body, username, password);
-        } else {    // Production environment
-            MailManager.sendEmail(subject, body);
-        }
-    }
-    
     
     /**
      * Extracts parameters from the given HttpServletRequest and 
@@ -366,6 +335,125 @@ public class Data extends HttpServlet implements Constants {
         }
 
         return String.valueOf(message);
+    }    
+    
+    
+    /**
+     * Sends email using environment-specific configuration.
+     * 
+     * <p>In <strong>development</strong> (DB name ends with "dev"), 
+     * uses SMTP2GO credentials from {@link #getCredentials()} properties. 
+     * In <strong>production</strong>, uses default MailManager configuration 
+     * (likely application server mail session).</p>
+     * 
+     * <pre>
+     * DEV:   MailManager.sendEmail(body, username, password)
+     * PROD:  MailManager.sendEmail(body)
+     * </pre>
+     * 
+     * @param body the email content to send
+     * @throws IOException if email delivery fails (logged by caller)
+     * @throws Exception if some pointer is wrong
+     */
+    private void sendEmail(String body) 
+            throws IOException, Exception {
+        String subject = "Riepilogo Convenzioni in scadenza del " + Utils.format(Utils.getCurrentDate());
+        // Development environment
+        if (DBManager.getDbName().endsWith("dev")) {
+            Properties credentials = getCredentials();
+            final String username = credentials.getProperty("username"); // your SMTP2GO username
+            final String password = credentials.getProperty("password"); // your SMTP2GO password or API key
+            MailManager.sendEmail(body, username, password);
+        } else {    // Production environment
+            MailManager.sendEmail(subject, body);
+        }
+    }
+    
+    
+    /* **************************************************************** *
+     *          Static sending email methods (for schedule)             *
+     * **************************************************************** */
+    
+    /**
+
+     */
+    public static void handleSendEmail(int[] groupIds, Date start, Date end)  {
+        try {
+            String body = getMessage(groupIds, start, end);
+            sendEmail(groupIds, body);  // Single responsibility
+            log.info("===> Email sent successfully <===");
+        } catch (Exception e) {
+            log.severe("Failed to send email: " + e.getLocalizedMessage());
+        }
+    }
+    
+    
+    /**
+
+     */
+    private static String getMessage(int[] groupIds, Date from, Date to) 
+                              throws CommandException {
+        Vector<CodeBean> groups = new Vector<>();
+        PersonBean user = new PersonBean();
+        for (int i = 0; i < groupIds.length;  i++) {
+            CodeBean group = new CodeBean();
+            group.setId(groupIds[i]);
+            groups.add(group);
+        }
+        user.setGruppi(groups);
+        StringBuffer message = new StringBuffer("<p>Convenzioni in scadenza nell\'intervallo considerato: ");
+        // Gestisce la richiesta
+        try {
+            message.append("<strong>da ")
+                   .append(Utils.format(from))
+                   .append(" a ")
+                   .append(Utils.format(to))
+                   .append("</strong></p><hr><ol>");
+            ArrayList<Convenzione> conventions = ConventionCommand.retrieveConventions(user, from, to);
+            for (Convenzione c : conventions) {
+                message.append("<li> <a href='https://at.univr.it/col/?q=co&id=")
+                       .append(c.getId())
+                       .append("'>")
+                       .append(c.getTitolo())
+                       .append("</a> (<strong>scade il: ")
+                       .append(Utils.format(c.getDataScadenza()))
+                       .append("</strong>)</li>");
+            }
+            message.append("</ol>");
+        } catch (RuntimeException re) {
+            throw new CommandException(FOR_NAME + "Problema a livello dell\'autenticazione utente!\n" + re.getMessage(), re);
+        } catch (CommandException ce) {
+            String msg = FOR_NAME + "Si e\' verificato un problema. Impossibile visualizzare i risultati.\n" + ce.getLocalizedMessage();
+            log.severe(msg);
+            throw new CommandException(msg);
+        } catch (Exception e) {
+            String msg = FOR_NAME + "Si e\' verificato un problema.\n" + e.getLocalizedMessage();
+            log.severe(msg);
+            throw new CommandException(msg);
+        }
+
+        return String.valueOf(message);
+    }
+    
+    
+    /**
+     * 
+     * @param body the email content to send
+     * @throws IOException if email delivery fails (logged by caller)
+     * @throws Exception if some pointer is wrong
+     */
+    private static void sendEmail(int[] groupIds, String body) 
+                    throws IOException, Exception {
+        String subject = "Riepilogo Convenzioni in scadenza del " + Utils.format(Utils.getCurrentDate());
+        // Development environment
+        if (DBManager.getDbName().endsWith("dev")) {
+            Properties credentials = getCredentials();
+            final String username = credentials.getProperty("username"); // your SMTP2GO username
+            final String password = credentials.getProperty("password"); // your SMTP2GO password or API key
+            MailManager.sendEmail(body + " inviato da " + groupIds, username, password);
+        } else {    // Production environment
+            MailManager.sendEmail(groupIds, subject, body);
+        }
     }
     
 
@@ -563,10 +651,10 @@ public class Data extends HttpServlet implements Constants {
      * @return a java.util.Properties object containing the loaded username and password keys
      * @throws IOException if the properties file is not found or cannot be read
      */
-    public Properties getCredentials() 
+    public static Properties getCredentials() 
                               throws IOException {
         Properties props = new Properties();
-        try (InputStream input = getClass().getClassLoader().getResourceAsStream("credentials.properties")) {
+        try (InputStream input = Data.class.getClassLoader().getResourceAsStream("credentials.properties")) {
             if (input == null) {
                 throw new IOException("Credentials file not found in classpath");
             }
