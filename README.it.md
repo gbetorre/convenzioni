@@ -127,6 +127,7 @@ Il software è un'applicazione Java three-tier
 # History
 
 ```
+* [0.5.2] (Jan 28, 2026) Implementata schedulazione invio e-mail scadenze
 * [0.5.1] (Jan 27, 2026) Migliorie al codice
 * [0.5.0] (Jan 26, 2026) Migliorie di presentazione
 * [0.4.9] (Jan 13, 2026) Bugfix
