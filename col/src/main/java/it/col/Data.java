@@ -238,7 +238,7 @@ public class Data extends HttpServlet implements Constants {
     
     
     /* **************************************************************** *
-     *  Non-static sending email methods (for sending emails on-demand) *
+     *          Email methods : for sending emails on-demand            *
      * **************************************************************** */
     
     /**
@@ -262,9 +262,13 @@ public class Data extends HttpServlet implements Constants {
     private void handleSendEmail(HttpServletRequest req, HttpServletResponse res) 
                           throws ServletException, IOException {
         try {
+            // Build the message
             String body = getMessage(req);
-            sendEmail(body);  // Single responsibility
+            // Single responsibility
+            sendEmail(body);
+            // Save a txt log (just in case)
             makeTXT(req, res, body + DBManager.getDbName());
+            // Notify the success
             log.info("===> Email sent successfully <===");
         } catch (Exception e) {
             log.severe("Failed to send email: " + e.getLocalizedMessage());
@@ -293,14 +297,13 @@ public class Data extends HttpServlet implements Constants {
                               throws CommandException {
         // Parser of parameters
         ParameterParser parser = new ParameterParser(req);
-        // Recupera o inizializza parametri per identificare la pagina
-        String obj = parser.getStringParameter(OBJECT, VOID_STRING);
-        String data = parser.getStringParameter(DB_CONSTRUCT, VOID_STRING);
+        // Retrieve the parameters brought by the request
+        //String obj = parser.getStringParameter(OBJECT, VOID_STRING);
+        //String data = parser.getStringParameter(DB_CONSTRUCT, VOID_STRING);
         String start = parser.getStringParameter("start", VOID_STRING);
         String end = parser.getStringParameter("end", VOID_STRING);
         StringBuffer message = new StringBuffer("<p>Convenzioni in scadenza nell\'intervallo considerato: ");
-        
-        // Gestisce la richiesta
+        // Manage the request
         try {
             // Here the user session must be active, otherwise something's odd
             PersonBean user = SessionManager.checkSession(req.getSession(IF_EXISTS_DONOT_CREATE_NEW));
@@ -327,13 +330,12 @@ public class Data extends HttpServlet implements Constants {
         } catch (CommandException ce) {
             String msg = FOR_NAME + "Si e\' verificato un problema. Impossibile visualizzare i risultati.\n" + ce.getLocalizedMessage();
             log.severe(msg);
-            throw new CommandException(msg);
+            throw new CommandException(msg, ce);
         } catch (Exception e) {
             String msg = FOR_NAME + "Si e\' verificato un problema.\n" + e.getLocalizedMessage();
             log.severe(msg);
-            throw new CommandException(msg);
+            throw new CommandException(msg, e);
         }
-
         return String.valueOf(message);
     }    
     
@@ -355,7 +357,7 @@ public class Data extends HttpServlet implements Constants {
      * @throws IOException if email delivery fails (logged by caller)
      * @throws Exception if some pointer is wrong
      */
-    private void sendEmail(String body) 
+    private static void sendEmail(String body) 
             throws IOException, Exception {
         String subject = "Riepilogo Convenzioni in scadenza del " + Utils.format(Utils.getCurrentDate());
         // Development environment
@@ -371,16 +373,33 @@ public class Data extends HttpServlet implements Constants {
     
     
     /* **************************************************************** *
-     *          Static sending email methods (for schedule)             *
+     *          Email methods : for scheduled sending emails            *
      * **************************************************************** */
     
     /**
-
+     * Handles the SEND operation by extracting the email message from the 
+     * received parameters.
+     * Completes the job directly - no HttpServletResponse forward required.
+     * 
+     * <p><strong>Flow:</strong></p>
+     * <ul>
+     * <li>Build email body using a specific method</li>
+     * <li>Delegates to {@link #sendEmail(int[], String)} for environment-aware sending</li>
+     * </ul>
+     * 
+     * @param groupIds the IDs of the groups from which to extract the Conventions
+     * @param start the Date to be used as the starting expiration date
+     * @param end   the date to be used as the ending expiration date
      */
-    public static void handleSendEmail(int[] groupIds, Date start, Date end)  {
+    public static void handleSendEmail(int[] groupIds, 
+                                       Date start, 
+                                       Date end)  {
         try {
+            // Invoke a method to build the message body
             String body = getMessage(groupIds, start, end);
-            sendEmail(groupIds, body);  // Single responsibility
+            // Single responsibility
+            sendEmail(groupIds, body);
+            // Logging
             log.info("===> Email sent successfully <===");
         } catch (Exception e) {
             log.severe("Failed to send email: " + e.getLocalizedMessage());
@@ -389,20 +408,37 @@ public class Data extends HttpServlet implements Constants {
     
     
     /**
-
+     * Returns a message string to send about the data selected via
+     * the given parameters.
+     * This method extracts data based on parameters received,
+     * processes it, and returns a message string. 
+     * It throws CommandException on failure
+     * to report problems during message composition or parameters processing.
+     * 
+     * @param groupIds the IDs of the user's groups to wrap in an user
+     * @param from  the Date to be used as the starting expiration date
+     * @param to    the date to be used as the ending expiration date
+     * @return <code>String</code> - the formatted body to use in a mail message
+     * @throws CommandException if something went wrong
      */
-    private static String getMessage(int[] groupIds, Date from, Date to) 
+    private static String getMessage(int[] groupIds, 
+                                     Date from, 
+                                     Date to) 
                               throws CommandException {
+        // Vector to encapsulate the received group IDs
         Vector<CodeBean> groups = new Vector<>();
+        // An user to wrap the group IDs into
         PersonBean user = new PersonBean();
+        // Decant the received array into a Vector
         for (int i = 0; i < groupIds.length;  i++) {
             CodeBean group = new CodeBean();
             group.setId(groupIds[i]);
             groups.add(group);
         }
+        // Put the Vector into a dummy user
         user.setGruppi(groups);
         StringBuffer message = new StringBuffer("<p>Convenzioni in scadenza nell\'intervallo considerato: ");
-        // Gestisce la richiesta
+        // Manage the request
         try {
             message.append("<strong>da ")
                    .append(Utils.format(from))
@@ -411,13 +447,16 @@ public class Data extends HttpServlet implements Constants {
                    .append("</strong></p><hr><ol>");
             ArrayList<Convenzione> conventions = ConventionCommand.retrieveConventions(user, from, to);
             for (Convenzione c : conventions) {
-                message.append("<li> <a href='https://at.univr.it/col/?q=co&id=")
+                message.append("<li>")
+                       .append("<strong>")
+                       .append("scade il ")
+                       .append(Utils.format(c.getDataScadenza()))
+                       .append("</strong>: ")            
+                       .append("<a href='https://at.univr.it/col/?q=co&id=")
                        .append(c.getId())
                        .append("'>")
                        .append(c.getTitolo())
-                       .append("</a> (<strong>scade il: ")
-                       .append(Utils.format(c.getDataScadenza()))
-                       .append("</strong>)</li>");
+                       .append("</a></li>");
             }
             message.append("</ol>");
         } catch (RuntimeException re) {
@@ -431,26 +470,38 @@ public class Data extends HttpServlet implements Constants {
             log.severe(msg);
             throw new CommandException(msg);
         }
-
         return String.valueOf(message);
     }
     
     
     /**
+     * Sends email using environment-specific configuration.
      * 
+     * <p>In <strong>development</strong> (DB name ends with "dev"), 
+     * uses SMTP2GO credentials from {@link #getCredentials()} properties. 
+     * In <strong>production</strong>, uses default MailManager configuration 
+     * (likely application server mail session).</p>
+     * 
+     * <pre>
+     * DEV:   MailManager.sendEmail(body, username, password)
+     * PROD:  MailManager.sendEmail(groupIds, subject, body)
+     * </pre>
+     * 
+     * @param groupIds the IDs of the groups from which to determine the mailing lists to send the message
      * @param body the email content to send
      * @throws IOException if email delivery fails (logged by caller)
      * @throws Exception if some pointer is wrong
      */
-    private static void sendEmail(int[] groupIds, String body) 
-                    throws IOException, Exception {
+    private static void sendEmail(int[] groupIds, 
+                                  String body) 
+                           throws IOException, Exception {
         String subject = "Riepilogo Convenzioni in scadenza del " + Utils.format(Utils.getCurrentDate());
         // Development environment
         if (DBManager.getDbName().endsWith("dev")) {
             Properties credentials = getCredentials();
             final String username = credentials.getProperty("username"); // your SMTP2GO username
             final String password = credentials.getProperty("password"); // your SMTP2GO password or API key
-            MailManager.sendEmail(body + " inviato da " + groupIds, username, password);
+            MailManager.sendEmail(body, username, password);
         } else {    // Production environment
             MailManager.sendEmail(groupIds, subject, body);
         }
@@ -461,14 +512,12 @@ public class Data extends HttpServlet implements Constants {
      *         Methods for serving asynchronous requests (XHR)          *
      * **************************************************************** */
 
-    
     /* **************************************************************** *
      *    Methods for generating presentation-free tuples  (TEXT, CSV)  *
      * **************************************************************** */
     
-
     /* **************************************************************** *
-     *   Utility methods for generating output  *
+     *              Utility methods for generating output               *
      * **************************************************************** */
 
     /**
