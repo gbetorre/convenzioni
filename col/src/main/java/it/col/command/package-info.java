@@ -38,13 +38,20 @@
 /**
  * <p>Package contenente le classi implementano l'interfaccia Command.
  * Si tratta, in generale, di tutti gli oggetti che hanno attinenza 
- * con lo strato <code>controller</code>.</li></ul></p> 
+ * con lo strato <code>controller</code>.</p> 
  * 
- * <code>Elementi del package:<ul>
- * <li><em>Command</em></li>
- * <li>HomePageCommand</li>
- * <li>ConventionCommand</li>
- * </ul></code>
+ * <code>Elementi del package:<hr><dl>
+ * <dt><em>Command</em></dt>
+ * <dd>l'interfaccia che tutte le command devono implementare</dd>
+ * <dt>HomePageCommand</dt>
+ * <dd>gestisce le pagine che devono essere servite <i>prima</i> 
+ * che l'autenticazione sia effettuata</dd>
+ * <dt>ConventionCommand</dt>
+ * <dd>gestisce le funzioni principali riguardanti le convenzioni, 
+ * sia in lettura sia in scrittura</dd> 
+ * <dt>SchedulerCommand</dt>
+ * <dd>gestisce le notifiche e schedula le stesse</dd>
+ * </dl></code>
  * 
  * <p>Created on Thu Jul 10 02:23:33 PM CEST 2025</p>
  * 
