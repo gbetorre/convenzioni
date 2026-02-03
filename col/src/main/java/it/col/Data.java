@@ -449,14 +449,20 @@ public class Data extends HttpServlet implements Constants {
             for (Convenzione c : conventions) {
                 message.append("<li>")
                        .append("<strong>")
-                       .append("scade il ")
+                       .append("scadenza ")
                        .append(Utils.format(c.getDataScadenza()))
                        .append("</strong>: ")            
                        .append("<a href='https://at.univr.it/col/?q=co&id=")
                        .append(c.getId())
                        .append("'>")
                        .append(c.getTitolo())
-                       .append("</a></li>");
+                       .append("</a>");/*
+                if (user.getGruppi().size() == 1 && user.getGruppi().elementAt(NOTHING).getId() == ELEMENT_LEV_1) {
+                    message.append(" [ACCP]");
+                } else if (user.getGruppi().size() == 1 && user.getGruppi().elementAt(NOTHING).getId() == ELEMENT_LEV_3) {
+                    message.append(" [AG]");
+                }*/
+                message.append("</li>");
             }
             message.append("</ol>");
         } catch (RuntimeException re) {
