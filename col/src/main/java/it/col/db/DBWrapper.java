@@ -643,7 +643,7 @@ public class DBWrapper extends QueryImpl {
                                                  AttributoNonValorizzatoException {
         try (Connection con = col_manager.getConnection()) {
             PreparedStatement pst = null;
-            ResultSet rs, rs1 = null;
+            ResultSet rs, rs1, rs2 = null;
             int nParam = NOTHING; 
             Convenzione c = null;
             ArrayList<PersonBean> contraenti = null;
@@ -678,6 +678,18 @@ public class DBWrapper extends QueryImpl {
                     }
                     // Li aggiunge alla convenzione
                     c.setContraenti(contraenti);
+                    // Recupera il "gruppo principale" della convenzione corrente
+                    pst = null;
+                    pst = con.prepareStatement(GET_CONVENTION_GROUP);
+                    pst.clearParameters();
+                    pst.setInt(1, c.getId());
+                    rs2 = pst.executeQuery();
+                    // Assume che il gruppo sia uno solo (v. commento query)
+                    if (rs2.next()) {
+                        CodeBean gruppo = new CodeBean();
+                        BeanUtil.populate(gruppo, rs2);
+                        c.setGruppoPrincipale(gruppo);
+                    }
                     // Aggiunge la convenzione alla lista
                     convenzioni.add(c);
                 }
