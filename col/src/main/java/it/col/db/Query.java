@@ -265,6 +265,57 @@ public interface Query extends Serializable {
             "   ORDER BY C.data_scadenza, C.titolo";
     
     /**
+     * <p>Estrae il "gruppo principale" di una data convenzione, 
+     * ovvero il gruppo dell'utente che l'ha inserita/cui la convenzione appartiene.
+     * Bisogna fare attenzione a questo concetto di "gruppo principale":
+     * le convenzioni hanno una relazione molti-a-molti coi gruppi 
+     * (convenzione_grp), per cui nulla vieta a una convenzione 
+     * di essere condivisa tra piu' gruppi; allo stesso tempo, 
+     * l'utente che inserisce la convenzione puo' essere
+     * uno solo; cio' non vuol dire nulla, perche' l'utente ha una relazione
+     * a sua volta molti-a molti coi gruppi (belongs); quindi, nel momento
+     * in cui si fa l'inserimento, se a fare l'inserimento e' un utente dai
+     * molti gruppi, la stessa convenzione potrebbe venire associata a piu'
+     * gruppi contemporaneamente.<br>
+     * Al momento, queste situazioni non esistono; 
+     * infatti, a differenza della query:<pre>
+     * SELECT UGR.id_usr,
+     *        count(UGR.id_grp) AS "N.gruppi"
+     * FROM belongs UGR
+     * GROUP BY UGR.id_usr
+     * HAVING count(UGR.id_grp) > 1;</pre>
+     * che restituisce: <pre>
+     * id_usr | N.gruppi
+     * -----------------
+     *    1       2
+     *    8       2
+     * </pre> la query:<pre>
+     * SELECT CGR.id_convenzione,
+     *        count(CGR.id_grp) AS "N.gruppi"
+     * FROM convenzione_grp CGR
+     * GROUP BY CGR.id_convenzione
+     * HAVING count(CGR.id_grp) > 1;</pre>
+     * restituisce:<br><code>
+     * 2026-02-04   FINISHED    (null)  0.002   0.0 0   Success: 1 Failed: 0</code>
+     * Quindi, al momento, non ci sono convenzioni con piu' di un gruppo.
+     * Siccome, da regole di business, queste situazioni di convenzioni 
+     * "trasversali" non dovrebbero verificarsi, assumiamo che la query seguente
+     * resituisca un solo risultato, che chiamiamo gruppo principale, tenendo
+     * pero' presente che, in caso queste situazioni di sovrapposizione tra
+     * gruppi esistano, tutto il codice collegato a questa estrazione 
+     * dovra' essere revisionato.</p>
+     */
+    public static final String GET_CONVENTION_GROUP =
+            "SELECT " +
+            "       GR.id               AS \"id\"" +
+            "   ,   GR.nome             AS \"nome\"" +
+            "   ,   GR.informativa      AS \"informativa\"" +
+            "   ,   GR.ordinale         AS \"ordiale\"" +
+            "   FROM grp GR" +
+            "       INNER JOIN convenzione_grp CGR ON CGR.id_grp = GR.id" +
+            "   WHERE CGR.id_convenzione = ? ";
+    
+    /**
      * <p>Estrae una convenzione di dato id.</p>
      */
     public static final String GET_CONVENTION =
