@@ -85,6 +85,8 @@ When will be ready, I will release, package or tag
 
 # History
 
+* [ [0.5.4] (Feb 04, 2026)](https://github.com/gbetorre/convenzioni/commits/main/?since=2026-02-04&until=2026-02-04) 
+  Presentation improvements of scheduled report sent via e-mail
 * [ [0.5.3] (Jan 29, 2026)](https://github.com/gbetorre/convenzioni/commits/main/?since=2026-01-29&until=2026-01-29) 
   Presentation improvements of scheduled report sent via e-mail
 * [ [0.5.2] (Jan 28, 2026)](https://github.com/gbetorre/convenzioni/commits/main/?since=2026-01-28&until=2026-01-28) 
