@@ -37,9 +37,9 @@
 
 package it.col.bean;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
-import java.sql.Time;
 
 import it.col.exception.AttributoNonValorizzatoException;
 
@@ -90,6 +90,8 @@ public class Convenzione extends CodeBean {
     private ArrayList<PersonBean> contraenti;
     /** List of Scopes */
     private ArrayList<CodeBean> finalita;
+    /** Users group which the agreement belongs */
+    private CodeBean gruppoPrincipale;
 
     
     /* ======================= Constructors ======================= */
@@ -121,7 +123,7 @@ public class Convenzione extends CodeBean {
         this.tipo = null;
         this.stato = null;
         this.setContraenti(null);
-        this.setFinalita(null);
+        this.setGruppoPrincipale(null);
     }
     
     
@@ -151,6 +153,7 @@ public class Convenzione extends CodeBean {
      * @param stato label for state of agreement 
      * @param contraenti list of contractors bound by the agreement
      * @param finalita list of the scopes of the current agreement
+     * @param gruppo the main group, aka the group which the user that inserted the agreement belongs
      */
     public Convenzione(int id, 
                        String titolo, 
@@ -174,7 +177,8 @@ public class Convenzione extends CodeBean {
                        String tipo, 
                        String stato,
                        ArrayList<PersonBean> contraenti,
-                       ArrayList<CodeBean> finalita) {
+                       ArrayList<CodeBean> finalita,
+                       CodeBean gruppo) {
         setId(id);
         setTitolo(titolo);
         setInformativa(informativa);
@@ -198,6 +202,7 @@ public class Convenzione extends CodeBean {
         setStato(stato);
         setContraenti(contraenti);
         setFinalita(finalita);
+        setGruppoPrincipale(gruppo);
     }
 
 
@@ -475,6 +480,21 @@ public class Convenzione extends CodeBean {
      */
     public void setFinalita(ArrayList<CodeBean> finalita) {
         this.finalita = finalita;
+    }
+
+
+    /**
+     * @return the user group that view (or view and manage) this agreement
+     */
+    public CodeBean getGruppoPrincipale() {
+        return gruppoPrincipale;
+    }
+
+    /**
+     * @param gruppo the users group to set
+     */
+    public void setGruppoPrincipale(CodeBean gruppo) {
+        this.gruppoPrincipale = gruppo;
     }
     
 }
