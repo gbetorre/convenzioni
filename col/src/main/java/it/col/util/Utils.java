@@ -1062,5 +1062,23 @@ public class Utils implements Constants {
         int diff = endAsCalendar.get(Calendar.YEAR) - startAsCalendar.get(Calendar.YEAR);
         return diff;
     }
+    
+    
+    /**
+     * <p>Restituisce il numero di giorni che intercorrono tra due date 
+     * passate come argomento.</p>
+     *
+     * @param start data iniziale
+     * @param end   data finale
+     * @return  <code>int</code> - il numero di giorni che intercorrono tra end e start
+     */
+    public static int getDaysInBetween(Date start, Date end) {
+        GregorianCalendar startAsCalendar = new GregorianCalendar();
+        startAsCalendar.setTime(start);
+        GregorianCalendar endAsCalendar = new GregorianCalendar();
+        endAsCalendar.setTime(end);
+        int days = endAsCalendar.get(Calendar.DAY_OF_YEAR) - startAsCalendar.get(Calendar.DAY_OF_YEAR);
+        return days;
+    }
 
 }
