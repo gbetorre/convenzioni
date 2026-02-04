@@ -449,22 +449,31 @@ public class Data extends HttpServlet implements Constants {
             for (Convenzione c : conventions) {
                 message.append("<li>")
                        .append("<strong>")
-                       .append("scadenza ")
-                       .append(Utils.format(c.getDataScadenza()))
+                       .append("scadenza ");
+                if (Utils.getDaysInBetween(Utils.convert(Utils.getCurrentDate()), c.getDataScadenza()) < 30) {
+                    message.append("<span style='color:red'>");
+                }
+                message.append(Utils.format(c.getDataScadenza()))
                        .append("</strong>: ")            
                        .append("<a href='https://at.univr.it/col/?q=co&id=")
                        .append(c.getId())
                        .append("'>")
                        .append(c.getTitolo())
-                       .append("</a>");/*
-                if (user.getGruppi().size() == 1 && user.getGruppi().elementAt(NOTHING).getId() == ELEMENT_LEV_1) {
-                    message.append(" [ACCP]");
-                } else if (user.getGruppi().size() == 1 && user.getGruppi().elementAt(NOTHING).getId() == ELEMENT_LEV_3) {
-                    message.append(" [AG]");
-                }*/
+                       .append("</a>");
+                if (user.getGruppi().size() > ELEMENT_LEV_1) {
+                    message.append(" <strong><em>[");
+                    message.append(c.getGruppoPrincipale().getNome());
+                    message.append("]</em></strong>");
+                }
                 message.append("</li>");
             }
             message.append("</ol>");
+            if (user.getGruppi().size() > ELEMENT_LEV_1) {
+                message.append("<hr>")
+                       .append(" <u>LEGENDA:</u> <br><pre>")
+                       .append("[ACCP] = Area Convenzioni Centri e Partecipate<br>")
+                       .append("[AG]   = Area Affari Generali</pre>");
+            }
         } catch (RuntimeException re) {
             throw new CommandException(FOR_NAME + "Problema a livello dell\'autenticazione utente!\n" + re.getMessage(), re);
         } catch (CommandException ce) {
