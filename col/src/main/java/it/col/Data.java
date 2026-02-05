@@ -470,9 +470,13 @@ public class Data extends HttpServlet implements Constants {
             message.append("</ol>");
             if (user.getGruppi().size() > ELEMENT_LEV_1) {
                 message.append("<hr>")
-                       .append(" <u>LEGENDA:</u> <br><pre>")
+                       .append("<u>LEGENDA:</u> <br><pre>")
                        .append("[ACCP] = Area Convenzioni Centri e Partecipate<br>")
-                       .append("[AG]   = Area Affari Generali</pre>");
+                       .append("[AG]   = Area Affari Generali</pre>")
+                       .append("<span style='color:red'><strong>")
+                       .append("data evidenziata")
+                       .append("</strong></span>")
+                       .append(" = manca meno di un mese alla scadenza");
             }
         } catch (RuntimeException re) {
             throw new CommandException(FOR_NAME + "Problema a livello dell\'autenticazione utente!\n" + re.getMessage(), re);
