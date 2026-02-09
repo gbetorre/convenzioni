@@ -447,10 +447,12 @@ public class Data extends HttpServlet implements Constants {
                    .append("</strong></p><hr><ol>");
             ArrayList<Convenzione> conventions = ConventionCommand.retrieveConventions(user, from, to);
             for (Convenzione c : conventions) {
+                int remainingYears = Utils.getYearsInBetween(Utils.convert(Utils.getCurrentDate()), c.getDataScadenza());
+                int remainingDays = Utils.getDaysInBetween(Utils.convert(Utils.getCurrentDate()), c.getDataScadenza());
                 message.append("<li>")
                        .append("<strong>")
                        .append("scadenza ");
-                if (Utils.getDaysInBetween(Utils.convert(Utils.getCurrentDate()), c.getDataScadenza()) < 30) {
+                if (remainingYears == NOTHING  && remainingDays < 30) {
                     message.append("<span style='color:red'>");
                 }
                 message.append(Utils.format(c.getDataScadenza()))
