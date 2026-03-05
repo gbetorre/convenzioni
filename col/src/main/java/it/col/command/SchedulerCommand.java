@@ -56,6 +56,7 @@ import it.col.bean.CodeBean;
 import it.col.bean.CommandBean;
 import it.col.bean.Convenzione;
 import it.col.bean.PersonBean;
+import it.col.db.DBManager;
 import it.col.db.DBWrapper;
 import it.col.exception.CommandException;
 import it.col.exception.WebStorageException;
@@ -143,6 +144,10 @@ public class SchedulerCommand extends CommandBean implements Command, Constants 
      */
     private static Timer updateTimer = new Timer();
     /**
+     * <p>Recupera da Servlet la stringa opportuna per il puntamento del DataSource.</p>
+     */
+    private static String contextDbName = DBManager.getDbName();
+    /**
      *  Map of pages managed by this Command
      */    
     private static final HashMap<String, CodeBean> pages = new HashMap<>();
@@ -168,18 +173,22 @@ public class SchedulerCommand extends CommandBean implements Command, Constants 
                 long startTime = System.nanoTime();
                 Date start = Utils.convert(Utils.getCurrentDate());
                 Date end = Utils.convert(Utils.getDate(0, 12, 0));
-                // There is a naming here; you should improve that
-                int[] convenzioniUO = {1}; 
-                Data.handleSendEmail(convenzioniUO, start, end);
-                log.info(FOR_NAME + "E-mail inviata: " + convenzioniUO);
-                int[] organiUO = {3}; 
-                Data.handleSendEmail(organiUO, start, end);
-                log.info(FOR_NAME + "E-mail inviata: " + organiUO);
-                int[] headUO = {1, 3};
-                Data.handleSendEmail(headUO, start, end);
-                log.info(FOR_NAME + "E-mail inviata: " + headUO);
-                long elapsedTime = System.nanoTime() - startTime;
-                log.config(FOR_NAME + "Email inviate in " + elapsedTime / SECOND_DIVISOR + "\"");
+                /* Disable e-mail for Development environment */
+                if (!contextDbName.endsWith("dev")) {
+                    // There is a naming here; you should improve that
+                    int[] convenzioniUO = {1}; 
+                    Data.handleSendEmail(convenzioniUO, start, end);
+                    log.info(FOR_NAME + "E-mail inviata: " + convenzioniUO);
+                    int[] organiUO = {3}; 
+                    Data.handleSendEmail(organiUO, start, end);
+                    log.info(FOR_NAME + "E-mail inviata: " + organiUO);
+                    int[] headUO = {1, 3};
+                    Data.handleSendEmail(headUO, start, end);
+                    log.info(FOR_NAME + "E-mail inviata: " + headUO);
+                    long elapsedTime = System.nanoTime() - startTime;
+                    log.config(FOR_NAME + "Email inviate in " + elapsedTime / SECOND_DIVISOR + "\"");
+                }
+                /**/
                 log.info(FOR_NAME + "End run()");
             }
         }, NOTHING, SCHEDULED_TIME); // Refresh in SCHEDULED_TIME milliseconds
