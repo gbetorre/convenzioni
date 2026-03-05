@@ -127,6 +127,7 @@ Il software è un'applicazione Java three-tier
 # History
 
 ```
+* [0.5.6] (Mar 05, 2026) Condizionato invio e-mail al runtime nel solo ambiente di produzione
 * [0.5.5] (Feb 09, 2026) Bugfix
 * [0.5.4] (Feb 04, 2026) Migliorie di presentazione dell'e-mail di riepilogo
 * [0.5.3] (Jan 29, 2026) Migliorie di presentazione dell'e-mail di riepilogo
