@@ -12,7 +12,7 @@
         <div class="row">
           <div class="col-lg-12">
             <div class="top-text header-text">
-              <h6>Modifica Convenzione</h6>
+              <h6><c:out value="${requestScope.tP}" /></h6>
               <h3><a href="${initParam.appName}/?q=co&id=${conv.id}" class="text-white"><c:out value="${conv.titolo}" /></a></h3>
             </div>
           </div>
@@ -28,9 +28,10 @@
               <div class="col-lg-12 align-self-center">
                 <form accept-charset="ISO-8859-1" name="upd-conv" id="contact" action="" method="post" class="contact">
                   <fieldset>
-                    <legend>Modifica Convenzione</legend>
+                    <legend><c:out value="${requestScope.tP}" /></legend>
                     <input type="hidden" name="co-id" id="conv-id" value="${conv.id}" />
                     <!-- Titolo -->
+                    <hr class="separator">
                     <div class="form-group row">
                       <label for="conv-title" class="col-sm-4 col-form-label">
                         <strong>
