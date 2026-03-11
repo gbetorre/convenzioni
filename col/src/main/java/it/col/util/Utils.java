@@ -1048,7 +1048,7 @@ public class Utils implements Constants {
     /**
      * <p>Restituisce il numero di anni che intercorrono tra due date passate come argomento.
      * Se le date sono la data di nascita di una persona e la data odierna, restituisce
-     * l'et&agrave; della persona.</p>
+     * quindi l'et&agrave; della persona.</p>
      *
      * @param start data iniziale
      * @param end   data finale
@@ -1066,7 +1066,13 @@ public class Utils implements Constants {
     
     /**
      * <p>Restituisce il numero di giorni che intercorrono tra due date 
-     * passate come argomento.</p>
+     * di uno stesso anno passate come argomento.
+     * Se le date appartengono a due anni diversi, restituisce -1.<br>
+     * For instance:<pre>
+     * start = 2026-02-09
+     * end   = 2027-02-08
+     * getDaysInBetween(start, end) -> -1</pre>
+     * </p>
      *
      * @param start data iniziale
      * @param end   data finale
