@@ -561,6 +561,78 @@ public interface Query extends Serializable {
             "   ,       ? " +          // id_usr_ultima_modifica
             "   ,       ? " +          // id_convenzione
             "   ,       ?)" ;          // id_finalita
+    
+    /**
+     * <p>Query per inserimento di una convenzione.</p>
+     */
+    public static final String INSERT_CONVENTION =
+            "INSERT INTO convenzione" +
+            "   (   id" +
+            "   ,   titolo" +
+            "   ,   num_repertorio" +                    
+            "   ,   informativa" +
+            "   ,   note" +
+            "   ,   data_approvazione" +
+            "   ,   nota_approvazione" +
+            "   ,   data_approvazione2" +
+            "   ,   nota_approvazione2" +
+            "   ,   data_sottoscrizione" +
+            "   ,   nota_sottoscrizione" +
+            "   ,   data_scadenza" +
+            "   ,   nota_scadenza" +
+            "   ,   carico_bollo" +
+            "   ,   bollo_pagato" +
+            "   ,   data_ultima_modifica" +
+            "   ,   ora_ultima_modifica" +
+            "   ,   id_usr_ultima_modifica" +
+            "   ,   id_tipo" +
+            "   ,   id_stato)" +
+            "   VALUES (? " +          // id
+            "   ,       ? " +          // titolo
+            "   ,       ? " +          // num_repertorio
+            "   ,       ? " +          // informativa
+            "   ,       ? " +          // note
+            "   ,       ? " +          // data_approvazione
+            "   ,       ? " +          // nota_approvazione
+            "   ,       ? " +          // data_approvazione2
+            "   ,       ? " +          // nota_approvazione2
+            "   ,       ? " +          // data_sottoscrizione
+            "   ,       ? " +          // nota_sottoscrizione
+            "   ,       ? " +          // data_scadenza
+            "   ,       ? " +          // nota_scadenza
+            "   ,       ? " +          // carico_bollo
+            "   ,       ? " +          // bollo_pagato
+            "   ,       ? " +          // data_ultima_modifica
+            "   ,       ? " +          // ora_ultima_modifica
+            "   ,       ? " +          // id_usr_ultima_modifica
+            "   ,       ? " +          // id_tipo
+            "   ,       ?)" ;          // id_stato
+    
+    /**
+     * <p>Query per inserimento della relazione tra convenzione e gruppo di utenti.</p>
+     */
+    public static final String INSERT_CONVENTION_GROUP =
+            "INSERT INTO convenzione_grp" +
+            "   (   id_convenzione" +
+            "   ,   id_grp" +
+            "   ,   notifica" +
+            "   ,   selezione" +
+            "   ,   aggiornamento" +
+            "   ,   inserimento" +
+            "   ,   eliminazione" +
+            "   ,   data_ultima_modifica" +
+            "   ,   ora_ultima_modifica" +
+            "   ,   id_usr_ultima_modifica)" +
+            "   VALUES (? " +          // id_convenzione
+            "   ,       ? " +          // id_grp
+            "   ,       ? " +          // notifica
+            "   ,       ? " +          // selezione
+            "   ,       ? " +          // aggiornamento
+            "   ,       ? " +          // inserimento
+            "   ,       ? " +          // eliminazione
+            "   ,       ? " +          // data_ultima_modifica
+            "   ,       ? " +          // ora_ultima_modifica
+            "   ,       ?)" ;          // id_usr_ultima_modifica            
 
     /* ********************************************************************** *
      *                         Query di aggiornamento                         *
