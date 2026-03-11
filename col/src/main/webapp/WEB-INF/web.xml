@@ -133,7 +133,7 @@
     </error-page>
     <error-page>
       <error-code>504</error-code>
-      <location>/html/gatewayTimeout.html</location>
+      <location>/html/504-gatewayTimeout.html</location>
     </error-page>
     <error-page>
       <error-code>505</error-code>
