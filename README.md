@@ -85,6 +85,8 @@ When will be ready, I will release, package or tag
 
 # History
 
+* [ [0.5.7] (Mar 11, 2026)](https://github.com/gbetorre/convenzioni/commits/main/?since=2026-03-11&until=2026-03-11) 
+  Implemented function to insert an agreement
 * [ [0.5.6] (Mar 05, 2026)](https://github.com/gbetorre/convenzioni/commits/main/?since=2026-03-05&until=2026-03-05) 
   Code improvements
 * [ [0.5.5] (Feb 09, 2026)](https://github.com/gbetorre/convenzioni/commits/main/?since=2026-02-09&until=2026-02-09) 
