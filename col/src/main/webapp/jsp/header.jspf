@@ -45,7 +45,13 @@
                 </li>
               </c:forEach>
                 <li><a href="${initParam.appName}/auth" class="" title="Logout">Esci</a></li> 
-                <li><div class="main-white-button"><a href="#"><i class="fa fa-plus"></i> Aggiungi Convenzione</a></div></li> 
+                <li>
+                  <div class="main-white-button">
+                    <a href="${initParam.appName}/?q=co&op=ins&obj=conv&data=ent" title="Inserisci Convenzione">
+                      <i class="fa fa-plus"></i> Aggiungi Convenzione
+                    </a>
+                  </div>
+                </li> 
               </ul>
               <a class='menu-trigger'>
                 <span>Menu</span>
