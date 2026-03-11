@@ -102,27 +102,31 @@ public class ConventionCommand extends CommandBean implements Command, Constants
     /**
      *  SELECT Convention Details page (read-only)
      */    
-    private static final CodeBean dettagli = new CodeBean("coConvenzione.jsp", "Dettagli convenzione");
+    private static final CodeBean dettagli = new CodeBean("coConvenzione.jsp", "Dettagli Convenzione");
     /**
      *  SELECT Convention Details page (updateable)
      */    
-    private static final CodeBean convenzione = new CodeBean("coFormConvenzione.jsp", "Modifica convenzione");
+    private static final CodeBean convenzione = new CodeBean("coFormConvenzione.jsp", "Modifica Convenzione");
+    /**
+     *  FORM to insert new Convention Details page (insertable)
+     */    
+    private static final CodeBean agreement = new CodeBean("coFormAgreement.jsp", "Inserisci Convenzione");
     /**
      *  SELECT Contractor page
      */
-    private static final CodeBean contraente = new CodeBean("coContraente.jsp", "Scheda contraente");
+    private static final CodeBean contraente = new CodeBean("coContraente.jsp", "Scheda Contraente");
     /**
      *  SELECT Contractors page
      */
-    private static final CodeBean contraenti = new CodeBean("coContraenti.jsp", "Registro contraenti");
+    private static final CodeBean contraenti = new CodeBean("coContraenti.jsp", "Registro Contraenti");
     /**
      *  UPDATE Convention: assign one or more contractors to a single convention
      */    
-    private static final CodeBean contraenti_ins = new CodeBean("coFormContraenti.jsp", "Assegna contraente");
+    private static final CodeBean contraenti_ins = new CodeBean("coFormContraenti.jsp", "Assegna Contraente");
     /**
      *  Search results
      */    
-    private static final CodeBean ricerca = new CodeBean("coFormRicerca.jsp", "Ricerca avanzata");
+    private static final CodeBean ricerca = new CodeBean("coFormRicerca.jsp", "Ricerca Avanzata");
     
 
     /** 
@@ -148,6 +152,7 @@ public class ConventionCommand extends CommandBean implements Command, Constants
         pages.put(SEARCH,           ricerca);
         pages.put(SELECT,           dettagli);
         pages.put(UPDATE,           convenzione);
+        pages.put(INSERT,           agreement);
         pages.put(CONTRACTOR+INSERT,contraenti_ins);
         pages.put(CONTRACTOR+SELECT,contraenti);
         pages.put(CONTRACTOR       ,contraente);
@@ -267,6 +272,7 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                         // TODO
                         break;
                     case INSERT:
+                        /* INSERT relationship between contractor and convention*/
                         if (object.equalsIgnoreCase(CONTRACTOR)) {
                             // Test if gotta insert a relationship
                             if (dbElement.equalsIgnoreCase(RELATIONSHIP)) {
@@ -278,6 +284,16 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                                        .put(OBJECT, CONTRACTOR)
                                        .put(DB_CONSTRUCT, RELATIONSHIP)
                                        .put("id", idA);
+                                redirect = dataUrl.getUrl();
+                            }
+                        /* INSERT new convention */
+                        } else if (object.equalsIgnoreCase(CONVENTION)) {
+                            // Test if gotta insert an entity
+                            if (dbElement.equalsIgnoreCase(ENTITY)) {
+                                // Insert the tuple into suitable entity
+                                db.insertConvention(user, params);
+                                // Prepare the redirect
+                                dataUrl.put(ConfigManager.getEntToken(), COMMAND_CONV);
                                 redirect = dataUrl.getUrl();
                             }
                         }
@@ -305,6 +321,7 @@ public class ConventionCommand extends CommandBean implements Command, Constants
             } else {
                 // Which operationg has it to do?
                 switch (operation) {
+                    /* Show FORMS */
                     case INSERT:
                         // Test if there is a convention id
                         if (idA > DEFAULT_ID) { 
@@ -316,10 +333,14 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                                 if (dbElement.equals(RELATIONSHIP)) {
                                     // Get all the contractors
                                     contractors = db.getContractors(user, convention, !Query.GET_ALL);
-                                    // Show the form to assign a consultant to a convention
+                                    // Show the FORM to assign a consultant to a convention
                                     fileJspT = pages.get(object + operation);
                                 }
                             }
+                        // If not, must INSERT a new convention
+                        } else {
+                            // Show the FORM to INSERT a new convention
+                            fileJspT = pages.get(operation);
                         }
                         break;
                     case UPDATE:
@@ -382,7 +403,7 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                 }
         // We have a situation here...
         }  catch (WebStorageException wse) {
-            String msg = FOR_NAME + "Si e\' verificato un problema di valori dal db.\n";
+            String msg = FOR_NAME + "Si e\' verificato un problema nei valori di una query.\n";
             log.severe(msg);
             throw new CommandException(msg + wse.getMessage(), wse);
         } catch (CommandException ce) {
@@ -492,49 +513,26 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                     // Aggiunge gli estremi dei contraenti da associare all'id convenzione
                     formParams.put(obj, contractor);
                 }
+                /* -------------------------------------------------------- *
+                 *                  Ramo di INSERT convenzione              * 
+                 * -------------------------------------------------------- */
+                else if (obj.equalsIgnoreCase(CONVENTION)) {
+                    // Memorizza gli estremi della convenzione
+                    decantConvention(convention, req);
+                    // Aggiunge il Tipo Convenzione
+                    convention.put("type", req.getParameter("co-tipo"));
+                    // Aggiunge gli estremi della convenzione
+                    formParams.put(obj, convention);
+                }
                 break;
             case UPDATE:
                 /* -------------------------------------------------------- *
                  *                  Ramo di UPDATE convenzione              *
                  * -------------------------------------------------------- */
                 if (obj.equalsIgnoreCase(CONVENTION)) {
-                    // ID Convenzione
-                    convention.put("conv",  req.getParameter("co-id"));
-                    // Titolo Convenzione
-                    convention.put("titl",  req.getParameter("co-titl"));
-                    // Protocollo
-                    convention.put("prot",  req.getParameter("co-prot"));
-                    // Oggetto
-                    convention.put("info",  req.getParameter("co-info"));
-                    // Note
-                    convention.put("note",  req.getParameter("co-note"));
-                    // Finalità (Array)
-                    String[] scopes = req.getParameterValues("co-scop");
-                    // Travasa l'array di finalità su chiavi diverse (appiattisce i valori)
-                    int nScopes = decantStructures("scop", scopes, convention);
-                    // Aggiunge il numero di finalità da associare
-                    convention.put("scop",  String.valueOf(nScopes));
-                    // Data Approvazione
-                    convention.put("dat1",  req.getParameter("co-dat1"));
-                    // Nota Approvazione
-                    convention.put("not1",  req.getParameter("co-not1"));
-                    // Data Approvazione 2
-                    convention.put("dat2",  req.getParameter("co-dat2"));
-                    // Nota Approvazione 2
-                    convention.put("not2",  req.getParameter("co-not2"));
-                    // Data Sottoscrizione
-                    convention.put("dat3",  req.getParameter("co-dat3"));
-                    // Nota Sottoscrizione
-                    convention.put("not3",  req.getParameter("co-not3"));
-                    // Data Scadenza
-                    convention.put("dat4",  req.getParameter("co-dat4"));
-                    // Nota Scadenza
-                    convention.put("not4",  req.getParameter("co-not4"));
-                    // Ripartizione Bolli
-                    convention.put("fees",  req.getParameter("co-boll"));
-                    // Pagato
-                    convention.put("payd",  req.getParameter("co-pago"));
-                    // Aggiunge gli estremi dei contraenti da associare all'id convenzione
+                    // Memorizza gli estremi della convenzione
+                    decantConvention(convention, req);
+                    // Aggiunge gli estremi della convenzione
                     formParams.put(obj, convention);
                 }
                 break;
@@ -558,7 +556,6 @@ public class ConventionCommand extends CommandBean implements Command, Constants
                 // If there is no operation, there is a SELECT operation
                 break; // not required here, still here for consistency
         }
-        
     }
 
     
@@ -591,6 +588,54 @@ public class ConventionCommand extends CommandBean implements Command, Constants
             }
         }
         return index;
+    }
+    
+    
+    /**
+     * Dati in input una mappa e la Request, travasa gli estremi della
+     * convenzione passati in request nella mappa, che valorizza per riferimento.
+     * 
+     * @param convention    mappa per contenere i valori di una convenzione
+     * @param req           richiesta contenente i valori passati dall'utente
+     */
+    public static void decantConvention(LinkedHashMap<String, String> convention,
+                                        HttpServletRequest req) {
+        // ID Convenzione
+        convention.put("conv",  req.getParameter("co-id"));
+        // Titolo Convenzione
+        convention.put("titl",  req.getParameter("co-titl"));
+        // Protocollo
+        convention.put("prot",  req.getParameter("co-prot"));
+        // Oggetto
+        convention.put("info",  req.getParameter("co-info"));
+        // Note
+        convention.put("note",  req.getParameter("co-note"));
+        // Finalità (Array)
+        String[] scopes = req.getParameterValues("co-scop");
+        // Travasa l'array di finalità su chiavi diverse (appiattisce i valori)
+        int nScopes = decantStructures("scop", scopes, convention);
+        // Aggiunge il numero di finalità da associare
+        convention.put("scop",  String.valueOf(nScopes));
+        // Data Approvazione
+        convention.put("dat1",  req.getParameter("co-dat1"));
+        // Nota Approvazione
+        convention.put("not1",  req.getParameter("co-not1"));
+        // Data Approvazione 2
+        convention.put("dat2",  req.getParameter("co-dat2"));
+        // Nota Approvazione 2
+        convention.put("not2",  req.getParameter("co-not2"));
+        // Data Sottoscrizione
+        convention.put("dat3",  req.getParameter("co-dat3"));
+        // Nota Sottoscrizione
+        convention.put("not3",  req.getParameter("co-not3"));
+        // Data Scadenza
+        convention.put("dat4",  req.getParameter("co-dat4"));
+        // Nota Scadenza
+        convention.put("not4",  req.getParameter("co-not4"));
+        // Ripartizione Bolli
+        convention.put("fees",  req.getParameter("co-boll"));
+        // Pagato
+        convention.put("payd",  req.getParameter("co-pago"));
     }
     
     
