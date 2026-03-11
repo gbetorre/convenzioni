@@ -1317,6 +1317,306 @@ public class DBWrapper extends QueryImpl {
     }
 
     
+    /**
+     * <p>Metodo per fare l'inserimento di una nuova convenzione 
+     * definita dall'utente.</p>
+     *  
+     * @param user      utente loggato
+     * @param params    mappa contenente i parametri di navigazione
+     * @return convenzione la convenzione appena aggiornata con i nuovi dati
+     * @throws WebStorageException se si verifica un problema nel cast da String a Date, nell'esecuzione della query, nell'accesso al db o in qualche puntamento
+     */
+    public Convenzione insertConvention(PersonBean user, 
+                                        HashMap<String, LinkedHashMap<String, String>> params) 
+                                 throws WebStorageException {
+        try (Connection con = col_manager.getConnection()) {
+            PreparedStatement pst, pst1, pst2 = null;
+            // Dizionario dei parametri contenente l'identificativo dei contraenti da associare
+            LinkedHashMap<String, String> convention = params.get(CONVENTION);
+            // Definisce un indice per il numero di parametro da passare alla query
+            int nextParam = NOTHING;
+            // Definisce un indice per il numero di finalità da inserire
+            int index = NOTHING;
+            // Definisce l'ID della convenzione da inserire
+            int idConv = getMax("convenzione") + ELEMENT_LEV_1;
+            // Return type
+            Convenzione c = new Convenzione();
+            try {
+                // Begin: ==>
+                con.setAutoCommit(false);
+                // TODO: Controllare se user è superuser
+                pst = con.prepareStatement(INSERT_CONVENTION);
+                pst.clearParameters();
+                // === ID ===
+                pst.setInt(++nextParam, idConv);
+                c.setId(idConv);
+                // === Titolo ===
+                String title = convention.get("titl");
+                pst.setString(++nextParam, title);
+                c.setTitolo(title);
+                // === Repertorio ===
+                String protocol = convention.get("prot");
+                pst.setString(++nextParam, protocol);
+                c.setNumRepertorio(protocol);
+                // === [Informativa] ===
+                String info = null;
+                if (!convention.get("info").equals(VOID_STRING)) {
+                    info = new String(convention.get("info"));
+                    pst.setString(++nextParam, info);
+                    c.setInformativa(info);
+                } else {
+                    // Dato facoltativo non inserito
+                    pst.setNull(++nextParam, Types.NULL);
+                }
+                // === [Note] ===
+                String note = null;
+                if (!convention.get("note").equals(VOID_STRING)) {
+                    note = new String(convention.get("note"));
+                    pst.setString(++nextParam, note);
+                    c.setNote(note);
+                } else {
+                    // Dato facoltativo non inserito
+                    pst.setNull(++nextParam, Types.NULL);
+                }
+                // === Data approvazione ===
+                String date1AsString = convention.get("dat1");
+                Date date1 = Utils.format(date1AsString, DATA_ITALIAN_PATTERN, DATA_SQL_PATTERN);
+                pst.setDate(++nextParam, Utils.convert(date1)); // non accetta String né java.util.Date ma solo java.sql.Date
+                c.setDataApprovazione(date1);
+                // === [Nota approvazione] ===
+                String note1 = null;
+                if (!convention.get("not1").equals(VOID_STRING)) {
+                    note1 = new String(convention.get("not1"));
+                    pst.setString(++nextParam, note1);
+                    c.setNotaApprovazione(note1);
+                } else {
+                    // Dato facoltativo non inserito
+                    pst.setNull(++nextParam, Types.NULL);
+                }
+                // === Data approvazione 2 ===
+                String date2AsString = null; 
+                if (!convention.get("dat2").equals(VOID_STRING)) {
+                    date2AsString = new String(convention.get("dat2"));
+                    Date date2 = Utils.format(date2AsString, DATA_ITALIAN_PATTERN, DATA_SQL_PATTERN);
+                    pst.setDate(++nextParam, Utils.convert(date2)); // non accetta String né java.util.Date ma solo java.sql.Date
+                    c.setDataApprovazione2(date2);
+                } else {
+                    // Dato facoltativo non inserito
+                    pst.setNull(++nextParam, Types.NULL);
+                }
+                // === [Nota approvazione 2] ===
+                String note2 = null;
+                if (!convention.get("not2").equals(VOID_STRING)) {
+                    note2 = new String(convention.get("not2"));
+                    pst.setString(++nextParam, note2);
+                    c.setNotaApprovazione2(note2);
+                } else {
+                    // Dato facoltativo non inserito
+                    pst.setNull(++nextParam, Types.NULL);
+                }
+                // === Data sottoscrizione ===
+                String date3AsString = convention.get("dat3");
+                Date date3 = Utils.format(date3AsString, DATA_ITALIAN_PATTERN, DATA_SQL_PATTERN);
+                pst.setDate(++nextParam, Utils.convert(date3)); // non accetta String né java.util.Date ma solo java.sql.Date
+                c.setDataSottoscrizione(date3);
+                // === [Nota sottoscrizione] ===
+                String note3 = null;
+                if (!convention.get("not3").equals(VOID_STRING)) {
+                    note3 = new String(convention.get("not3"));
+                    pst.setString(++nextParam, note3);
+                    c.setNotaSottoscrizione(note3);
+                } else {
+                    // Dato facoltativo non inserito
+                    pst.setNull(++nextParam, Types.NULL);
+                }
+                // === Data scadenza ===
+                String date4AsString = convention.get("dat4");
+                Date date4 = Utils.format(date4AsString, DATA_ITALIAN_PATTERN, DATA_SQL_PATTERN);
+                pst.setDate(++nextParam, Utils.convert(date4)); // non accetta String né java.util.Date ma solo java.sql.Date
+                c.setDataScadenza(date4);
+                // === [Nota scadenza] ===
+                String note4 = null;
+                if (!convention.get("not4").equals(VOID_STRING)) {
+                    note4 = new String(convention.get("not4"));
+                    pst.setString(++nextParam, note4);
+                    c.setNotaScadenza(note4);
+                } else {
+                    // Dato facoltativo non inserito
+                    pst.setNull(++nextParam, Types.NULL);
+                }
+                // === [Imposta di bollo] ===
+                String bolliAsString = null;
+                if (!convention.get("fees").equals(VOID_STRING)) {
+                    bolliAsString = new String(convention.get("fees"));
+                    // Explicit unboxing of a Float into float
+                    float bolli = Float.valueOf(bolliAsString).floatValue();
+                    pst.setFloat(++nextParam, bolli);
+                    // Explicit boxing of a float into Float
+                    c.setCaricoBollo(Float.valueOf(bolli));
+                } else {
+                    // Dato facoltativo non inserito
+                    pst.setNull(++nextParam, Types.NULL);
+                }
+                // === [Bollo assolto] ===
+                String pagatoAsString = null;
+                if (!convention.get("payd").equals(VOID_STRING)) {
+                    pagatoAsString = new String(convention.get("payd"));
+                    // The application can legitimately return: "1" | "0" | ""
+                    boolean pagato = false;
+                    // "1".equals(pagatoAsString)
+                    if (String.valueOf(ELEMENT_LEV_1).equals(pagatoAsString)) {
+                        pagato = true;  //   -> true for "1"
+                    }
+                    pst.setBoolean(++nextParam, pagato);
+                    // Explicit boxing of a bool into Boolean
+                    c.setPagato(Boolean.valueOf(pagato));
+                } else {
+                    // Dato facoltativo non inserito
+                    pst.setNull(++nextParam, Types.NULL);
+                }
+                // Campi automatici: ora ultimo accesso, data ultimo accesso
+                pst.setDate(++nextParam, Utils.convert(Utils.convert(Utils.getCurrentDate()))); // non accetta un GregorianCalendar né una data java.util.Date, ma java.sql.Date
+                pst.setTime(++nextParam, Utils.getCurrentTime());   // non accetta una Stringa, ma un oggetto java.sql.Time
+                pst.setInt(++nextParam, user.getUsrId());
+                // === Id tipo ===
+                String tipoAsString = new String(convention.get("type"));
+                // Explicit unboxing of a String into int
+                int tipo = Integer.valueOf(tipoAsString).intValue();
+                pst.setInt(++nextParam, tipo);
+                // Gestire la conversione di Id in etichetta, se serve
+                c.setTipo(tipoAsString);
+                // === Id stato ===
+                pst.setInt(++nextParam, ELEMENT_LEV_1); // <- stato ATTIVO
+                // === Id convenzione ===
+                // TODO: gestire self-relationship in caso rinnovo (id_convenzione = id conv. originale)
+                // Do Insert agreement: ==>
+                pst.executeUpdate();
+                // Preparazione inserimento relazioni
+                try {
+                    // Query di inserimento gruppi associati
+                    pst1 = con.prepareStatement(INSERT_CONVENTION_GROUP);
+                    pst1.clearParameters();
+                    Vector<CodeBean> usrGrps = user.getGruppi();
+                    for (CodeBean grp : usrGrps) {
+                        // Numero di parametro da passare alla query
+                        nextParam = NOTHING;
+                        // === Id Convenzione ===
+                        pst1.setInt(++nextParam, idConv);
+                        // === id_grp ===
+                        pst1.setInt(++nextParam, grp.getId());
+                        // notifica
+                        pst1.setBoolean(++nextParam, GET_ALL);
+                        // selezione
+                        pst1.setBoolean(++nextParam, GET_ALL);
+                        // aggiornamento
+                        pst1.setBoolean(++nextParam, GET_ALL);
+                        // inserimento
+                        pst1.setBoolean(++nextParam, GET_ALL);
+                        // eliminazione
+                        pst1.setBoolean(++nextParam, GET_ALL);
+                        // === Campi automatici: id utente, ora ultima modifica, data ultima modifica ===
+                        pst1.setDate(++nextParam, Utils.convert(Utils.convert(Utils.getCurrentDate()))); // non accetta un GregorianCalendar né una data java.util.Date, ma java.sql.Date
+                        pst1.setTime(++nextParam, Utils.getCurrentTime());   // non accetta una Stringa, ma un oggetto java.sql.Time
+                        pst1.setInt(++nextParam, user.getUsrId());
+                        // CR (Carriage Return) o 0DH
+                        pst1.addBatch();
+                    }
+                    // Query di inserimento finalità associate
+                    pst2 = con.prepareStatement(INSERT_CONVENTION_SCOPE);
+                    pst2.clearParameters();
+                    // Recupera il numero di finalità da inserire
+                    int nScope = Integer.parseInt(convention.get("scop"));
+                    // Tutte le finalità definite nell'applicazione
+                    ArrayList<CodeBean> finalita = ConfigManager.getScopes();
+                    // Finalità da impostare in questa convenzione (convenzione corrente)
+                    ArrayList<CodeBean> currentFinalita = new ArrayList<>();
+                    // O(1) lookup optimization - HashSet for generalPurposes IDs
+                    Set<Integer> updatedScopeIds = new HashSet<>();
+                    // Recupera gli id delle finalità da inserire
+                    while (index < nScope) {
+                        // Numero di parametro da passare alla query
+                        nextParam = NOTHING;
+                        // Incrementa il suffisso della chiave
+                        index++;
+                        // Chiave associata a id del contraente
+                        String key = "scop" + index;
+                        // Valore id della finalità
+                        int idScope = Integer.parseInt(convention.get(key));
+                        // Per ogni finalità trovata deve inserire 1 tupla nella tabella di relazione
+                        if (idScope > NOTHING) {
+                            // === Campi automatici: id utente, ora ultima modifica, data ultima modifica ===
+                            pst2.setDate(++nextParam, Utils.convert(Utils.convert(Utils.getCurrentDate()))); // non accetta un GregorianCalendar né una data java.util.Date, ma java.sql.Date
+                            pst2.setTime(++nextParam, Utils.getCurrentTime());   // non accetta una Stringa, ma un oggetto java.sql.Time
+                            pst2.setInt(++nextParam, user.getUsrId());
+                            // === Id Convenzione === 
+                            pst2.setInt(++nextParam, idConv);
+                            // === Id Finalità === 
+                            pst2.setInt(++nextParam, idScope);
+                            // CR (Carriage Return) o 0DH
+                            pst2.addBatch();
+                            // Add the current scope to the set of updated scopes
+                            updatedScopeIds.add(Integer.valueOf(idConv));
+                        }
+                    }
+                    // Cicla su tutte le finalità e aggiunge "checked" se la finalità corrisponde a quella aggiornata
+                    for (CodeBean scope : finalita) {
+                        if (updatedScopeIds.contains(Integer.valueOf(scope.getId()))) {
+                            scope.setInformativa("checked");
+                        }
+                        currentFinalita.add(scope);
+                    }
+                    c.setFinalita(currentFinalita);
+                    // Do Insert grps
+                    int[] updateGrps = pst1.executeBatch();
+                    LOG.info(updateGrps.length + " relazioni su gruppi in transazione attiva.\n");
+                    // Do Insert scopes
+                    int[] updateScopes = pst2.executeBatch();
+                    LOG.info(updateScopes.length + " relazioni su finalita\' in transazione attiva.\n");
+                } catch (NumberFormatException nfe) {
+                    String msg = FOR_NAME + "Si e\' verificato un problema nella conversione di interi.\n" + nfe.getMessage();
+                    LOG.severe(msg);
+                    throw new WebStorageException(msg, nfe);
+                } catch (NullPointerException npe) {
+                    String msg = FOR_NAME + "Si e\' verificato un problema in un puntamento a null.\n" + npe.getMessage();
+                    LOG.severe(msg);
+                    throw new WebStorageException(msg, npe);
+                } catch (Exception e) {
+                    String msg = FOR_NAME + "Si e\' verificato un problema.\n" + e.getMessage();
+                    LOG.severe(msg);
+                    throw new WebStorageException(msg, e);
+                }
+                // End: <==
+                con.commit();
+                pst.close();
+                pst = null;
+                return c;
+            } catch (SQLException sqle) {
+                String msg = FOR_NAME + "Problema nel codice SQL o nella chiusura dello statement.\n";
+                LOG.severe(msg); 
+                throw new WebStorageException(msg + sqle.getMessage(), sqle);
+            } catch (CommandException ce) {
+                String msg = FOR_NAME + "Si e\' verificato un problema nella conversione di date.\n" + ce.getMessage();
+                LOG.severe(msg);
+                throw new WebStorageException(msg, ce);
+            } finally {
+                try {
+                    con.close();
+                } catch (NullPointerException npe) {
+                    String msg = FOR_NAME + "Ooops... problema nella chiusura della connessione.\n";
+                    LOG.severe(msg); 
+                    throw new WebStorageException(msg + npe.getMessage());
+                } catch (SQLException sqle) {
+                    throw new WebStorageException(FOR_NAME + sqle.getMessage());
+                }
+            }
+        } catch (SQLException sqle) {
+            String msg = FOR_NAME + "Problema con la creazione della connessione.\n";
+            LOG.severe(msg);
+            throw new WebStorageException(msg + sqle.getMessage(), sqle);
+        }
+    }
+    
+    
     /* ********************************************************** *
      *                  Metodi di AGGIORNAMENTO                   *
      * ********************************************************** */
@@ -1369,7 +1669,7 @@ public class DBWrapper extends QueryImpl {
                     con.setAutoCommit(false);
                     pst = con.prepareStatement(INSERT_ACCESSLOG_BY_USER);
                     pst.clearParameters();
-                    int nextVal = getMax("access_log") + 1;
+                    int nextVal = getMax("access_log") + ELEMENT_LEV_1;
                     pst.setInt(nextParam, nextVal);
                     pst.setString(++nextParam, username);
                     pst.setDate(++nextParam, Utils.convert(Utils.convert(Utils.getCurrentDate())));
