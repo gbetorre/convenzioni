@@ -9,7 +9,7 @@ a.arrow-link {
   border-right: 20px dashed transparent;
   border-top: 30px dashed white;
   cursor: pointer;
-  text-decoration: none; /* no underline */
+  text-decoration: none;    /* no underline */
 }
 
 .welcome-message {
@@ -27,27 +27,27 @@ a.arrow-link {
 .dashed-frame {
   display: inline-block;
   padding: 10px 20px;
-  border: 1px dashed white; /* Dashed border */
-  border-radius: 8px; /* Optional rounded corners */
+  border: 1px dashed white; /* dashed border */
+  border-radius: 8px;         /* optional rounded corners */
 }
 
 .padding-small {
-  padding-top: 200px; /* Reduce padding in table cells */
+  padding-top: 200px;         /* reduce padding in table cells */
 }
 
 .smaller-text {
-  font-size: 0.8em; /* 80% of the parent font size */
+  font-size: 0.8em;           /* 80% of the parent font size */
 }
 
 .small-text {
-  font-size: 8pt !important; /* font size small in absolute way */
+  font-size: 8pt !important;  /* font size small in absolute way */
 }
 
 dl {
   border-top: 1px solid #ddd;
   margin: 0;
   padding: 0;
-  counter-reset: defcounter; /* Initialize counter */
+  counter-reset: defcounter;  /* initialize counter */
 }
 
 dt {
@@ -62,7 +62,7 @@ dd {
   color: #555;
   line-height: 1.2;
   position: relative;
-  counter-increment: defcount; /* Increment counter on each dd */
+  counter-increment: defcount;/* increment counter on each dd */
   padding-left: 30px;
 }
 
@@ -88,11 +88,11 @@ dd::before {
 /*------------------------------ COL form classes ------------------------------*/
 
 .col-form-label {
-  cursor: pointer; /* changes mouse pointer to hand */
+  cursor: pointer;            /* changes mouse pointer to hand */
   position: relative;
   display: flex;
   align-items: center;
-  padding-right: 20px; /* space for the arrow */
+  padding-right: 20px;        /* space for the arrow */
   white-space: nowrap;
 }
 
@@ -100,7 +100,7 @@ dd::before {
   content: '';
   position: absolute;
   top: 50%;
-  left: calc(100% + 5px); /* start right after label text */
+  left: calc(100% + 5px);     /* start right after label text */
   right: 20px; /* end just before the arrow */
   height: 2px;
   background-color: #007bff;
@@ -131,10 +131,28 @@ dd::before {
 }
 
 .col-form-label:hover::after {
-  background-color: #ff4500; /* same highlight color */
+  background-color: #ff4500;  /* same highlight color */
   transition: background-color 0.3s ease;
 }
 
+.form-control::placeholder {
+  color: #6c757d;               /* default placeholder color */
+  opacity: 1;                   /* ensure full opacity by default */
+}
+
+.form-control:focus::placeholder {
+  visibility: hidden;           /* hide placeholder on focus */
+}
+
+.dropdown {
+  padding-left: 30px;           /* adjust for icon width */
+  background-image: url(../images/ico-dropdown.png);
+  background-repeat: no-repeat;
+  background-position: 5px center;  /* adjust position as needed */
+  background-size: 20px 20px;   /* set width and height of the icon */
+  /*border: none;*/
+}
+        
 /*------------------------------ HORIZONTAL ROWS -------------------------------*/
 
 hr.separator {
@@ -176,7 +194,7 @@ hr.row       {
 
 .mono-space-nice {
   font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
-  font-size: 0.75rem;  /* About 75% of default font size */
+  font-size: 0.75rem;  /* about 75% of default font size */
   line-height: 1.5;
   letter-spacing: 0.05em;
   word-spacing: 0.1em;
@@ -198,14 +216,14 @@ hr.row       {
 
 /* Reduce overall font size */
 .dataTable {
-    font-size: 0.75rem;  /* About 75% of default font size */
+    font-size: 0.75rem;  /* about 75% of default font size */
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; /* Make font-family compact and readable */
 }
 
 /* Reduce padding in table cells */
 .dataTable th,
 .dataTable td {
-    padding: 4px 6px;  /* Smaller vertical and horizontal padding */
+    padding: 4px 6px;  /* smaller vertical and horizontal padding */
 }
 
 /* Optional: smaller header font */
