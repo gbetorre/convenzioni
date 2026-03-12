@@ -121,7 +121,7 @@
     </error-page>
     <error-page>
       <error-code>501</error-code>
-      <location>/html/notImplemented.html</location>
+      <location>/html/501-notImplemented.html</location>
     </error-page>
     <error-page>
       <error-code>502</error-code>
