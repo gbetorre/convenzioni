@@ -227,14 +227,14 @@ public class MailManager {
         String mailTo = null;
         // TODO: there is a naming here, this gotta be optimized dinamically, after 
         if (groupIds.length == 1) {
-            if (groupIds[0] == 1) {
-                mailTo = "lindamaria.frigo@univr.it, giovanni.olivieri@univr.it, elisa.puddu@univr.it, francesca.limberto@univr.it, giovanroberto.torre@univr.it";
-            } else if (groupIds[0] == 3) {
+            if (groupIds[0] == 4) {
+                mailTo = "lindamaria.frigo@univr.it, francesca.limberto@univr.it, giovanroberto.torre@univr.it, mauro.recchia@univr.it, teresa.dalmaso@univr.it";
+            }/* else if (groupIds[0] == 3) {
                 mailTo = "mauro.recchia@univr.it, teresa.dalmaso@univr.it, giovanroberto.torre@univr.it";
-            }
-        } else if (groupIds.length > 1) {
+            }*/
+        }/* else if (groupIds.length > 1) {
             mailTo = "elisa.silvestri@univr.it, giovanroberto.torre@univr.it";
-        }
+        }*/
         InternetAddress[] addresses = InternetAddress.parse(mailTo);
         String mailFrom = "convenzioniecentri@ateneo.univr.it";
         String mailContent = new String(body); 
