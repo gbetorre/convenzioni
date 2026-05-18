@@ -176,15 +176,19 @@ public class SchedulerCommand extends CommandBean implements Command, Constants 
                 /* Disable e-mail for Development environment */
                 if (!contextDbName.endsWith("dev")) {
                     // There is a naming here; you should improve that
-                    int[] convenzioniUO = {1}; 
-                    Data.handleSendEmail(convenzioniUO, start, end);
-                    log.info(FOR_NAME + "E-mail inviata: " + convenzioniUO);
-                    int[] organiUO = {3}; 
-                    Data.handleSendEmail(organiUO, start, end);
-                    log.info(FOR_NAME + "E-mail inviata: " + organiUO);
-                    int[] headUO = {1, 3};
-                    Data.handleSendEmail(headUO, start, end);
-                    log.info(FOR_NAME + "E-mail inviata: " + headUO);
+//                    int[] convenzioniUO = {1}; 
+//                    Data.handleSendEmail(convenzioniUO, start, end);
+//                    log.info(FOR_NAME + "E-mail inviata: " + convenzioniUO);
+//                    int[] organiUO = {3}; 
+//                    Data.handleSendEmail(organiUO, start, end);
+//                    log.info(FOR_NAME + "E-mail inviata: " + organiUO);
+//                    int[] headUO = {1, 3};
+//                    Data.handleSendEmail(headUO, start, end);
+//                    log.info(FOR_NAME + "E-mail inviata: " + headUO);
+                    // New ALTp Area (4 ALTP    area legale, trasparenza e privacy  10  2026-05-18  17:31:30    1)
+                    int[] legaleArea = {4}; 
+                    Data.handleSendEmail(legaleArea, start, end);
+                    log.info(FOR_NAME + "E-mail inviata: " + legaleArea);
                     long elapsedTime = System.nanoTime() - startTime;
                     log.config(FOR_NAME + "Email inviate in " + elapsedTime / SECOND_DIVISOR + "\"");
                 }
