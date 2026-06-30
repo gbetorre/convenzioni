@@ -129,7 +129,7 @@
     </error-page>
     <error-page>
       <error-code>503</error-code>
-      <location>/html/serviceUnavailable.html</location>
+      <location>/html/503-serviceUnavailable.html</location>
     </error-page>
     <error-page>
       <error-code>504</error-code>
