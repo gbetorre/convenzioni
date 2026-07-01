@@ -170,8 +170,16 @@ public class Data extends HttpServlet implements Constants {
             case DELETE:
                 // handleDelete(req, res);
                 break;
-            case SEND:
-                handleSendEmail(req, res);  // ← Extracted externally
+            case SEND: // -> col/data?op=put&
+                String ent = parser.getStringParameter(ENTITY, VOID_STRING);
+                // se c'è un parametro in più
+                if (!ent.equals(VOID_STRING)) {
+                    // -> handleSendCertificates
+                    handleSendCertificates(req, res);
+                } else {
+                    // altrimenti:
+                    handleSendEmail(req, res);  // ← Extracted externally
+                }
                 return; // Early return since email completes response
             default:
                 log.warning("Unknown operation: { " + operation + " }");
@@ -279,6 +287,30 @@ public class Data extends HttpServlet implements Constants {
         }
     }
 
+    
+    /**
+     * Handles the SEND operation with attachments.
+     * 
+     * @param req the HTTP request containing email message parameters
+     * @param res the HTTP response for TXT confirmation output
+     * @throws ServletException if servlet processing fails
+     * @throws IOException if response writing fails
+     */
+    private void handleSendCertificates(HttpServletRequest req, HttpServletResponse res) 
+                          throws ServletException, IOException {
+        try {
+            sendEmail();
+            // Notify the success
+            log.info("===> Email sent successfully <===");
+        } catch (Exception e) {
+            log.severe("Failed to send email: " + e.getLocalizedMessage());
+            // Set error attribute for JSP
+            req.setAttribute("error", "Email sending failed: " + e.getMessage());
+            // Forward to error page instead of crashing
+            forwardToErrorPage(req, res);
+        }
+    }
+    
     
     /**
      * Extracts parameters from the given HttpServletRequest and 
@@ -525,6 +557,39 @@ public class Data extends HttpServlet implements Constants {
             MailManager.sendEmail(body, username, password);
         } else {    // Production environment
             MailManager.sendEmail(groupIds, subject, body);
+        }
+    }
+    
+    
+    /**
+     * Sends email using environment-specific configuration.
+     * 
+     * <p>In <strong>development</strong> (DB name ends with "dev"), 
+     * uses SMTP2GO credentials from {@link #getCredentials()} properties. 
+     * In <strong>production</strong>, uses default MailManager configuration 
+     * (likely application server mail session).</p>
+     * 
+     * <pre>
+     * DEV:   MailManager.sendEmail(credentials[])
+     * PROD:  MailManager.sendEmail()
+     * </pre>
+     * 
+     * @param groupIds the IDs of the groups from which to determine the mailing lists to send the message
+     * @param body the email content to send
+     * @throws IOException if email delivery fails (logged by caller)
+     * @throws Exception if some pointer is wrong
+     */
+    private static void sendEmail() 
+            throws IOException, Exception {
+        // Development environment
+        if (DBManager.getDbName().endsWith("dev")) {
+            Properties credentials = getCredentials();
+            final String username = credentials.getProperty("username"); // your SMTP2GO username
+            final String password = credentials.getProperty("password"); // your SMTP2GO password or API key
+            String[] account = {username, password};
+            MailManager.sendEmail(account);
+        } else {    // Production environment
+            MailManager.sendEmail();
         }
     }
     
