@@ -38,9 +38,11 @@
 package it.col.util;
 
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -53,6 +55,7 @@ import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
+import javax.mail.Part;
 import javax.mail.SendFailedException;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -229,12 +232,8 @@ public class MailManager {
         if (groupIds.length == 1) {
             if (groupIds[0] == 4) {
                 mailTo = "lindamaria.frigo@univr.it, francesca.limberto@univr.it, giovanroberto.torre@univr.it, mauro.recchia@univr.it, teresa.dalmaso@univr.it";
-            }/* else if (groupIds[0] == 3) {
-                mailTo = "mauro.recchia@univr.it, teresa.dalmaso@univr.it, giovanroberto.torre@univr.it";
-            }*/
-        }/* else if (groupIds.length > 1) {
-            mailTo = "elisa.silvestri@univr.it, giovanroberto.torre@univr.it";
-        }*/
+            }
+        }
         InternetAddress[] addresses = InternetAddress.parse(mailTo);
         String mailFrom = "convenzioniecentri@ateneo.univr.it";
         String mailContent = new String(body); 
@@ -268,15 +267,18 @@ public class MailManager {
     
     
     /**
-
+     * Send e-mail with attachments    
+     * using the development environment.
+     * The credentials are passed by a String array, in order
+     * (username, password).
      */
-    public static String sendEmail() throws Exception {
-        //String mailTo = "albertomaria.arenaagostino@univr.it";
-        //String mailTo = "lindamaria.frigo@univr.it, giovanni.olivieri@univr.it, elisa.puddu@univr.it, francesca.limberto@univr.it";
-        String mailTo = "giovanroberto.torre@univr.it";
+    public static String sendEmail(String[] credentials) throws Exception {
+        String username = credentials[0];
+        String password = credentials[1];
+        String mailTo = "giovanroberto.torre@univr.it, giovanroberto.torre@univr.eu";
         InternetAddress[] addresses = InternetAddress.parse(mailTo);
-        String mailFrom = "giovanroberto.torre@univr.it";
-        String subject = "Richiesta";
+        String mailFrom = "giovanroberto.torre@univr.eu";
+        String subject = "Attestato giornata della trasparenza 2026";
         StringBuffer content = new StringBuffer("TEST riepilogo scadenze");
         content.append("<br><br>")
                .append("prova")
@@ -291,18 +293,41 @@ public class MailManager {
         String mailContent = new String(content); 
         Properties props = System.getProperties();  // Get system properties
         props.put("mailTo", mailTo);
-        props.put("mail.smtp.host", "smtp.univr.it");
-        props.put("mail.smtp.port", "25");
-        props.put("mail.smtp.auth", "false");
-        props.put("mail.smtp.starttls.enable", "false");
-        Session session = Session.getInstance(props);   // Get session
+        props.put("mail.smtp.host", "mail.smtp2go.com");
+        props.put("mail.smtp.port", "587"); // TLS port recommended
+        props.put("mail.smtp.auth", "true"); // SMTP2GO requires authentication
+        props.put("mail.smtp.starttls.enable", "true"); // Enable STARTTLS for encryption
+        props.put("mail.smtp.connectiontimeout", "10000"); // 10 seconds
+        props.put("mail.smtp.timeout", "10000"); // 10 seconds
+        Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+            @Override
+            protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
+                return new javax.mail.PasswordAuthentication(username, password);
+            }
+        });
         try {
             MimeMessage message = new MimeMessage(session); // Define message
             message.setFrom(new InternetAddress(mailFrom)); // Set the from address
             //message.addRecipient(Message.RecipientType.TO, new InternetAddress(mailTo));    // Set the to address
             message.setRecipients(Message.RecipientType.TO, addresses);
-            message.setSubject(subject);
-            message.setContent(mailContent, "text/html");   // Set the content
+            message.setSubject(subject, "UTF-8");
+            // --- Body part (HTML) ---
+            MimeBodyPart htmlPart = new MimeBodyPart();
+            htmlPart.setContent(mailContent, "text/html; charset=UTF-8");
+            //message.setContent(mailContent, "text/html");   // Set the content
+            // --- Attachment part ---
+            MimeBodyPart attachmentPart = new MimeBodyPart();
+            File file = new File("/home/trrgnr59/Temp/Attestato.pdf"); // change path/name
+            DataSource source = new FileDataSource(file);
+            attachmentPart.setDataHandler(new DataHandler(source));
+            attachmentPart.setFileName(file.getName());
+            attachmentPart.setDisposition(Part.ATTACHMENT);
+            // --- Combine into multipart ---
+            MimeMultipart multipart = new MimeMultipart();
+            multipart.addBodyPart(htmlPart);
+            multipart.addBodyPart(attachmentPart);
+            // set content and send
+            message.setContent(multipart);
             Transport.send(message);                    // Send message
         } catch (MessagingException mex) {
             String msg = "Si e\' verificato un problema nel processamento del MimeMessage.\n" + mex.getMessage();
@@ -315,6 +340,81 @@ public class MailManager {
         }
 
         return "Email inviata";
+    }
+    
+    
+    /**
+     * Send e-mail with attachments    
+     * using the production environment.
+     */
+    public static String sendEmail() throws Exception {
+        String mailFrom = "trasparenza@ateneo.univr.it";
+        String subject = "Attestato giornata della trasparenza 2026";
+        StringBuffer body = new StringBuffer("TEST invio attestato");
+        body.append("<br><br>")
+            .append("Gentile")
+            .append("<br><br>")
+            .append("ecco in allegato attestato di partecipazione")
+            .append("<br><br>")
+            .append("cordiali saluti")
+            .append("<br><br>")
+            .append("Direttore Generale")
+            .append("<br>")
+            .append("");
+        ArrayList<String> recipients = new ArrayList<>();
+        recipients.add("giovanroberto.torre@univr.it");
+        for (String mailTo : recipients) {
+            InternetAddress[] addresses = InternetAddress.parse(mailTo);
+            String mailContent = new String(body); 
+            Properties props = System.getProperties();  // Get system properties
+            props.put("mailTo", mailTo);
+            props.put("mail.smtp.host", "smtp.univr.it");
+            props.put("mail.smtp.port", "25");
+            props.put("mail.smtp.auth", "false");
+            props.put("mail.smtp.starttls.enable", "false");
+            Session session = Session.getInstance(props);   // Get session
+            try {
+                Thread.sleep(1000); // 1 second
+                MimeMessage message = new MimeMessage(session); // Define message
+                message.setFrom(new InternetAddress(mailFrom)); // Set the from address
+                //message.addRecipient(Message.RecipientType.TO, new InternetAddress(mailTo));    // Set the to address
+                message.setRecipients(Message.RecipientType.TO, addresses);
+                message.setSubject(subject, "UTF-8");
+                // --- Set the content ---
+                message.setContent(mailContent, Constants.MIME_TYPE_HTML + "; charset=UTF-8");
+                // --- Body part (HTML) ---
+                MimeBodyPart htmlPart = new MimeBodyPart();
+                htmlPart.setContent(mailContent, "text/html; charset=UTF-8");
+                // --- Attachment part ---
+                MimeBodyPart attachmentPart = new MimeBodyPart();
+                File file = new File("/home/gtorre/Temp/Attestato.pdf"); // change path/name
+                DataSource source = new FileDataSource(file);
+                attachmentPart.setDataHandler(new DataHandler(source));
+                attachmentPart.setFileName(file.getName());
+                attachmentPart.setDisposition(Part.ATTACHMENT);
+                // --- Combine into multipart ---
+                MimeMultipart multipart = new MimeMultipart();
+                multipart.addBodyPart(htmlPart);
+                multipart.addBodyPart(attachmentPart);
+                // --- Set content ---
+                message.setContent(multipart);
+                // --- Send message ---              
+                Transport.send(message);
+            } catch (MessagingException mex) {
+                String msg = "Si e\' verificato un problema nel processamento del MimeMessage.\n" + mex.getMessage();
+                throw new Exception(msg, mex);
+            } catch (InterruptedException ie) {
+                String msg = "Si e\' verificato un problema nel processamento del thread.\n" + ie.getMessage();
+                log.warning(msg);
+                Thread.currentThread().interrupt();
+                break;    
+            } catch (Exception ex) {
+                String msg = "Si e\' verificato un problema generico.\n" + ex.getMessage();
+                //log.warning(msg);
+                throw new Exception(msg, ex);
+            }
+        }
+        return "Email inviate";
     }
     
 }
