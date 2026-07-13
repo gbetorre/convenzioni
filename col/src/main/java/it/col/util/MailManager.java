@@ -72,8 +72,8 @@ public class MailManager {
      * All logging goes through this logger.
      */
     private static Logger log = Logger.getLogger(MailManager.class.getName());
-
     
+
     /**
      * Sends an HTML email via University SMTP server (no authentication).
      * 
@@ -521,23 +521,41 @@ public class MailManager {
     public static String sendEmail(ArrayList<CodeBean> recipients) 
                             throws Exception {
         String mailFrom = "trasparenza@ateneo.univr.it";
-        String subject = "Attestato giornata della trasparenza 2026";
-        StringBuffer body = new StringBuffer("TEST invio attestato");
+        String subject = "Attestato di partecipazione e registrazione dell’evento – Giornata della Trasparenza delle Università del Veneto 2026";
+        StringBuffer body = new StringBuffer("Gentile Partecipante,");
         body.append("<br><br>")
-            .append("Gentile")
+            .append("desideriamo ringraziarLa per aver preso parte alla ")
+            .append("<strong>Giornata della Trasparenza delle Università del Veneto 2026</strong>.")
             .append("<br><br>")
-            .append("ecco in allegato attestato di partecipazione")
+            .append("In allegato alla presente trova il ")
+            .append("<strong>Suo attestato di partecipazione</strong>.")
             .append("<br><br>")
-            .append("cordiali saluti")
-            .append("<br><br>")
-            .append("Direttore Generale")
+            .append("&Egrave; inoltre possibile rivedere l’evento attraverso la registrazione disponibile al seguente link:")
             .append("<br>")
-            .append("");
+            .append("<a href='https://youtu.be/mQkLMz7r9fc?si=uLZSMbWKQd6ifn1q'>https://youtu.be/mQkLMz7r9fc?si=uLZSMbWKQd6ifn1q</a>")
+            .append("<br><br>")
+            .append("Ci auguriamo che i contenuti proposti siano stati di interesse e possano rappresentare un utile spunto di approfondimento e confronto per le attività future.")
+            .append("<br><br>")
+            .append("RingraziandoLa nuovamente per la partecipazione e l’attenzione dedicata all’iniziativa, porgiamo i nostri pi&uacute; cordiali saluti.")
+            .append("<br><br>")
+            .append("Servizio Anticorruzione, Trasparenza e Accesso agli atti")
+            .append("<br>")
+            .append("Ufficio di Staff Area Legale, Trasparenza e Privacy")
+            .append("<br>")
+            .append("Direzione Generale")
+            .append("<br>")
+            .append("Universit&agrave; degli Studi di Verona")
+            .append("<br>");
         ArrayList<String> emails = new ArrayList<>();
         emails.add("trasparenza@ateneo.univr.it");
         for (CodeBean recipient : recipients) {
+            //String mailTo = "trasparenza@ateneo.univr.it, " + recipient.getInformativa();
             String mailTo = recipient.getInformativa();
+            //String mailCc  = "cc1@example.com, cc2@example.com";
+            String mailBcc = "trasparenza@ateneo.univr.it";
             InternetAddress[] addresses = InternetAddress.parse(mailTo);
+            //InternetAddress[] ccAddresses  = InternetAddress.parse(mailCc);
+            InternetAddress[] bccAddresses = InternetAddress.parse(mailBcc);
             String mailContent = new String(body); 
             Properties props = System.getProperties();  // Get system properties
             Properties credentials = Data.getCredentials();
@@ -553,6 +571,8 @@ public class MailManager {
                 message.setFrom(new InternetAddress(mailFrom)); // Set the from address
                 //message.addRecipient(Message.RecipientType.TO, new InternetAddress(mailTo));    // Set the to address
                 message.setRecipients(Message.RecipientType.TO, addresses);
+                //message.setRecipients(Message.RecipientType.CC, ccAddresses);
+                message.setRecipients(Message.RecipientType.BCC, bccAddresses);
                 message.setSubject(subject, "UTF-8");
                 // --- Set the content ---
                 message.setContent(mailContent, Constants.MIME_TYPE_HTML + "; charset=UTF-8");
@@ -561,7 +581,7 @@ public class MailManager {
                 htmlPart.setContent(mailContent, "text/html; charset=UTF-8");
                 // --- Attachment part ---
                 MimeBodyPart attachmentPart = new MimeBodyPart();
-                File file = new File("" + recipient.getNome() + "/Attestato.pdf"); // change path/name
+                File file = new File("/home/gtorre/Temp/Progetti/Attestati/output/" + recipient.getNome() + "/Attestato.pdf"); // change path/name
                 DataSource source = new FileDataSource(file);
                 attachmentPart.setDataHandler(new DataHandler(source));
                 attachmentPart.setFileName(file.getName());
