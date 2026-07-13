@@ -39,24 +39,16 @@ package it.col.util;
 
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Properties;
 import java.util.logging.Logger;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
-import javax.mail.Address;
-import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.Multipart;
 import javax.mail.Part;
-import javax.mail.SendFailedException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
@@ -65,6 +57,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 import it.col.Data;
+import it.col.bean.CodeBean;
 
 
 /**
@@ -79,7 +72,7 @@ public class MailManager {
      * All logging goes through this logger.
      */
     private static Logger log = Logger.getLogger(MailManager.class.getName());
-      
+
     
     /**
      * Sends an HTML email via University SMTP server (no authentication).
@@ -120,11 +113,12 @@ public class MailManager {
         String mailFrom = "convenzioniecentri@ateneo.univr.it";
         String mailContent = new String(body); 
         Properties props = System.getProperties();  // Get system properties
+        Properties credentials = Data.getCredentials();
         props.put("mailTo", mailTo);
-        props.put("mail.smtp.host", "smtp.univr.it");
-        props.put("mail.smtp.port", "25");
-        props.put("mail.smtp.auth", "false");
-        props.put("mail.smtp.starttls.enable", "false");
+        props.put("mail.smtp.host", credentials.getProperty("host"));
+        props.put("mail.smtp.port", credentials.getProperty("port"));
+        props.put("mail.smtp.auth", credentials.getProperty("auth"));
+        props.put("mail.smtp.starttls.enable", credentials.getProperty("ttls"));
         Session session = Session.getInstance(props);   // Get session
         try {
             MimeMessage message = new MimeMessage(session); // Define message
@@ -238,11 +232,12 @@ public class MailManager {
         String mailFrom = "convenzioniecentri@ateneo.univr.it";
         String mailContent = new String(body); 
         Properties props = System.getProperties();  // Get system properties
+        Properties credentials = Data.getCredentials();
         props.put("mailTo", mailTo);
-        props.put("mail.smtp.host", "smtp.univr.it");
-        props.put("mail.smtp.port", "25");
-        props.put("mail.smtp.auth", "false");
-        props.put("mail.smtp.starttls.enable", "false");
+        props.put("mail.smtp.host", credentials.getProperty("host"));
+        props.put("mail.smtp.port", credentials.getProperty("port"));
+        props.put("mail.smtp.auth", credentials.getProperty("auth"));
+        props.put("mail.smtp.starttls.enable", credentials.getProperty("ttls"));
         Session session = Session.getInstance(props);   // Get session
         try {
             MimeMessage message = new MimeMessage(session); // Define message
@@ -367,11 +362,12 @@ public class MailManager {
             InternetAddress[] addresses = InternetAddress.parse(mailTo);
             String mailContent = new String(body); 
             Properties props = System.getProperties();  // Get system properties
+            Properties credentials = Data.getCredentials();
             props.put("mailTo", mailTo);
-            props.put("mail.smtp.host", "smtp.univr.it");
-            props.put("mail.smtp.port", "25");
-            props.put("mail.smtp.auth", "false");
-            props.put("mail.smtp.starttls.enable", "false");
+            props.put("mail.smtp.host", credentials.getProperty("host"));
+            props.put("mail.smtp.port", credentials.getProperty("port"));
+            props.put("mail.smtp.auth", credentials.getProperty("auth"));
+            props.put("mail.smtp.starttls.enable", credentials.getProperty("ttls"));
             Session session = Session.getInstance(props);   // Get session
             try {
                 Thread.sleep(1000); // 1 second
@@ -388,6 +384,184 @@ public class MailManager {
                 // --- Attachment part ---
                 MimeBodyPart attachmentPart = new MimeBodyPart();
                 File file = new File("/home/gtorre/Temp/Attestato.pdf"); // change path/name
+                DataSource source = new FileDataSource(file);
+                attachmentPart.setDataHandler(new DataHandler(source));
+                attachmentPart.setFileName(file.getName());
+                attachmentPart.setDisposition(Part.ATTACHMENT);
+                // --- Combine into multipart ---
+                MimeMultipart multipart = new MimeMultipart();
+                multipart.addBodyPart(htmlPart);
+                multipart.addBodyPart(attachmentPart);
+                // --- Set content ---
+                message.setContent(multipart);
+                // --- Send message ---              
+                Transport.send(message);
+            } catch (MessagingException mex) {
+                String msg = "Si e\' verificato un problema nel processamento del MimeMessage.\n" + mex.getMessage();
+                throw new Exception(msg, mex);
+            } catch (InterruptedException ie) {
+                String msg = "Si e\' verificato un problema nel processamento del thread.\n" + ie.getMessage();
+                log.warning(msg);
+                Thread.currentThread().interrupt();
+                break;    
+            } catch (Exception ex) {
+                String msg = "Si e\' verificato un problema generico.\n" + ex.getMessage();
+                //log.warning(msg);
+                throw new Exception(msg, ex);
+            }
+        }
+        return "Email inviate";
+    }
+    
+    
+    /**
+     * Send e-mail with attachments using the production environment.
+     * <p>EN:
+     * It takes as input an object containing a nameSurname and an email address, 
+     * and uses this data to address the message and locate a specific path 
+     * from which to retrieve a document to attach to the email itself.
+     * <br>IT:
+     * Riceve in input un oggetto contenente un nomeCognome e un'e-mail 
+     * e usa questi dati per indirizzare il messaggio e trovare un percorso 
+     * dedicato in cui prelevare un documento da allegare all'e-mail stessa.</p>
+     * 
+     * @param   recipient   the object containing the name and the email address
+     * @return  a standard  string if successful
+     * @throws  Exception   if any problems arise
+     */
+    public static String sendEmail(CodeBean recipient) 
+                            throws Exception {
+        String mailFrom = "trasparenza@ateneo.univr.it";
+        String subject = "Attestato giornata della trasparenza 2026";
+        StringBuffer body = new StringBuffer("TEST invio attestato");
+        body.append("<br><br>")
+            .append("Gentile")
+            .append("<br><br>")
+            .append("ecco in allegato attestato di partecipazione")
+            .append("<br><br>")
+            .append("cordiali saluti")
+            .append("<br><br>")
+            .append("Direttore Generale")
+            .append("<br>")
+            .append("");
+        ArrayList<String> recipients = new ArrayList<>();
+        recipients.add("trasparenza@ateneo.univr.it");
+        recipients.add(recipient.getInformativa());
+        for (String mailTo : recipients) {
+            InternetAddress[] addresses = InternetAddress.parse(mailTo);
+            String mailContent = new String(body); 
+            Properties props = System.getProperties();  // Get system properties
+            Properties credentials = Data.getCredentials();
+            props.put("mailTo", mailTo);
+            props.put("mail.smtp.host", credentials.getProperty("host"));
+            props.put("mail.smtp.port", credentials.getProperty("port"));
+            props.put("mail.smtp.auth", credentials.getProperty("auth"));
+            props.put("mail.smtp.starttls.enable", credentials.getProperty("ttls"));
+            Session session = Session.getInstance(props);   // Get session
+            try {
+                Thread.sleep(1000); // 1 second
+                MimeMessage message = new MimeMessage(session); // Define message
+                message.setFrom(new InternetAddress(mailFrom)); // Set the from address
+                //message.addRecipient(Message.RecipientType.TO, new InternetAddress(mailTo));    // Set the to address
+                message.setRecipients(Message.RecipientType.TO, addresses);
+                message.setSubject(subject, "UTF-8");
+                // --- Set the content ---
+                message.setContent(mailContent, Constants.MIME_TYPE_HTML + "; charset=UTF-8");
+                // --- Body part (HTML) ---
+                MimeBodyPart htmlPart = new MimeBodyPart();
+                htmlPart.setContent(mailContent, "text/html; charset=UTF-8");
+                // --- Attachment part ---
+                MimeBodyPart attachmentPart = new MimeBodyPart();
+                File file = new File("/home/gtorre/Temp/Attestati/output/" + recipient.getNome() + "/Attestato.pdf"); // change path/name
+                DataSource source = new FileDataSource(file);
+                attachmentPart.setDataHandler(new DataHandler(source));
+                attachmentPart.setFileName(file.getName());
+                attachmentPart.setDisposition(Part.ATTACHMENT);
+                // --- Combine into multipart ---
+                MimeMultipart multipart = new MimeMultipart();
+                multipart.addBodyPart(htmlPart);
+                multipart.addBodyPart(attachmentPart);
+                // --- Set content ---
+                message.setContent(multipart);
+                // --- Send message ---              
+                Transport.send(message);
+            } catch (MessagingException mex) {
+                String msg = "Si e\' verificato un problema nel processamento del MimeMessage.\n" + mex.getMessage();
+                throw new Exception(msg, mex);
+            } catch (InterruptedException ie) {
+                String msg = "Si e\' verificato un problema nel processamento del thread.\n" + ie.getMessage();
+                log.warning(msg);
+                Thread.currentThread().interrupt();
+                break;    
+            } catch (Exception ex) {
+                String msg = "Si e\' verificato un problema generico.\n" + ex.getMessage();
+                //log.warning(msg);
+                throw new Exception(msg, ex);
+            }
+        }
+        return "Email inviate";
+    }
+    
+    
+    /**
+     * Send e-mail with attachments using the production environment.
+     * <p>EN:
+     * It takes as input an object containing a nameSurname and an email address, 
+     * and uses this data to address the message and locate a specific path 
+     * from which to retrieve a document to attach to the email itself.
+     * <br>IT:
+     * Riceve in input un oggetto contenente un nomeCognome e un'e-mail 
+     * e usa questi dati per indirizzare il messaggio e trovare un percorso 
+     * dedicato in cui prelevare un documento da allegare all'e-mail stessa.</p>
+     * 
+     * @param   recipient   the object containing the name and the email address
+     * @return  a standard  string if successful
+     * @throws  Exception   if any problems arise
+     */
+    public static String sendEmail(ArrayList<CodeBean> recipients) 
+                            throws Exception {
+        String mailFrom = "trasparenza@ateneo.univr.it";
+        String subject = "Attestato giornata della trasparenza 2026";
+        StringBuffer body = new StringBuffer("TEST invio attestato");
+        body.append("<br><br>")
+            .append("Gentile")
+            .append("<br><br>")
+            .append("ecco in allegato attestato di partecipazione")
+            .append("<br><br>")
+            .append("cordiali saluti")
+            .append("<br><br>")
+            .append("Direttore Generale")
+            .append("<br>")
+            .append("");
+        ArrayList<String> emails = new ArrayList<>();
+        emails.add("trasparenza@ateneo.univr.it");
+        for (CodeBean recipient : recipients) {
+            String mailTo = recipient.getInformativa();
+            InternetAddress[] addresses = InternetAddress.parse(mailTo);
+            String mailContent = new String(body); 
+            Properties props = System.getProperties();  // Get system properties
+            Properties credentials = Data.getCredentials();
+            props.put("mailTo", mailTo);
+            props.put("mail.smtp.host", credentials.getProperty("host"));
+            props.put("mail.smtp.port", credentials.getProperty("port"));
+            props.put("mail.smtp.auth", credentials.getProperty("auth"));
+            props.put("mail.smtp.starttls.enable", credentials.getProperty("ttls"));
+            Session session = Session.getInstance(props);   // Get session
+            try {
+                Thread.sleep(1000); // 1 second
+                MimeMessage message = new MimeMessage(session); // Define message
+                message.setFrom(new InternetAddress(mailFrom)); // Set the from address
+                //message.addRecipient(Message.RecipientType.TO, new InternetAddress(mailTo));    // Set the to address
+                message.setRecipients(Message.RecipientType.TO, addresses);
+                message.setSubject(subject, "UTF-8");
+                // --- Set the content ---
+                message.setContent(mailContent, Constants.MIME_TYPE_HTML + "; charset=UTF-8");
+                // --- Body part (HTML) ---
+                MimeBodyPart htmlPart = new MimeBodyPart();
+                htmlPart.setContent(mailContent, "text/html; charset=UTF-8");
+                // --- Attachment part ---
+                MimeBodyPart attachmentPart = new MimeBodyPart();
+                File file = new File("" + recipient.getNome() + "/Attestato.pdf"); // change path/name
                 DataSource source = new FileDataSource(file);
                 attachmentPart.setDataHandler(new DataHandler(source));
                 attachmentPart.setFileName(file.getName());
