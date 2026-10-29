@@ -124,7 +124,34 @@ Il software è un'applicazione Java three-tier
 
 **_Fig.4 - Modello fisico_**
 
-# History
+# Roadmap
+
+Tre delle funzioni attualmente implementate nel software <code>COL-GeCo</code>, ovvero:
+<mark>
+* inserimento della convenzione, 
+* modifica di una convenzione esistente,
+* navigazione delle convenzioni esistenti,
+</mark>
+
+costituiscono strumenti utili (tools), che possono costituire un valido aiuto per l'ufficio che gestisce questi elementi o che deve effettuare ricerche o estrazioni dati relativamente a questi aspetti nel contesto di un'organizzazione.
+
+Allo stato attuale (versione di riferimento: <code>0.57</code>) il software &egrave; gi&agrave; pronto per essere adattato,
+con un minimo adeguamento, a qualunque realt&agrave; organizzativa che voglia
+effettuare un censimento e una gestione puntuale delle convenzioni stabilite
+dall'organizzazione.
+
+## Sviluppi futuri
+
+Vi sono, inoltre, alcune possibili evoluzioni, che potrebbero essere implementate in versioni successive:
+* Funzione di inserimento del contraente
+* Funzione di aggiornamento del contraente
+* Progettazione e deploy della entità "referente" (per mappare anche il personale interno ed esterno coinvolto nella convenzione)
+* Predisposizione di monitoraggi e reportistica, anche in forma grafica (istogrammi, grafici a torta, etc.), per consentire alla <em>governance</em> di effettuare controlli sugli stati di avanzamento e sui risultati raggiunti tramite il progetto di mappatura delle convenzioni.
+* Predisposizione di appositi strumenti di ricerca per consentire agli uffici di ottenere estrazioni analitiche sulle convenzioni intraprese.
+* Implementazione del multilingue (internazionalizzazione).
+* Implementazione di layer di sicurezza aggiuntivi.
+
+## History
 
 ```
 * [0.5.7] (Mar 11, 2026) Implementata funzione inserimento nuova convenzione
