@@ -19,7 +19,7 @@
     ·
     <a href="https://github.com/gbetorre/convenzioni/pulls">Request Feature</a>
     ·
-    <a href="https://github.com/gbetorre/convenzioni/blob/master/README.it.md">Need Italian? <img src="https://github.com/gbetorre/rischi/blob/main/web/img/italy.png" alt="IT" width="40" height="40"></a>
+    <a href="https://github.com/gbetorre/convenzioni/blob/main/README.it.md">Need Italian? <img src="https://github.com/gbetorre/rischi/blob/main/web/img/italy.png" alt="IT" width="40" height="40"></a>
   </p>
 </div>
 
