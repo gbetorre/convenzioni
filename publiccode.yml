@@ -1,0 +1,140 @@
+publiccodeYmlVersion: "0.2"
+name: COL-GeCo
+url: https://github.com/gbetorre/convenzioni/
+landingURL: https://gbetorre.github.io/convenzioni/
+softwareVersion: '0.5.7'
+releaseDate: '2026-03-11'
+logo: https://github.com/gbetorre/convenzioni/blob/main/col/src/main/webapp/assets/images/black-logo.png
+platforms:
+  - web
+categories:
+  - workflow-management
+  - web-collaboration
+  - business-process-management
+usedBy:
+  - Linda Maria Frigo
+  - Mauro Recchia
+  - Teresa Dal Maso
+roadmap: https://github.com/gbetorre/convenzioni/blob/main/README.it.md#Roadmap  
+developmentStatus: development
+softwareType: standalone/web
+description:
+  it:
+    genericName: Applicazione Web
+    localisedName: "COL-GeCo: Rischi On Line-Risk Mapping Software"
+    shortDescription: 'Applicazione web per la gestione delle convenzioni della pubblica amministrazione.'
+    longDescription: |
+      Il software gestionale delle convenzioni (COL-GECO, ovvero Convenzioni On Line-Gestione Convenzioni) 
+      è un software modulare che nasce dall’esigenza, interna alla Pubblica Amministrazione, di tracciare 
+      accordi e convenzioni intercorrenti tra soggetti esterni e la PA stessa, 
+      sia allo scopo di redigere un registro organizzato e sempre aggiornato, 
+      sia al fine di ottenere uno scadenzario atto a informare e notificare 
+      circa le prossime convenzioni in scadenza e in grado di erogare riepiloghi mensili 
+      e fornire remind riguardo le scadenze imminenti.
+
+      Attualmente, l'oggetto del software è la gestione delle convenzioni, 
+      ma il software stesso è concepito con la mission di estendere progressivamente 
+      il dominio agli altri oggetti di contratto e accordo con la PA.
+
+      Il software è progettato in maniera modulare, allo scopo di essere adattabile 
+      a qualunque amministrazione che sia interessata a dotarsi di uno scadenzario Open Source.
+      Inoltre, le modalità tramite cui il software avvisa circa scadenze e riepiloga le attività, possono estendersi a varie modalità:
+          - e-mail
+          - calendario condiviso
+          - notifiche push
+          - riepiloghi periodici creati in automatico in percorsi condivisi
+          - anche scaricabili on-demand in base all’input dell’utente
+     
+      Originariamente, la richiesta di sviluppare un software ad-hoc è partita 
+      proprio dall’esigenza degli uffici, che non trovavano sufficiente appoggiarsi 
+      ad uno strumento predefinito, in quanto già utilizzavano tipicamente, 
+      oltre a calendari e applicazioni, anche le cartelle Excel per gestire le convenzioni.
+      Un software come COL-GECO rappresenta invece un hub unico in cui, 
+      una volta inserite le informazioni relative alle convenzioni, 
+      tutto il workflow procede di conseguenza e senza necessità di ulteriore intervento 
+      da parte degli operatori.  
+
+      Il software COL-GECO è sviluppato in Open Source per permettere a chiunque 
+      di poterne usufruire e godere degli aggiornamenti futuri, se piace, 
+      senza necessità di pagare abbonamenti o stipulare contratti.
+      Inoltre, è stato specificamente disegnato per essere il più semplice ed intuitivo possibile, 
+      ed il suo uso può essere appreso in una singola sessione.
+
+      Gli strumenti gratuiti e ben realizzati sono generalmente sviluppati da aziende americane 
+      e i dati personali e delle amministrazioni in essi caricati non sono ben tracciati e controllati, 
+      avendo possibili risvolti negativi in termini di privacy e trattamento dei dati personali. 
+      Nel software bisogna caricare i dati personali della pianta organica dell’ateneo 
+      o della amministrazione in generale e questi dati potrebbero essere trattati 
+      non in conformità con le normative europee.
+
+      Il software COL-GECO offre invece una tutela aggiuntiva rispetto al trattamento dei dati personali.
+
+      Il software COL-GECO può essere scaricato e provato senza impegno alcuno 
+      e se ne può creare un’istanza al fine di verificare se l’interfaccia e le funzionalità 
+      sono in linea con quanto richiesto e con quanto ci si aspetta ai fini della gestione ottimale 
+      delle convenzioni e degli altri elementi affini.
+
+      L’estrema modularità e la semplicità di uso sono obiettivi che, a dispetto del risultato, 
+      sono spesso ardui da realizzare e richiedono uno sforzo continuo da parte dello sviluppatore. 
+
+    documentation: https://github.com/gbetorre/convenzioni/blob/main/docs/COL.md  
+    features:
+      - 'Rappresentazione dinamica delle convenzioni e dei soggetti contraenti'
+      - 'Integrazione con sistemi di identità digitale'
+      - 'Interfaccia web responsive e accessibile'
+      - 'Aggregazione delle convenzioni sulla base del contraente'
+      - 'Possibilità di aggiungere i contraenti alle convenzioni'
+      - 'Possibilità di modificare tutti gli estremi delle convenzioni esistenti'
+      - 'Possibilità di inserire nuove convenzioni in maniera semplice'
+      - 'Possibilità di filtrare i dati presentati in modo facile e rapido'
+      - 'Possibilità di effettuare ricerche avanzate'
+      - 'Paginazione dei risultati'
+    videos:
+      - https://univr-my.sharepoint.com/:v:/g/personal/giovanroberto_torre_univr_it/IQA9NmWqGi8eQYgJdu02xx6ZAVJ0G3IrUZMwgeaUN1ZHC6Q
+    screenshots:
+      - 'https://gbetorre.github.io/convenzioni/index.html'
+
+legal:
+  license: GPL-3.0-or-later
+  mainCopyrightOwner: Giovanroberto Torre
+  repoOwner: Giovanroberto Torre
+  authorsFile: https://raw.githubusercontent.com/gbetorre/convenzioni/master/AUTHORS
+
+maintenance:
+  type: internal
+  contacts:
+    - name: Giovanroberto Torre
+      email: gianroberto.torre@gmail.com
+      phone: "+390458028506"
+      affiliation: Università degli Studi di Verona
+    - name: Linda Maria Frigo
+      email: lindamaria.frigo@univr.it
+      phone: "+390458028739"
+      affiliation: Università degli Studi di Verona 
+
+localisation:
+  localisationReady: true
+  availableLanguages:
+    - it
+      
+intendedAudience:
+  scope:
+    - government
+    - local-authorities
+
+# Estensione obbligatoria per i software censiti nel catalogo italiano ANAC / Developers Italia
+it:
+  countryExtensionVersion: '0.2'
+  conforme:
+     lineeGuidaDesign: true
+     modelloInteroperabilita: false
+     misureMinimeSicurezza: true
+     gdpr: false
+  piattaforme:
+     spid: false
+     cie: false
+     anpr: false
+     pagopa: false
+  riuso:
+     codiceIPA: uni_vr
+     
