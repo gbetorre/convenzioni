@@ -19,7 +19,7 @@ softwareType: standalone/web
 description:
   it:
     genericName: Applicazione Web
-    localisedName: "COL-GeCo: Rischi On Line-Risk Mapping Software"
+    localisedName: "COL-GeCo: Convenzioni On Line-Gestione Convenzioni"
     shortDescription: 'Applicazione web per la gestione delle convenzioni della pubblica amministrazione.'
     longDescription: |
       Il software gestionale delle convenzioni (COL-GECO, ovvero Convenzioni On Line-Gestione Convenzioni) 
