@@ -94,7 +94,7 @@ legal:
   license: GPL-3.0-or-later
   mainCopyrightOwner: Giovanroberto Torre
   repoOwner: Giovanroberto Torre
-  authorsFile: https://raw.githubusercontent.com/gbetorre/convenzioni/master/AUTHORS
+  authorsFile: https://raw.githubusercontent.com/gbetorre/convenzioni/refs/heads/main/AUTHORS
 
 maintenance:
   type: internal
