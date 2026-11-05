@@ -109,7 +109,7 @@
     </error-page>
     <error-page>
       <error-code>429</error-code>
-      <location>/html/tooManyRequests.html</location>
+      <location>/html/429-tooManyRequests.html</location>
     </error-page>
     <error-page>
       <error-code>500</error-code>
